@@ -1,11 +1,67 @@
 {
   "name": "fetch-dedupe",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "A thin wrapper around fetch that prevents duplicate requests.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf dist es tmp lib",
+    "test": "jest",
+    "prepublish": "in-publish && npm run build || not-in-publish",
+    "build": "npm run clean && npm run build:umd && npm run build:umd:min && npm run build:es && npm run build:commonjs",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "build:umd": "cross-env NODE_ENV=development BABEL_ENV=build rollup -c -i src/index.js -o dist/fetch-dedupe.js",
+    "build:umd:min": "cross-env NODE_ENV=production BABEL_ENV=buildProd rollup -c -i src/index.js -o dist/fetch-dedupe.min.js"
   },
-  "author": "",
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmeas/fetch-dedupe.git"
+  },
+  "keywords": [
+    "http",
+    "https",
+    "request",
+    "dedupe",
+    "deduplication",
+    "requests",
+    "performance",
+    "network",
+    "graphql",
+    "json",
+    "jsonapi",
+    "json-api",
+    "api",
+    "request",
+    "response",
+    "browser"
+  ],
+  "author": "James Smith <jamesplease2@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmeas/fetch-dedupe/issues"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "es"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.1.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.1.3",
+    "in-publish": "^2.0.0",
+    "jest": "^22.1.4",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.45.1",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-replace": "^1.2.1",
+    "rollup-plugin-uglify": "^2.0.1"
+  }
 }
