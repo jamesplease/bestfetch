@@ -3,8 +3,13 @@
 // array is pushed to.
 let requests = {};
 
-export function getRequestKey({ url, method, responseType, body }) {
-  return [url, method, responseType, body].join('||');
+export function getRequestKey({
+  url = '',
+  method = '',
+  responseType = '',
+  body = ''
+} = {}) {
+  return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
 // Returns `true` if a request with `requestKey` is in flight,
