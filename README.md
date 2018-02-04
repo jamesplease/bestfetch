@@ -11,11 +11,9 @@ that prevents duplicate requests.
 
 ### Motivation
 
-A common feature of modern web frameworks is that they deduplicate HTTP requests that
-are exactly the same. Deduping requests is a useful feature that makes a great deal of
-sense to exist as a standalone lib.
-
-And that's why I made Fetch Dedupe.
+A common feature of librareis or frameworks that make HTTP requests is that they deduplicate
+requests that are exactly the same. I find that deduplicating requests is a useful feature
+that makes sense as a standalone lib.
 
 ### Installation
 
@@ -33,7 +31,8 @@ yarn add fetch-dedupe
 
 ### Getting Started
 
-This example demonstrates using fetch-dedupe with ES2015 module syntax.
+This example demonstrates using fetch-dedupe with the
+[ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
 import { getRequestKey, fetchDedupe } from 'fetch-dedupe';
@@ -72,8 +71,10 @@ fetchDedupe(url, fetchOptions, {
 });
 ```
 
+#### Important: Read this!
+
 Note that with `fetch`, you usually read the body yourself. Fetch Dedupe reads the body
-for you, so you must not do it.
+for you, so you **cannot** do it, or else an error will be thrown.
 
 ```js
 // Normal usage of `fetch`:
@@ -86,11 +87,16 @@ fetchDedupe(url, init, dedupeOptions)
   .then(res =>
     console.log('got some cool data', res.data)
   );
+
+// Don't do this! It will throw an error.
+fetchDedupe(url, init, dedupeOptions)
+  .then(res => res.json())
+  .then(data => console.log('got some cool data', data));
 ```
 
 ### API
 
-There are three methods exported by this library:
+This library exports the following methods:
 
 - `fetchDedupe()`
 - `getRequestKey()`
