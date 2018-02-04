@@ -64,7 +64,8 @@ fetchDedupe(url, fetchOptions, {
 
 // Additional requests are deduped. Nifty.
 fetchDedupe(url, fetchOptions, {
-  requestKey
+  requestKey,
+  responseType: 'json'
 }).then(res => {
   console.log('Got some data', res.data);
 });
