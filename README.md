@@ -92,6 +92,13 @@ fetchDedupe(url, init, dedupeOptions)
 
 ### API
 
+There are three methods exported by this library:
+
+- `fetchDedupe()`
+- `getRequestKey()`
+- `isRequestInFlight()`
+- `clearRequestCache()`
+
 ##### `fetchDedupe( input, init, dedupeOptions )`
 
 A wrapper around `global.fetch()`. The first two arguments are the same ones that you're used to.
@@ -106,6 +113,26 @@ The third option is `dedupeOptions`. This is an object with three attributes:
   Typically, you will want to use `json`. Required.
 * `dedupe`: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
+
+##### `getRequestKey({ url, method, responseType, body })`
+
+Returns a unique request key based on the passed-in values. All of the values,
+including `body`, must be strings.
+
+> Note: you can generate a request key in whatever way you want. This should work
+  for most use cases, though.
+
+##### `isRequestInFlight( requestKey )`
+
+Pass in a `requestKey` to see if there's already a request in flight for it. This
+can be used to determine if a call to `fetchDedupe()` will actually hit the network
+or not.
+
+##### `clearRequestCache()`
+
+Wipe the cache of in-flight requests.
+
+> Warning: this is **not** safe to use in application code. It is mostly useful for testing.
 
 ### FAQ & Troubleshooting
 
@@ -134,3 +161,8 @@ object can only be read a single time, because it is a
 For Fetch Dedupe to work, it must pass the result of a single request to many "consumers." The
 only way for this to work is if the library reads it for you, which requires that the library
 know what its content type is.
+
+##### What request body types are supported?
+
+Just strings for now, which should work for the majority of APIs. Support for other body types
+is in the works.
