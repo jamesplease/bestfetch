@@ -37,6 +37,8 @@ This example demonstrates using Fetch Dedupe with the
 import { getRequestKey, fetchDedupe } from 'fetch-dedupe';
 
 const url = '/test/2';
+
+const fetchOptions = {
   method: 'PATCH',
   body: JSON.stringify({ a: 12 })
 };
