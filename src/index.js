@@ -43,8 +43,18 @@ function resolveRequest({ requestKey, res, err }) {
 export function fetchDedupe(
   input,
   init,
-  { requestKey, responseType, dedupe = true }
+  dedupeOptions
 ) {
+  let opts, initToUse;
+  if (dedupeOptions) {
+    opts = dedupeOptions;
+  } else if (init && init.responseType) {
+    opts = init;
+    initToUse = null;
+  }
+
+  const { requestKey, responseType, dedupe = true } = opts;
+
   let proxyReq;
   if (dedupe) {
     if (!requests[requestKey]) {
@@ -66,7 +76,7 @@ export function fetchDedupe(
     }
   }
 
-  const request = fetch(input, init).then(
+  const request = fetch(input, initToUse).then(
     res => {
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving

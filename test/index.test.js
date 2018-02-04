@@ -107,17 +107,24 @@ describe('getRequestKey', () => {
 
 describe('fetchDedupe', () => {
   test('only calls fetch once for duplicate requests', () => {
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('respects the dedupe:false option', () => {
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', dedupe: false });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', dedupe: false, responseType: 'json' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(2);
+  });
+
+  test('allows for optional init', () => {
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('non-deduped requests that succeed to behave as expected', done => {
