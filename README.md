@@ -11,7 +11,7 @@ that prevents duplicate requests.
 
 ### Motivation
 
-A common feature of librareis or frameworks that make HTTP requests is that they deduplicate
+A common feature of libraries or frameworks that make HTTP requests is that they deduplicate
 requests that are exactly the same. I find that deduplicating requests is a useful feature
 that makes sense as a standalone lib.
 
