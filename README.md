@@ -11,9 +11,8 @@ that prevents duplicate requests.
 
 ### Motivation
 
-A common feature of libraries or frameworks that make HTTP requests is that they deduplicate
-requests that are exactly the same. I find that deduplicating requests is a useful feature
-that makes sense as a standalone lib.
+A common feature of libraries or frameworks that build abstractions around HTTP requests is that
+they deduplicate requests that are exactly the same. This library extracts that functionality.
 
 ### Installation
 
@@ -31,50 +30,35 @@ yarn add fetch-dedupe
 
 ### Getting Started
 
-This example demonstrates using fetch-dedupe with the
+This example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
 import { getRequestKey, fetchDedupe } from 'fetch-dedupe';
 
 const url = '/test/2';
-const fetchOptions = {
-  method: 'GET',
+  method: 'PATCH',
   body: JSON.stringify({ a: 12 })
 };
-
-// First, build a request key. A request key is a unique string
-// that identifies the request.
-// `getRequestKey` is a built-in key generator that will work for
-// most situations, although you can make your own.
-const requestKey = getRequestKey({
-  url,
-  ...fetchOptions
-});
 
 // The API of `fetchDedupe` is the same as fetch, except that it
 // has an additional argument. Pass the `requestKey` in that
 // third argument
-fetchDedupe(url, fetchOptions, {
-  requestKey,
-  responseType: 'json'
-}).then(res => {
+fetchDedupe(url, fetchOptions, {responseType: 'json'}).then(res => {
   console.log('Got some data', res.data);
 });
 
 // Additional requests are deduped. Nifty.
-fetchDedupe(url, fetchOptions, {
-  requestKey,
-  responseType: 'json'
-}).then(res => {
+fetchDedupe(url, fetchOptions, {responseType: 'json'}).then(res => {
   console.log('Got some data', res.data);
 });
 ```
 
 #### Important: Read this!
 
-Note that with `fetch`, you usually read the body yourself. Fetch Dedupe reads the body
-for you, so you **cannot** do it, or else an error will be thrown.
+When using `fetch`, you typically read the body yourself by calling, say, `.json()` on the
+response. Fetch Dedupe reads the body for you, so you **cannot** do it, or else an error
+will be thrown.
 
 ```js
 // Normal usage of `fetch`:
@@ -103,20 +87,53 @@ This library exports the following methods:
 - `isRequestInFlight()`
 - `clearRequestCache()`
 
-##### `fetchDedupe( input, init, dedupeOptions )`
+##### `fetchDedupe( input [, init], dedupeOptions )`
 
 A wrapper around `global.fetch()`. The first two arguments are the same ones that you're used to.
 Refer to
 [the fetch() documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
 for more.
 
+Note that `init` is optional, as with `global.fetch()`.
+
 The third option is `dedupeOptions`. This is an object with three attributes:
 
-* `requestKey`: A string that is used to determine if two requests are identical. Required.
 * `responseType`: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
   Typically, you will want to use `json`. Required.
+* `requestKey`: A string that is used to determine if two requests are identical. You may pass this
+  to configure how the request key is generated. Optional.
 * `dedupe`: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
+
+Given the two possible value types of `input`,  optional second argument, there are a way few ways that you can
+call `fetchDedupe`. Let's run through valid calls to `fetchDedupe`:
+
+```js
+import { fetchDedupe } from 'fetch-dedupe';
+
+// Omitting `init` and using a URL string as `input`
+fetchDedupe('/test/2', {responseType: 'json'});
+
+// Using a URL string as `input`, with numerous `init` configurations
+// and specifying several `dedupeOptions`
+fetchDedupe('/test/2', {
+  method: 'PATCH',
+  body: JSON.stringify({value: true}),
+  credentials: 'include'
+}, {
+  responseType: 'json',
+  requestKey: generateCustomKey(opts),
+  dedupe: false
+})
+
+// Omitting `init` and using a Request as `input`
+const req = new Request('/test/2');
+fetchDedupe(req, {responseType: 'json'});
+
+// Request as `input` with an `init` object. Note that the `init`
+// object takes precedence over the Request values.
+fetchDedupe(req, {method: 'PATCH'}, {responseType: 'json'});
+```
 
 ##### `getRequestKey({ url, method, responseType, body })`
 
@@ -126,10 +143,10 @@ including `body`, must be strings.
 Every value is optional, but the deduplication logic is improved by adding the
 most information that you can.
 
-> Note: The method is case-insensitive.
+> Note: The `method` option is case-insensitive.
 
-> Note: You don't need to use this method. You can generate a key in whatever way that you want. This
-  should work for most use cases, though.
+> Note: You do not need to use this method to generate a request key. You can generate the key
+  in whatever way that you want. This should work for most use cases, though.
 
 ```js
 import { getRequestKey } from 'fetch-dedupe';
@@ -146,6 +163,9 @@ const keyTwo = getRequestKey({
     title: 'My Name is Red'
   })
 });
+
+keyOne === keyTwo;
+// => false
 ```
 
 ##### `isRequestInFlight( requestKey )`
@@ -166,6 +186,10 @@ const key = getRequestKey({
 const readingBooksAlready = isRequestInFlight(key);
 ```
 
+> Now: We **strongly** recommend that you manually pass in `requestKey` to `fetchDedupe`
+  if you intend to use this method. In other words, _do not_ rely on being able to
+  reliably reproduce the request key that is created when a `requestKey` is not passed in.
+
 ##### `clearRequestCache()`
 
 Wipe the cache of in-flight requests.
@@ -174,7 +198,7 @@ Wipe the cache of in-flight requests.
 
 ### FAQ & Troubleshooting
 
-##### An empty response throws an error
+##### An empty response is throwing an error, what gives?
 
 Empty text strings are not valid JSON.
 
@@ -204,3 +228,15 @@ know what its content type is.
 
 Just strings for now, which should work for the majority of APIs. Support for other body types
 is in the works.
+
+### Implementors
+
+These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
+
+- [React Request](https://github.com/jmeas/react-request)
+
+Are you using it on a project? Add it to this list by opening a Pull Request
+
+### Acknowledgements
+
+[Apollo](https://www.apollographql.com/) inspired me to write this library.

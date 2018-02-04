@@ -25,7 +25,7 @@ export function clearRequestCache() {
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
-  const handlers = requests[requestKey];
+  const handlers = requests[requestKey] || [];
 
   handlers.forEach(handler => {
     if (res) {
@@ -43,15 +43,39 @@ function resolveRequest({ requestKey, res, err }) {
 export function fetchDedupe(
   input,
   init,
-  { requestKey, responseType, dedupe = true }
+  dedupeOptions
 ) {
+  let opts, initToUse;
+  if (dedupeOptions) {
+    opts = dedupeOptions;
+    initToUse = init;
+  } else if (init && init.responseType) {
+    opts = init;
+    initToUse = {};
+  } else {
+    throw new Error('dedupeOptions are required.')
+  }
+
+  const { requestKey, responseType = '', dedupe = true } = opts;
+
+  // Build the default request key if one is not passed
+  let requestKeyToUse = requestKey || getRequestKey({
+    // If `input` is a request, then we use that URL
+    url: input.url || input,
+    // We prefer values from `init` over request objects. With `fetch()`, init
+    // takes priority over a passed-in request
+    method: initToUse.method || input.method || '',
+    body: initToUse.body || input.body || '',
+    responseType: responseType
+  });
+
   let proxyReq;
   if (dedupe) {
-    if (!requests[requestKey]) {
-      requests[requestKey] = [];
+    if (!requests[requestKeyToUse]) {
+      requests[requestKeyToUse] = [];
     }
 
-    const handlers = requests[requestKey];
+    const handlers = requests[requestKeyToUse];
     const requestInFlight = Boolean(handlers.length);
     const requestHandler = {};
     proxyReq = new Promise((resolve, reject) => {
@@ -66,7 +90,7 @@ export function fetchDedupe(
     }
   }
 
-  const request = fetch(input, init).then(
+  const request = fetch(input, initToUse).then(
     res => {
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving
@@ -75,7 +99,7 @@ export function fetchDedupe(
         res.data = data;
 
         if (dedupe) {
-          resolveRequest({ requestKey, res });
+          resolveRequest({ requestKey: requestKeyToUse, res });
         } else {
           return res;
         }
@@ -83,7 +107,7 @@ export function fetchDedupe(
     },
     err => {
       if (dedupe) {
-        resolveRequest({ requestKey, err });
+        resolveRequest({ requestKey: requestKeyToUse, err });
       } else {
         return Promise.reject(err);
       }
