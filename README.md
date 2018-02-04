@@ -212,3 +212,7 @@ These are projects that build abstractions around HTTP requests using Fetch Dedu
 - [React Request](https://github.com/jmeas/react-request)
 
 Are you using it on a project? Add it to this list by opening a Pull Request
+
+### Acknowledgements
+
+[Apollo](https://www.apollographql.com/) inspired me to write this library.
