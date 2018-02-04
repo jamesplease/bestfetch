@@ -1,5 +1,5 @@
 # Changelog
 
-### v0.0.0 (2018/month/date)
+### v0.1.0 (2018/2/4)
 
-This is a placeholder changelog entry.
+This is the first release of the library.
