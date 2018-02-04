@@ -11,11 +11,9 @@ that prevents duplicate requests.
 
 ### Motivation
 
-A common feature of modern web frameworks is that they deduplicate HTTP requests that
-are exactly the same. Deduping requests is a useful feature that makes a great deal of
-sense to exist as a standalone lib.
-
-And that's why I made Fetch Dedupe.
+A common feature of librareis or frameworks that make HTTP requests is that they deduplicate
+requests that are exactly the same. I find that deduplicating requests is a useful feature
+that makes sense as a standalone lib.
 
 ### Installation
 
@@ -33,7 +31,8 @@ yarn add fetch-dedupe
 
 ### Getting Started
 
-This example demonstrates using fetch-dedupe with ES2015 module syntax.
+This example demonstrates using fetch-dedupe with the
+[ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
 import { getRequestKey, fetchDedupe } from 'fetch-dedupe';
@@ -50,8 +49,7 @@ const fetchOptions = {
 // most situations, although you can make your own.
 const requestKey = getRequestKey({
   url,
-  ...fetchOptions,
-  responseType: 'json'
+  ...fetchOptions
 });
 
 // The API of `fetchDedupe` is the same as fetch, except that it
@@ -66,14 +64,17 @@ fetchDedupe(url, fetchOptions, {
 
 // Additional requests are deduped. Nifty.
 fetchDedupe(url, fetchOptions, {
-  requestKey
+  requestKey,
+  responseType: 'json'
 }).then(res => {
   console.log('Got some data', res.data);
 });
 ```
 
+#### Important: Read this!
+
 Note that with `fetch`, you usually read the body yourself. Fetch Dedupe reads the body
-for you, so you must not do it.
+for you, so you **cannot** do it, or else an error will be thrown.
 
 ```js
 // Normal usage of `fetch`:
@@ -86,11 +87,16 @@ fetchDedupe(url, init, dedupeOptions)
   .then(res =>
     console.log('got some cool data', res.data)
   );
+
+// Don't do this! It will throw an error.
+fetchDedupe(url, init, dedupeOptions)
+  .then(res => res.json())
+  .then(data => console.log('got some cool data', data));
 ```
 
 ### API
 
-There are three methods exported by this library:
+This library exports the following methods:
 
 - `fetchDedupe()`
 - `getRequestKey()`
@@ -117,14 +123,48 @@ The third option is `dedupeOptions`. This is an object with three attributes:
 Returns a unique request key based on the passed-in values. All of the values,
 including `body`, must be strings.
 
-> Note: you can generate a request key in whatever way you want. This should work
-  for most use cases, though.
+Every value is optional, but the deduplication logic is improved by adding the
+most information that you can.
+
+> Note: The method is case-insensitive.
+
+> Note: You don't need to use this method. You can generate a key in whatever way that you want. This
+  should work for most use cases, though.
+
+```js
+import { getRequestKey } from 'fetch-dedupe';
+
+const keyOne = getRequestKey({
+  url: '/books/2',
+  method: 'get'
+});
+
+const keyTwo = getRequestKey({
+  url: '/books/2',
+  method: 'patch',
+  body: JSON.stringify({
+    title: 'My Name is Red'
+  })
+});
+```
 
 ##### `isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
 can be used to determine if a call to `fetchDedupe()` will actually hit the network
 or not.
+
+```js
+import { isRequestInFlight, getRequestKey } from 'fetch-dedupe';
+
+const key = getRequestKey({
+  url: '/books/2',
+  method: 'get'
+});
+
+// Is there already a request in flight for this?
+const readingBooksAlready = isRequestInFlight(key);
+```
 
 ##### `clearRequestCache()`
 
