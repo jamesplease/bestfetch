@@ -49,8 +49,7 @@ const fetchOptions = {
 // most situations, although you can make your own.
 const requestKey = getRequestKey({
   url,
-  ...fetchOptions,
-  responseType: 'json'
+  ...fetchOptions
 });
 
 // The API of `fetchDedupe` is the same as fetch, except that it
@@ -123,14 +122,48 @@ The third option is `dedupeOptions`. This is an object with three attributes:
 Returns a unique request key based on the passed-in values. All of the values,
 including `body`, must be strings.
 
-> Note: you can generate a request key in whatever way you want. This should work
-  for most use cases, though.
+Every value is optional, but the deduplication logic is improved by adding the
+most information that you can.
+
+> Note: The method is case-insensitive.
+
+> Note: You don't need to use this method. You can generate a key in whatever way that you want. This
+  should work for most use cases, though.
+
+```js
+import { getRequestKey } from 'fetch-dedupe';
+
+const keyOne = getRequestKey({
+  url: '/books/2',
+  method: 'get'
+});
+
+const keyTwo = getRequestKey({
+  url: '/books/2',
+  method: 'patch',
+  body: JSON.stringify({
+    title: 'My Name is Red'
+  })
+});
+```
 
 ##### `isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
 can be used to determine if a call to `fetchDedupe()` will actually hit the network
 or not.
+
+```js
+import { isRequestInFlight, getRequestKey } from 'fetch-dedupe';
+
+const key = getRequestKey({
+  url: '/books/2',
+  method: 'get'
+});
+
+// Is there already a request in flight for this?
+const readingBooksAlready = isRequestInFlight(key);
+```
 
 ##### `clearRequestCache()`
 
