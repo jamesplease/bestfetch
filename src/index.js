@@ -25,7 +25,7 @@ export function clearRequestCache() {
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
-  const handlers = requests[requestKey];
+  const handlers = requests[requestKey] || [];
 
   handlers.forEach(handler => {
     if (res) {
