@@ -5,19 +5,17 @@
 [![Test Coverage](https://codeclimate.com/github/jmeas/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jmeas/fetch-dedupe)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
-A thin wrapper around `fetch` that prevents duplicate requests.
+A (very) thin wrapper around
+[`global.fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+that prevents duplicate requests.
 
 ### Motivation
 
 A common feature of modern web frameworks is that they deduplicate HTTP requests that
-are exactly the same.
+are exactly the same. Deduping requests is a useful feature that makes a great deal of
+sense to exist as a standalone lib.
 
-Deduping requests is a useful feature that makes a lot of sense as a standalone lib. And
-that's why I made Fetch Dedupe.
-
-Fetch Dedupe is a very thin wrapper around
-[`global.fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-that makes it so your requests are deduped. Nifty.
+And that's why I made Fetch Dedupe.
 
 ### Installation
 
