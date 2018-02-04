@@ -11,9 +11,8 @@ that prevents duplicate requests.
 
 ### Motivation
 
-A common feature of libraries or frameworks that make HTTP requests is that they deduplicate
-requests that are exactly the same. I find that deduplicating requests is a useful feature
-that makes sense as a standalone lib.
+A common feature of libraries or frameworks that build abstractions around HTTP requests is that
+they deduplicate requests that are exactly the same. This library extracts that functionality.
 
 ### Installation
 
@@ -73,8 +72,9 @@ fetchDedupe(url, fetchOptions, {
 
 #### Important: Read this!
 
-Note that with `fetch`, you usually read the body yourself. Fetch Dedupe reads the body
-for you, so you **cannot** do it, or else an error will be thrown.
+When using `fetch`, you typically read the body yourself by calling, say, `.json()` on the
+response. Fetch Dedupe reads the body for you, so you **cannot** do it, or else an error
+will be thrown.
 
 ```js
 // Normal usage of `fetch`:
@@ -126,10 +126,10 @@ including `body`, must be strings.
 Every value is optional, but the deduplication logic is improved by adding the
 most information that you can.
 
-> Note: The method is case-insensitive.
+> Note: The `method` option is case-insensitive.
 
-> Note: You don't need to use this method. You can generate a key in whatever way that you want. This
-  should work for most use cases, though.
+> Note: You do not need to use this method to generate a request key. You can generate the key
+  in whatever way that you want. This should work for most use cases, though.
 
 ```js
 import { getRequestKey } from 'fetch-dedupe';
@@ -174,7 +174,7 @@ Wipe the cache of in-flight requests.
 
 ### FAQ & Troubleshooting
 
-##### An empty response throws an error
+##### An empty response is throwing an error, what gives?
 
 Empty text strings are not valid JSON.
 
