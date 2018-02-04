@@ -30,7 +30,7 @@ yarn add fetch-dedupe
 
 ### Getting Started
 
-This example demonstrates using fetch-dedupe with the
+This example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
@@ -204,3 +204,11 @@ know what its content type is.
 
 Just strings for now, which should work for the majority of APIs. Support for other body types
 is in the works.
+
+### Implementors
+
+These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
+
+- [React Request](https://github.com/jmeas/react-request)
+
+Are you using it on a project? Add it to this list by opening a Pull Request
