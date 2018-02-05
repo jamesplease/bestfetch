@@ -5,7 +5,7 @@ import {
   isRequestInFlight,
   clearRequestCache
 } from '../src';
-import { successfulResponse, jsonResponse } from './responses';
+import { successfulResponse, jsonResponse, emptyResponse } from './responses';
 
 beforeEach(() => {
   clearRequestCache();
@@ -17,6 +17,29 @@ function hangingPromise() {
 
 fetchMock.get('/test/hangs', hangingPromise());
 fetchMock.get('/test/hangs/2', hangingPromise());
+fetchMock.get(
+  '/test/succeeds',
+  () =>
+    new Promise(resolve => {
+      resolve(successfulResponse());
+    })
+);
+
+fetchMock.get(
+  '/test/succeeds/json',
+  () =>
+    new Promise(resolve => {
+      resolve(jsonResponse());
+    })
+);
+
+fetchMock.get(
+  '/test/succeeds/empty',
+  () =>
+    new Promise(resolve => {
+      resolve(emptyResponse());
+    })
+);
 
 describe('isRequestInFlight', () => {
   test('renders false when it is not in flight', () => {
@@ -108,16 +131,40 @@ describe('getRequestKey', () => {
 
 describe('fetchDedupe', () => {
   test('only calls fetch once for duplicate requests', () => {
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', responseType: 'json' }
+    );
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', responseType: 'json' }
+    );
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', responseType: 'json' }
+    );
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('respects the dedupe:false option', () => {
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', dedupe: false, responseType: 'json' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', dedupe: false, responseType: 'json' }
+    );
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', responseType: 'json' }
+    );
+    fetchDedupe(
+      '/test/hangs',
+      {},
+      { requestKey: 'pasta', responseType: 'json' }
+    );
     expect(fetchMock.calls('/test/hangs').length).toBe(2);
   });
 
@@ -145,16 +192,10 @@ describe('fetchDedupe', () => {
     fetchDedupe('/test/hangs/2', { responseType: 'json' });
 
     // Second request to /test/hangs/2
-    fetchDedupe('/test/hangs/2', {body: 'hello'}, { responseType: 'json' });
+    fetchDedupe('/test/hangs/2', { body: 'hello' }, { responseType: 'json' });
 
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
     expect(fetchMock.calls('/test/hangs/2').length).toBe(2);
-  });
-
-  test('throws with no dedupeOptions', () => {
-    expect(() => {
-      fetchDedupe('/test/hangs');
-    }).toThrow();
   });
 
   test('supports a Request as input', () => {
@@ -173,19 +214,48 @@ describe('fetchDedupe', () => {
       body: 'what'
     });
 
-    fetchDedupe(req, {method: 'PATCH', body: 'ok'}, { responseType: 'json' });
-    fetchDedupe('/test/hangs', {method: 'PATCH', body: 'ok'}, { responseType: 'json' });
+    fetchDedupe(req, { method: 'PATCH', body: 'ok' }, { responseType: 'json' });
+    fetchDedupe(
+      '/test/hangs',
+      { method: 'PATCH', body: 'ok' },
+      { responseType: 'json' }
+    );
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
-  test('non-deduped requests that succeed to behave as expected', done => {
-    fetchMock.get(
-      '/test/succeeds',
-      new Promise(resolve => {
-        resolve(successfulResponse());
-      })
-    );
+  test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
+    fetchDedupe('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true
+          },
+          status: 200,
+          statusText: 'OK',
+          bodyUsed: true,
+          ok: true
+        })
+      );
+      done();
+    });
+  });
 
+  test('requests that succeeds with empty responses, with no response type specified, to behave as expected', done => {
+    fetchDedupe('/test/succeeds/empty').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: '',
+          status: 204,
+          statusText: 'OK',
+          bodyUsed: true,
+          ok: true
+        })
+      );
+      done();
+    });
+  });
+
+  test('non-deduped requests that succeed to behave as expected', done => {
     fetchDedupe(
       '/test/succeeds',
       {},
@@ -205,18 +275,11 @@ describe('fetchDedupe', () => {
   });
 
   test('non-deduped requests that succeeds with JSON to behave as expected', done => {
-    fetchMock.get(
-      '/test/succeeds/json',
-      new Promise(resolve => {
-        resolve(jsonResponse());
-      })
-    );
-
-    fetchDedupe(
-      '/test/succeeds/json',
-      {},
-      { requestKey: 'pasta', dedupe: false, responseType: 'json' }
-    ).then(res => {
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'pasta',
+      dedupe: false,
+      responseType: 'json'
+    }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {

@@ -40,11 +40,7 @@ function resolveRequest({ requestKey, res, err }) {
   requests[requestKey] = null;
 }
 
-export function fetchDedupe(
-  input,
-  init,
-  dedupeOptions
-) {
+export function fetchDedupe(input, init, dedupeOptions) {
   let opts, initToUse;
   if (dedupeOptions) {
     opts = dedupeOptions;
@@ -53,21 +49,23 @@ export function fetchDedupe(
     opts = init;
     initToUse = {};
   } else {
-    throw new Error('dedupeOptions are required.')
+    opts = {};
+    initToUse = {};
   }
 
   const { requestKey, responseType = '', dedupe = true } = opts;
 
   // Build the default request key if one is not passed
-  let requestKeyToUse = requestKey || getRequestKey({
-    // If `input` is a request, then we use that URL
-    url: input.url || input,
-    // We prefer values from `init` over request objects. With `fetch()`, init
-    // takes priority over a passed-in request
-    method: initToUse.method || input.method || '',
-    body: initToUse.body || input.body || '',
-    responseType: responseType
-  });
+  let requestKeyToUse =
+    requestKey ||
+    getRequestKey({
+      // If `input` is a request, then we use that URL
+      url: input.url || input,
+      // We prefer values from `init` over request objects. With `fetch()`, init
+      // takes priority over a passed-in request
+      method: initToUse.method || input.method || '',
+      body: initToUse.body || input.body || ''
+    });
 
   let proxyReq;
   if (dedupe) {
@@ -92,10 +90,18 @@ export function fetchDedupe(
 
   const request = fetch(input, initToUse).then(
     res => {
+      let responseTypeToUse;
+      if (responseType) {
+        responseTypeToUse = responseType;
+      } else if (res.status === 204) {
+        responseTypeToUse = 'text';
+      } else {
+        responseTypeToUse = 'json';
+      }
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
-      return res[responseType]().then(data => {
+      return res[responseTypeToUse]().then(data => {
         res.data = data;
 
         if (dedupe) {
