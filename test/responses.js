@@ -11,3 +11,10 @@ export function jsonResponse() {
     statusText: 'OK'
   });
 }
+
+export function emptyResponse() {
+  return new Response('', {
+    status: 204,
+    statusText: 'OK'
+  });
+}

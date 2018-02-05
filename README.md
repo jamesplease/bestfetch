@@ -6,7 +6,7 @@
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
 A (very) thin wrapper around
-[`global.fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+[`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 that prevents duplicate requests.
 
 ### Motivation
@@ -34,9 +34,7 @@ This example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
-import { getRequestKey, fetchDedupe } from 'fetch-dedupe';
-
-const url = '/test/2';
+import { fetchDedupe } from 'fetch-dedupe';
 
 const fetchOptions = {
   method: 'PATCH',
@@ -46,12 +44,12 @@ const fetchOptions = {
 // The API of `fetchDedupe` is the same as fetch, except that it
 // has an additional argument. Pass the `requestKey` in that
 // third argument
-fetchDedupe(url, fetchOptions, {responseType: 'json'}).then(res => {
+fetchDedupe('/test/2', fetchOptions).then(res => {
   console.log('Got some data', res.data);
 });
 
 // Additional requests are deduped. Nifty.
-fetchDedupe(url, fetchOptions, {responseType: 'json'}).then(res => {
+fetchDedupe('/test/2', fetchOptions).then(res => {
   console.log('Got some data', res.data);
 });
 ```
@@ -69,13 +67,13 @@ fetch(url, init)
   .then(data => console.log('got some cool data', data));
 
 // The same code using `fetchDedupe`:
-fetchDedupe(url, init, dedupeOptions)
+fetchDedupe(url, init)
   .then(res =>
     console.log('got some cool data', res.data)
   );
 
 // Don't do this! It will throw an error.
-fetchDedupe(url, init, dedupeOptions)
+fetchDedupe(url, init)
   .then(res => res.json())
   .then(data => console.log('got some cool data', data));
 ```
@@ -89,7 +87,7 @@ This library exports the following methods:
 - `isRequestInFlight()`
 - `clearRequestCache()`
 
-##### `fetchDedupe( input [, init], dedupeOptions )`
+##### `fetchDedupe( input [, init] [, dedupeOptions] )`
 
 A wrapper around `global.fetch()`. The first two arguments are the same ones that you're used to.
 Refer to
@@ -98,12 +96,14 @@ for more.
 
 Note that `init` is optional, as with `global.fetch()`.
 
-The third option is `dedupeOptions`. This is an object with three attributes:
+The third option is `dedupeOptions`, and it is also optional. This is an object with three attributes:
 
 * `responseType`: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
-  Typically, you will want to use `json`. Required.
+  The default is `"json"`, unless the response status code is `"204"`, in which case `"text"` will be used to prevent
+  an error.
 * `requestKey`: A string that is used to determine if two requests are identical. You may pass this
-  to configure how the request key is generated. Optional.
+  to configure how the request key is generated. A default key will be generated for you if this is
+  omitted.
 * `dedupe`: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
 
@@ -112,6 +112,14 @@ call `fetchDedupe`. Let's run through valid calls to `fetchDedupe`:
 
 ```js
 import { fetchDedupe } from 'fetch-dedupe';
+
+// Omitting everything except for the URL
+fetchDedupe('/test/2');
+
+// Just a URL and some init option
+fetchDedupe('/test/2', {
+  method: 'DELETE'
+});
 
 // Omitting `init` and using a URL string as `input`
 fetchDedupe('/test/2', {responseType: 'json'});
@@ -200,7 +208,7 @@ Wipe the cache of in-flight requests.
 
 ### FAQ & Troubleshooting
 
-##### An empty response is throwing an error, what gives?
+##### An empty response body is throwing an error, what gives?
 
 Empty text strings are not valid JSON.
 
@@ -210,12 +218,18 @@ JSON.parse('');
 ```
 
 Consequently, using `json` as the `responseType` when a response's body is empty will cause an
-Error to be thrown. To avoid this, we recommend using `text` instead.
+Error to be thrown. To avoid this, we recommend using `text` in these situations instead.
 
 APIs generally use empty bodies in conjunction with a 204 status code for responses
-of "write" requests (deletes, updates, and less commonly creates).
+of "write" requests (deletes, updates, and less commonly creates). For this reason, the default
+behavior of `responseType` is `"json"` except in situations when a 204 code is returned, in which
+case `"text"` will be used instead.
 
-##### Why is `responseType` required?
+If your API returns empty bodies with other codes, then you will need to manage that in your
+application. As a "worst-case scenario," you can always pass `"text"` and then try/catch a
+`JSON.parse` within a `.then()`.
+
+##### Why is `responseType` even an option?
 
 The argument that is returned to you in the `.then` callback of a call to `fetch()` is a
 [Response object](https://developer.mozilla.org/en-US/docs/Web/API/Response). The body of a Response
