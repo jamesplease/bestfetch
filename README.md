@@ -6,7 +6,7 @@
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
 A (very) thin wrapper around
-[`global.fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+[`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 that prevents duplicate requests.
 
 ### Motivation
@@ -52,18 +52,6 @@ fetchDedupe('/test/2', fetchOptions).then(res => {
 fetchDedupe('/test/2', fetchOptions).then(res => {
   console.log('Got some data', res.data);
 });
-```
-
-Because the API is identical to fetch, the diff to swap this library in is remarkably small.
-
-```diff
-- fetch(
-+ fetchDedupe(
-  '/books/2',
-  {
-    method: 'GET'
-  }
-);
 ```
 
 #### Important: Read this!
