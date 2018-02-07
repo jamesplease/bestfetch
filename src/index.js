@@ -91,7 +91,9 @@ export function fetchDedupe(input, init, dedupeOptions) {
   const request = fetch(input, initToUse).then(
     res => {
       let responseTypeToUse;
-      if (responseType) {
+      if (responseType instanceof Function) {
+        responseTypeToUse = responseType(res);
+      } else if (responseType) {
         responseTypeToUse = responseType;
       } else if (res.status === 204) {
         responseTypeToUse = 'text';
