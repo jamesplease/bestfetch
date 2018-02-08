@@ -241,7 +241,7 @@ const dedupeOptions = {
   responseType(response) {
     // 204 status code = no body, so treat it as text
     // >= 400 status codes = stack traces, so also treat them as text
-    return (response.ok || response.status !== 204) ? 'json' : 'text';
+    return (response.ok && response.status !== 204) ? 'json' : 'text';
   }
 }
 ```
