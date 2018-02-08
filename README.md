@@ -98,13 +98,18 @@ Note that `init` is optional, as with `global.fetch()`.
 
 The third option is `dedupeOptions`, and it is also optional. This is an object with three attributes:
 
-* `responseType`: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
+* `responseType` *(String|Function)*: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
   The default is `"json"`, unless the response status code is `"204"`, in which case `"text"` will be used to prevent
   an error.
-* `requestKey`: A string that is used to determine if two requests are identical. You may pass this
+
+  If a function is passed, then it will be passed the `response` object. This lets you dynamically determine the
+  response type based on information about the response, such as the status code.
+
+* `requestKey` *(String)*: A string that is used to determine if two requests are identical. You may pass this
   to configure how the request key is generated. A default key will be generated for you if this is
   omitted.
-* `dedupe`: Whether or not to dedupe the request. Pass `false` and it will be as if this library
+
+* `dedupe` *(Boolean)*: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
 
 Given the two possible value types of `input`,  optional second argument, there are a way few ways that you can
@@ -225,9 +230,24 @@ of "write" requests (deletes, updates, and less commonly creates). For this reas
 behavior of `responseType` is `"json"` except in situations when a 204 code is returned, in which
 case `"text"` will be used instead.
 
-If your API returns empty bodies with other codes, then you will need to manage that in your
-application. As a "worst-case scenario," you can always pass `"text"` and then try/catch a
-`JSON.parse` within a `.then()`.
+If your API returns empty bodies with other codes, then you have two options. The first is to
+pass a function as `responseType`. This lets you specify the `responseType` based on the `response`.
+
+For instance, if your backend returns JSON for successful responses, but text stack traces otherwise,
+then you might do:
+
+```js
+const dedupeOptions = {
+  responseType(response) {
+    // 204 status code = no body, so treat it as text
+    // >= 400 status codes = stack traces, so also treat them as text
+    return (response.ok || response.status !== 204) ? 'json' : 'text';
+  }
+}
+```
+
+If your API is exceptionally unreliable, then you can always specify the `responseType` as `"text"`
+and try/catch the `JSON.parse` in your application code.
 
 ##### Why is `responseType` even an option?
 
