@@ -1,5 +1,13 @@
 # Changelog
 
+### v2.1.0 (2018/2/7)
+
+**New Features**
+
+* `responseType` can now be specified as a function. This is useful for backends that don't
+  respect the `Accept` header. "Enterprisey" backends frequently return text stack traces
+  for errors, as an example.
+
 ### v2.0.0 (2018/2/4)
 
 **Breaking**
