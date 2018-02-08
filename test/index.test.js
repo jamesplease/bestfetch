@@ -240,6 +240,49 @@ describe('fetchDedupe', () => {
     });
   });
 
+  test('requests that succeeds with JSON, with function as response type, to behave as expected', done => {
+    const responseType = res => {
+      return res.ok ? 'json' : 'text';
+    }
+    fetchDedupe('/test/succeeds/json', { responseType }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true
+          },
+          status: 200,
+          statusText: 'OK',
+          bodyUsed: true,
+          ok: true
+        })
+      );
+      done();
+    });
+  });
+
+  test('requests that fails with text responses, with function as response type, to behave as expected', done => {
+    fetchMock.get(
+      '/test/fails/text',
+      new Promise((resolve, reject) => {
+        reject('Failed');
+      })
+    );
+
+    const responseType = res => {
+      return res.ok ? 'json' : 'text';
+    }
+    fetchDedupe(
+      '/test/fails/text',
+      { responseType }
+    ).then(
+      () => done.fail(),
+      err => {
+        expect(err).toEqual('Failed');
+        done();
+      }
+    );
+  });
+
   test('requests that succeeds with empty responses, with no response type specified, to behave as expected', done => {
     fetchDedupe('/test/succeeds/empty').then(res => {
       expect(res).toEqual(
