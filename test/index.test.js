@@ -3,12 +3,15 @@ import {
   fetchDedupe,
   getRequestKey,
   isRequestInFlight,
-  clearRequestCache
+  isResponseCached,
+  clearRequestCache,
+  clearResponseCache,
 } from '../src';
 import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
 beforeEach(() => {
   clearRequestCache();
+  clearResponseCache();
 });
 
 function hangingPromise() {
@@ -26,6 +29,14 @@ fetchMock.get(
 );
 
 fetchMock.get(
+  '/test/succeeds/json',
+  () =>
+    new Promise(resolve => {
+      resolve(jsonResponse());
+    })
+);
+
+fetchMock.post(
   '/test/succeeds/json',
   () =>
     new Promise(resolve => {
@@ -74,7 +85,7 @@ describe('getRequestKey', () => {
   test('it returns a string', () => {
     const key = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
     expect(typeof key).toBe('string');
   });
@@ -82,12 +93,12 @@ describe('getRequestKey', () => {
   test('it ignores the casing of method', () => {
     const keyOne = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'get'
+      method: 'get',
     });
 
     expect(keyOne).toBe(keyTwo);
@@ -96,12 +107,12 @@ describe('getRequestKey', () => {
   test('it produces different keys for different methods', () => {
     const keyOne = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'DELETE'
+      method: 'DELETE',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -110,12 +121,12 @@ describe('getRequestKey', () => {
   test('it produces different keys for different URLs', () => {
     const keyOne = getRequestKey({
       url: '/test/1',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -124,13 +135,13 @@ describe('getRequestKey', () => {
   test('it produces different keys for different options', () => {
     const keyOne = getRequestKey({
       url: '/test/1',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/1',
       method: 'GET',
-      body: 'sandwiches'
+      body: 'sandwiches',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -216,7 +227,7 @@ describe('fetchDedupe', () => {
 
   test('supports a Request as input', () => {
     const req = new Request('/test/hangs', {
-      method: 'GET'
+      method: 'GET',
     });
     fetchDedupe(req, { responseType: 'json' });
     fetchDedupe(req, { responseType: 'json' });
@@ -227,7 +238,7 @@ describe('fetchDedupe', () => {
   test('prefers init values with request values', () => {
     const req = new Request('/test/hangs', {
       method: 'GET',
-      body: 'what'
+      body: 'what',
     });
 
     fetchDedupe(req, { method: 'PATCH', body: 'ok' }, { responseType: 'json' });
@@ -244,12 +255,14 @@ describe('fetchDedupe', () => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
         })
       );
       done();
@@ -259,17 +272,19 @@ describe('fetchDedupe', () => {
   test('requests that succeeds with JSON, with function as response type, to behave as expected', done => {
     const responseType = res => {
       return res.ok ? 'json' : 'text';
-    }
+    };
     fetchDedupe('/test/succeeds/json', { responseType }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
         })
       );
       done();
@@ -286,11 +301,8 @@ describe('fetchDedupe', () => {
 
     const responseType = res => {
       return res.ok ? 'json' : 'text';
-    }
-    fetchDedupe(
-      '/test/fails/text',
-      { responseType }
-    ).then(
+    };
+    fetchDedupe('/test/fails/text', { responseType }).then(
       () => done.fail(),
       err => {
         expect(err).toEqual('Failed');
@@ -306,8 +318,10 @@ describe('fetchDedupe', () => {
           data: '',
           status: 204,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
         })
       );
       done();
@@ -341,7 +355,7 @@ describe('fetchDedupe', () => {
           status: 200,
           statusText: 'OK',
           bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -352,17 +366,17 @@ describe('fetchDedupe', () => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'pasta',
       dedupe: false,
-      responseType: 'json'
+      responseType: 'json',
     }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
           bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -374,7 +388,7 @@ describe('fetchDedupe', () => {
       '/test/fails',
       new Promise((resolve, reject) => {
         reject({
-          message: 'Network error'
+          message: 'Network error',
         });
       })
     );
@@ -388,7 +402,7 @@ describe('fetchDedupe', () => {
       err => {
         expect(err).toEqual(
           expect.objectContaining({
-            message: 'Network error'
+            message: 'Network error',
           })
         );
         done();
@@ -428,7 +442,7 @@ describe('fetchDedupe', () => {
       '/test/fails/dedupe',
       new Promise((resolve, reject) => {
         reject({
-          message: 'Network error'
+          message: 'Network error',
         });
       })
     );
@@ -451,11 +465,217 @@ describe('fetchDedupe', () => {
         expect(fetchMock.calls('/test/fails/dedupe').length).toBe(1);
         expect(err).toEqual(
           expect.objectContaining({
-            message: 'Network error'
+            message: 'Network error',
           })
         );
         done();
       }
     );
+  });
+});
+
+describe('cachePolicy', () => {
+  test('Defaults with a GET should be cache-first', done => {
+    fetchDedupe('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            // This is a bug with browsers and node-fetch
+            // For more, see: https://github.com/bitinn/node-fetch/issues/399
+            bodyUsed: false,
+            ok: true,
+            fromCache: true,
+          })
+        );
+        expect(resTwo).not.toBe(res);
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  test('network-only ignores the cache', done => {
+    fetchDedupe('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json', { cachePolicy: 'network-only' }).then(
+        res => {
+          expect(res).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              // This is a bug with browsers and node-fetch
+              // For more, see: https://github.com/bitinn/node-fetch/issues/399
+              bodyUsed: false,
+              ok: true,
+            })
+          );
+          expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+          done();
+        }
+      );
+    });
+  });
+
+  test('default for "write" requests is network-only', done => {
+    fetchDedupe('/test/succeeds/json', {
+      method: 'POST',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json', {
+        method: 'POST',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            // This is a bug with browsers and node-fetch
+            // For more, see: https://github.com/bitinn/node-fetch/issues/399
+            bodyUsed: false,
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
+    });
+  });
+
+  test('cache options work for "write" requests, too', done => {
+    fetchDedupe('/test/succeeds/json', {
+      method: 'POST',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
+        })
+      );
+
+      fetchDedupe(
+        '/test/succeeds/json',
+        {
+          method: 'POST',
+        },
+        {
+          cachePolicy: 'cache-first',
+        }
+      ).then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            // This is a bug with browsers and node-fetch
+            // For more, see: https://github.com/bitinn/node-fetch/issues/399
+            bodyUsed: false,
+            ok: true,
+            fromCache: true,
+          })
+        );
+        expect(resTwo).not.toBe(res);
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  test('cache-only with empty cache rejects with an Error', done => {
+    fetchDedupe('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
+      () => done.fail(),
+      err => {
+        expect(err).toEqual(
+          expect.objectContaining({
+            message: 'Response for fetch request not found in cache.',
+            name: 'CacheMissError',
+          })
+        );
+        done();
+      }
+    );
+  });
+});
+
+describe('isResponseCached', () => {
+  test('behaves as expected', done => {
+    expect(isResponseCached('test')).toBe(false);
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          // This is a bug with browsers and node-fetch
+          // For more, see: https://github.com/bitinn/node-fetch/issues/399
+          bodyUsed: false,
+          ok: true,
+        })
+      );
+      expect(isResponseCached('test')).toBe(true);
+      done();
+    });
   });
 });

@@ -111,6 +111,9 @@ The third option is `dedupeOptions`, and it is also optional. This is an object 
 * `dedupe` *(Boolean)*: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
 
+* `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
+  and `"network-only"`. For more, refer to the section on Caching.
+
 Given the two possible value types of `input`,  optional second argument, there are a way few ways that you can
 call `fetchDedupe`. Let's run through valid calls to `fetchDedupe`:
 
@@ -204,11 +207,55 @@ const readingBooksAlready = isRequestInFlight(key);
   if you intend to use this method. In other words, _do not_ rely on being able to
   reliably reproduce the request key that is created when a `requestKey` is not passed in.
 
+##### `isResponseCached( requestKey )`
+
+Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
+to determine if a call to `fetchDedupe` will hit the cache or not.
+
+> Now: We **strongly** recommend that you manually pass in `requestKey` to `fetchDedupe`
+  if you intend to use this method. In other words, _do not_ rely on being able to
+  reliably reproduce the request key that is created when a `requestKey` is not passed in.
+
 ##### `clearRequestCache()`
 
 Wipe the cache of in-flight requests.
 
 > Warning: this is **not** safe to use in application code. It is mostly useful for testing.
+
+##### `clearResponseCache()`
+
+Wipe the cache of responses.
+
+> Warning: this is **not** safe to use in application code. It is mostly useful for testing.
+
+### Guides
+
+##### Caching
+
+The way the cache works is like this: any time a response from the server is received, it will be
+cached using the request's request key. Subsequent requests are matched with existing cached server
+responses using their request key.
+
+Interactions with the cache can be controlled with the `cachePolicy` option. There are three possible
+values:
+
+**`cache-first`**
+
+This is the default behavior.
+
+Requests will first look at the cache to see if a response for the same request key exists. If a response is
+found, then it will be returned, and no network request will be made.
+
+If no response exists in the cache, then a network request will be made.
+
+**`network-only`**
+
+The cache is ignored, and a network request is always made.
+
+**`cache-only`**
+
+If a response exists in the cache, then it will be returned. If no response
+exists in the cache, then an error will be passed into the render prop function.
 
 ### FAQ & Troubleshooting
 
@@ -240,6 +287,23 @@ know what its content type is.
 
 Just strings for now, which should work for the majority of APIs. Support for other body types
 is in the works.
+
+##### Is the data duplicated?
+
+Although you receive a new `Response` object with every call to `fetch-dedupe`, the body will be read,
+so the response's body stream will be empty. In addition, the `data` property between every
+`response` is shared. Accordingly, the data returned by the server is never duplicated.
+
+This is an optimization that allows `fetch-dedupe` to be used in applications that fetch
+large payloads.
+
+##### `res.bodyUsed` is `false` when the body has already been used
+
+As of Feb 2018, there is a bug in several browsers and `node-fetch`, where the value of `bodyUsed`
+will be `false` when it should, in fact, be `true`.
+
+As a workaround, when using `fetch-dedupe`, the body will always be used by the time you receive
+the Response.
 
 ### Implementors
 
