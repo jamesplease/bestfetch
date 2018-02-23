@@ -1,6 +1,6 @@
 # Fetch Dedupe
 
-[![Travis build status](http://img.shields.io/travis/jmeas/fetch-dedupe.svg?style=flat)](https://travis-ci.org/jmeas/fetch-dedupe)
+[![Travis build status](http://img.shields.io/travis/jamesplease/fetch-dedupe.svg?style=flat)](https://travis-ci.org/jamesplease/fetch-dedupe)
 [![npm version](https://img.shields.io/npm/v/fetch-dedupe.svg)](https://www.npmjs.com/package/fetch-dedupe)
 [![Test Coverage](https://codeclimate.com/github/jmeas/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jmeas/fetch-dedupe)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
