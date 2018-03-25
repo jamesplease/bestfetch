@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.1.1 (2018/3/24)
+
+**Bug Fixes**
+
+* Resolves a problem where you were unable to use the signature `fetch(input, init)`.
+
 ### v2.1.0 (2018/2/7)
 
 **New Features**

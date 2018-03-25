@@ -175,6 +175,14 @@ describe('fetchDedupe', () => {
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
+  test('allows for optional dedupeOptions', () => {
+    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
+    expect(fetchMock.calls('/test/hangs').length).toBe(1);
+    expect(fetchMock.lastOptions('/test/hangs')).toEqual({ headers: { 'Authorization': 'Bearer abc123' } });
+  });
+
   test('allows for optional request key', () => {
     fetchDedupe('/test/hangs', { responseType: 'json' });
     fetchDedupe('/test/hangs', { responseType: 'json' });

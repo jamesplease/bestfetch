@@ -1,6 +1,6 @@
 {
   "name": "fetch-dedupe",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A thin wrapper around fetch that prevents duplicate requests.",
   "main": "lib/index.js",
   "module": "es/index.js",

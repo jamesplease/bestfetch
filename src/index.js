@@ -40,17 +40,17 @@ function resolveRequest({ requestKey, res, err }) {
   requests[requestKey] = null;
 }
 
-export function fetchDedupe(input, init, dedupeOptions) {
+export function fetchDedupe(input, init = {}, dedupeOptions) {
   let opts, initToUse;
   if (dedupeOptions) {
     opts = dedupeOptions;
     initToUse = init;
-  } else if (init && init.responseType) {
+  } else if (init.responseType) {
     opts = init;
     initToUse = {};
   } else {
     opts = {};
-    initToUse = {};
+    initToUse = init;
   }
 
   const { requestKey, responseType = '', dedupe = true } = opts;
