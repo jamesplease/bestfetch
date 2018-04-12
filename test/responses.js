@@ -18,3 +18,10 @@ export function emptyResponse() {
     statusText: 'OK'
   });
 }
+
+export function serverErrorResponse() {
+  return new Response('Server error message', {
+    status: 500,
+    statusText: 'Internal Server Error'
+  });
+}

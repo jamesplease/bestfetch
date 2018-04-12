@@ -103,15 +103,26 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
-      return res[responseTypeToUse]().then(data => {
-        res.data = data;
+      return res[responseTypeToUse]().then(
+        data => {
+          res.data = data;
 
-        if (dedupe) {
-          resolveRequest({ requestKey: requestKeyToUse, res });
-        } else {
-          return res;
+          if (dedupe) {
+            resolveRequest({ requestKey: requestKeyToUse, res });
+          } else {
+            return res;
+          }
+        },
+        error => {
+          res.data = null;
+
+          if (dedupe) {
+            resolveRequest({ requestKey: requestKeyToUse, res });
+          } else {
+            return res;
+          }
         }
-      });
+      );
     },
     err => {
       if (dedupe) {
