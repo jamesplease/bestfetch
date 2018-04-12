@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.0.0 (2018/4/12)
+
+**Breaking Changes**
+
+- When an attempt to call `response[responseType]()` errors, then `response.data`
+  will be set as `null`. This can be useful if you specify the `responseType` as
+  `json`, and the backend returns malformed JSON (such as an empty string or
+  plain text). Instead of this error going uncaught, the fetch will work as expected.
+
 ### v2.1.1 (2018/3/24)
 
 **Bug Fixes**
