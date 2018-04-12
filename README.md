@@ -99,8 +99,7 @@ Note that `init` is optional, as with `global.fetch()`.
 The third option is `dedupeOptions`, and it is also optional. This is an object with three attributes:
 
 * `responseType` *(String|Function)*: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
-  The default is `"json"`, unless the response status code is `"204"`, in which case `"text"` will be used to prevent
-  an error.
+  The default is `"json"`, unless the response status code is `"204"`, in which case `"text"` will be used.
 
   If a function is passed, then it will be passed the `response` object. This lets you dynamically determine the
   response type based on information about the response, such as the status code.
@@ -213,41 +212,18 @@ Wipe the cache of in-flight requests.
 
 ### FAQ & Troubleshooting
 
-##### An empty response body is throwing an error, what gives?
+##### Why is `response.data` set to `null` sometimes?
 
-Empty text strings are not valid JSON.
+If the response cannot be interpreted as the `responseType`, then it will be set as `null`.
 
-```js
-JSON.parse('');
-// > Uncaught SyntaxError: Unexpected end of JSON input
-```
+There are two common situations for this:
 
-Consequently, using `json` as the `responseType` when a response's body is empty will cause an
-Error to be thrown. To avoid this, we recommend using `text` in these situations instead.
+- The backend returns an empty string when you specify `responseType: 'json'`
 
-APIs generally use empty bodies in conjunction with a 204 status code for responses
-of "write" requests (deletes, updates, and less commonly creates). For this reason, the default
-behavior of `responseType` is `"json"` except in situations when a 204 code is returned, in which
-case `"text"` will be used instead.
+- The backend returns a raw text string when you specify `responseType: 'json'`
 
-If your API returns empty bodies with other codes, then you have two options. The first is to
-pass a function as `responseType`. This lets you specify the `responseType` based on the `response`.
-
-For instance, if your backend returns JSON for successful responses, but text stack traces otherwise,
-then you might do:
-
-```js
-const dedupeOptions = {
-  responseType(response) {
-    // 204 status code = no body, so treat it as text
-    // >= 400 status codes = stack traces, so also treat them as text
-    return (response.ok && response.status !== 204) ? 'json' : 'text';
-  }
-}
-```
-
-If your API is exceptionally unreliable, then you can always specify the `responseType` as `"text"`
-and try/catch the `JSON.parse` in your application code.
+You can use the `responseType` option to have fine-grained control over the parsing of the
+response body from the server.
 
 ##### Why is `responseType` even an option?
 

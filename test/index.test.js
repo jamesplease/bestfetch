@@ -5,7 +5,7 @@ import {
   isRequestInFlight,
   clearRequestCache
 } from '../src';
-import { successfulResponse, jsonResponse, emptyResponse } from './responses';
+import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
 beforeEach(() => {
   clearRequestCache();
@@ -38,6 +38,14 @@ fetchMock.get(
   () =>
     new Promise(resolve => {
       resolve(emptyResponse());
+    })
+);
+
+fetchMock.get(
+  '/test/fails/internal-server-error',
+  () =>
+    new Promise(resolve => {
+      resolve(serverErrorResponse());
     })
 );
 
@@ -300,6 +308,21 @@ describe('fetchDedupe', () => {
           statusText: 'OK',
           bodyUsed: true,
           ok: true
+        })
+      );
+      done();
+    });
+  });
+
+  test('requests that fails with text responses, with no response type specified, to behave as expected', done => {
+    fetchDedupe('/test/fails/internal-server-error').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: null,
+          status: 500,
+          statusText: 'Internal Server Error',
+          bodyUsed: true,
+          ok: false
         })
       );
       done();
