@@ -113,7 +113,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
             return res;
           }
         },
-        error => {
+        () => {
           res.data = null;
 
           if (dedupe) {
