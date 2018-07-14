@@ -1,5 +1,11 @@
 # Changelog
 
+### v4.0.0 (2018/7/14)
+
+**Breaking Changes**
+
+- Response caching is now built in, and enabled by default.
+
 ### v3.0.0 (2018/4/12)
 
 **Breaking Changes**
@@ -13,13 +19,13 @@
 
 **Bug Fixes**
 
-* Resolves a problem where you were unable to use the signature `fetch(input, init)`.
+- Resolves a problem where you were unable to use the signature `fetch(input, init)`.
 
 ### v2.1.0 (2018/2/7)
 
 **New Features**
 
-* `responseType` can now be specified as a function. This is useful for backends that don't
+- `responseType` can now be specified as a function. This is useful for backends that don't
   respect the `Accept` header. "Enterprisey" backends frequently return text stack traces
   for errors, as an example.
 
@@ -27,15 +33,15 @@
 
 **Breaking**
 
-* `dedupeOptions` is now optional. The `responseType` is `"json"` by default, unless the
+- `dedupeOptions` is now optional. The `responseType` is `"json"` by default, unless the
   status code is 204, in which case it will be `"text"`.
 
 ### v1.0.0 (2018/2/4)
 
 **New features**
 
-* `init` is now optional
-* A `requestKey` will be generated for you if it is omitted
+- `init` is now optional
+- A `requestKey` will be generated for you if it is omitted
 
 ### v0.1.0 (2018/2/4)
 
