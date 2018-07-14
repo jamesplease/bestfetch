@@ -305,6 +305,14 @@ will be `false` when it should, in fact, be `true`.
 As a workaround, when using `fetch-dedupe`, the body will always be used by the time you receive
 the Response.
 
+### Requirements
+
+- a global [fetch()](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch) method. If your browser does not support it, then we
+  recommend GitHub's [fetch polyfill](https://github.com/github/fetch).
+
+> Note: Node users can try and use [node-fetch](https://github.com/bitinn/node-fetch), although we aren't currently targeting Node support with this
+> library.
+
 ### Implementors
 
 These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
