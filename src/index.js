@@ -20,6 +20,21 @@ export function isResponseCached(requestKey) {
   return Boolean(responseCache[requestKey]);
 }
 
+export function getCachedResponse(requestKey) {
+  return responseCache[requestKey] || null;
+}
+
+
+export function writeToCache(requestKey, res) {
+  if (isResponseCached(requestKey)) {
+    responseCache[requestKey] = res;
+    return responseCache[requestKey];
+  }
+  throw new CacheMissError(
+    `Response for fetch request not found in cache.`
+  );
+}
+
 export function clearRequestCache() {
   requestCache = {};
 }
