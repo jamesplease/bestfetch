@@ -6,6 +6,8 @@ import {
   isResponseCached,
   clearRequestCache,
   clearResponseCache,
+  getCachedResponse,
+  writeToCache
 } from '../src';
 import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
@@ -649,5 +651,47 @@ describe('isResponseCached', () => {
       expect(isResponseCached('test')).toBe(true);
       done();
     });
+  });
+});
+
+describe('getCachedResponse', () => {
+  test('behaves as expected', done => {
+    expect(getCachedResponse('test')).toBe(null);
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(() => {
+      expect(getCachedResponse('test').data).toEqual(
+        { "a": true }
+      );
+      done();
+    });
+  });
+});
+
+describe('writeToCache', () => {
+  test('behaves as expected when cache has response', done => {
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(() => {
+      const response = getCachedResponse('test');
+      expect(response.data).toEqual(
+        { "a": true }
+      );
+      writeToCache('test', Object.assign({}, response, {
+        data: { "a": false }
+      }));
+      expect(getCachedResponse('test').data).toEqual(
+        { "a": false }
+      );
+      done();
+    });
+  });
+  test('behaves as expected when response has not been cached', done => {
+    const response = getCachedResponse('test');
+    expect(response).toEqual(null);
+    expect(() => writeToCache('test', Object.assign({
+      data: { "a": false }
+    }))).toThrow();
+    done();
   });
 });
