@@ -26,13 +26,8 @@ export function getCachedResponse(requestKey) {
 
 
 export function writeToCache(requestKey, res) {
-  if (isResponseCached(requestKey)) {
-    responseCache[requestKey] = res;
-    return responseCache[requestKey];
-  }
-  throw new CacheMissError(
-    `Response for fetch request not found in cache.`
-  );
+  responseCache[requestKey] = res;
+  return responseCache[requestKey];
 }
 
 export function clearRequestCache() {
