@@ -21,7 +21,7 @@ export function isResponseCached(requestKey) {
 }
 
 export function getCachedResponse(requestKey) {
-  return responseCache[requestKey] || null;
+  return isResponseCached(requestKey) ? responseCache[requestKey] : undefined;
 }
 
 
