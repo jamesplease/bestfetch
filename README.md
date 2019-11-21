@@ -227,10 +227,9 @@ Remove all responses from the cache.
 
 ##### `responseCache.configureCacheCheck( fn )`
 
-By default, fetch-dedupe caches responses indefinitely. You can customize this behavior by calling this
-method a single time when your app is initialized.
+By default, fetch-dedupe caches responses indefinitely. You can customize this behavior using this method.
 
-This function accepts a single argument, `fn,` which is a function. This function will be called any time
+This method accepts a single argument, `fn,` which is a function. `fn` will be called any time
 that a request is made that has a cached response. It receives two arguments: `cachedResponse, timestamp`. Return
 `true` to use the cached response, or `false` to remove the value from the cache and make a network request
 instead.
