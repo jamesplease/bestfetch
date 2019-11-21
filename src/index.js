@@ -16,6 +16,10 @@ export function isRequestInFlight(requestKey) {
   return Boolean(activeRequests[requestKey]);
 }
 
+export function clearActiveRequests() {
+  activeRequests = {};
+}
+
 export const responseCache = {
   get(requestKey) {
     return responseCacheStore[requestKey];
@@ -35,10 +39,6 @@ export const responseCache = {
   clear() {
     responseCacheStore = {};
   }
-}
-
-export function clearActiveRequests() {
-  activeRequests = {};
 }
 
 // This loops through all of the handlers for the request and either
