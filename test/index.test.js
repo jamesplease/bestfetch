@@ -656,7 +656,7 @@ describe('isResponseCached', () => {
 
 describe('getCachedResponse', () => {
   test('behaves as expected', done => {
-    expect(getCachedResponse('test')).toBe(null);
+    expect(getCachedResponse('test')).toBeUndefined();
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
@@ -688,7 +688,7 @@ describe('writeToCache', () => {
   });
   test('behaves as expected when response has not been cached', () => {
     const response = getCachedResponse('test');
-    expect(response).toEqual(null);
+    expect(response).toBeUndefined();
     writeToCache('test', { data: { "a": false }});
     const newResponse = getCachedResponse('test');
     expect(newResponse).toEqual({ data: { "a": false } });
