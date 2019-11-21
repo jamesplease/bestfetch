@@ -5,14 +5,21 @@
 [![Test Coverage](https://codeclimate.com/github/jamesplease/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jamesplease/fetch-dedupe)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
-A (very) thin wrapper around
+
+A thin wrapper around
 [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-that prevents duplicate requests.
+that implements request deduplication and response caching.
 
 ### Motivation
 
-A common feature of libraries or frameworks that build abstractions around HTTP requests is that
-they deduplicate requests that are exactly the same. This library extracts that functionality.
+Making a single HTTP request is not difficult to do in JavaScript. However, complex web applications often make many
+requests as the user navigates through the app.
+
+Features such as request deduplication and response caching can often save the developer of apps like these from headache and
+bugs.
+
+`fetch-dedupe` is a wrapper around fetch that includes request deduplication and response caching for you, and it's a delight
+to use.
 
 ### Installation
 
@@ -84,12 +91,13 @@ This library exports the following methods:
 
 - `fetchDedupe()`
 - `getRequestKey()`
-- `isRequestInFlight()`
 - `responseCache`
   - `.get()`
   - `.set()`
   - `.has()`
   - `.clear()`
+- `isRequestInFlight()`
+- `clearActiveRequests()`
 
 ##### `fetchDedupe( input [, init] [, dedupeOptions] )`
 
@@ -189,6 +197,26 @@ keyOne === keyTwo;
 // => false
 ```
 
+##### `responseCache.get( requestKey )`
+
+Returns the cached response for `requestKey`. If the response does not exist, then `undefined`
+will be returned instead.
+
+##### `responseCache.set( requestKey, res )`
+
+Call this to manually update the cached value of `requestKey` with `res`.
+
+> Note: this is an advanced method, and you generally do not need to manually update the store.
+
+##### `responseCache.has( requestKey )`
+
+Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
+to determine if a call to `fetchDedupe` will hit the cache or not.
+
+##### `responseCache.clear()`
+
+Remove all responses from the cache.
+
 ##### `isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
@@ -210,26 +238,6 @@ const readingBooksAlready = isRequestInFlight(key);
 > Now: We **strongly** recommend that you manually pass in `requestKey` to `fetchDedupe`
   if you intend to use this method. In other words, _do not_ rely on being able to
   reliably reproduce the request key that is created when a `requestKey` is not passed in.
-
-##### `responseCache.get( requestKey )`
-
-Returns the cached response for `requestKey`. If the response does not exist, then `undefined`
-will be returned instead.
-
-##### `responseCache.set( requestKey, res )`
-
-Call this to manually update the cached value of `requestKey` with `res`.
-
-> Note: this is an advanced method, and you generally do not need to manually update the store.
-
-##### `responseCache.has( requestKey )`
-
-Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
-to determine if a call to `fetchDedupe` will hit the cache or not.
-
-##### `responseCache.clear()`
-
-Remove all responses from the cache.
 
 ##### `clearActiveRequests()`
 
