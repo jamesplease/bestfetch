@@ -58,7 +58,7 @@
     "fetch-mock": "^6.0.0",
     "in-publish": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
-    "jest": "^22.1.4",
+    "jest": "^23.6.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.45.1",
     "rollup-plugin-babel": "^2.7.1",

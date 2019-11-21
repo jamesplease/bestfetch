@@ -20,6 +20,16 @@ export function isResponseCached(requestKey) {
   return Boolean(responseCache[requestKey]);
 }
 
+export function getCachedResponse(requestKey) {
+  return isResponseCached(requestKey) ? responseCache[requestKey] : undefined;
+}
+
+
+export function writeToCache(requestKey, res) {
+  responseCache[requestKey] = res;
+  return responseCache[requestKey];
+}
+
 export function clearRequestCache() {
   requestCache = {};
 }
