@@ -85,7 +85,11 @@ This library exports the following methods:
 - `fetchDedupe()`
 - `getRequestKey()`
 - `isRequestInFlight()`
-- `clearRequestCache()`
+- `responseCache`
+  - `.get()`
+  - `.set()`
+  - `.has()`
+  - `.clear()`
 
 ##### `fetchDedupe( input [, init] [, dedupeOptions] )`
 
@@ -207,26 +211,29 @@ const readingBooksAlready = isRequestInFlight(key);
   if you intend to use this method. In other words, _do not_ rely on being able to
   reliably reproduce the request key that is created when a `requestKey` is not passed in.
 
-##### `isResponseCached( requestKey )`
+##### `responseCache.get( requestKey )`
+
+Returns the cached response for `requestKey`. If the response does not exist, then `undefined`
+will be returned instead.
+
+##### `responseCache.set( requestKey, res )`
+
+Call this to manually update the cached value of `requestKey` with `res`.
+
+> Note: this is an advanced method, and you generally do not need to manually update the store.
+
+##### `responseCache.has( requestKey )`
 
 Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
 to determine if a call to `fetchDedupe` will hit the cache or not.
 
-> Now: We **strongly** recommend that you manually pass in `requestKey` to `fetchDedupe`
-  if you intend to use this method. In other words, _do not_ rely on being able to
-  reliably reproduce the request key that is created when a `requestKey` is not passed in.
+##### `responseCache.clear()`
 
-##### `clearRequestCache()`
+Remove all responses from the cache.
 
-Wipe the cache of in-flight requests.
+##### `clearActiveRequests()`
 
-> Warning: this is **not** safe to use in application code. It is mostly useful for testing.
-
-##### `clearResponseCache()`
-
-Wipe the cache of responses.
-
-> Warning: this is **not** safe to use in application code. It is mostly useful for testing.
+Removes all of the tracked in-flight requests.
 
 ### Guides
 
@@ -295,14 +302,6 @@ so the response's body stream will be empty. In addition, the `data` property be
 
 This is an optimization that allows `fetch-dedupe` to be used in applications that fetch
 large payloads.
-
-##### `res.bodyUsed` is `false` when the body has already been used
-
-As of Feb 2018, there is a bug in several browsers and `node-fetch`, where the value of `bodyUsed`
-will be `false` when it should, in fact, be `true`.
-
-As a workaround, when using `fetch-dedupe`, the body will always be used by the time you receive
-the Response.
 
 ### Requirements
 
