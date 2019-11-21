@@ -284,7 +284,7 @@ method only ensures that subsequent identical requests are not deduped.
 
 ## Guides
 
-#### Caching
+### Caching
 
 Any time tbat a response from the server is received, it will be cached using the request's request key.
 Subsequent requests are matched with existing cached server responses using their request key.
@@ -357,14 +357,6 @@ large payloads.
 
 > Note: Node users can try and use [node-fetch](https://github.com/bitinn/node-fetch), although we aren't currently targeting Node support with this
 > library.
-
-## Implementors
-
-These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
-
-- [React Request](https://github.com/jamesplease/react-request)
-
-Are you using it on a project? Add it to this list by opening a Pull Request
 
 ## Acknowledgements
 
