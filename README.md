@@ -204,7 +204,7 @@ will be returned instead.
 
 ##### `responseCache.set( requestKey, res )`
 
-Call this to manually update the cached value of `requestKey` with `res`.
+Call this to manually update the cached value of `requestKey` with `res`. Returns the `responseCache`.
 
 > Note: this is an advanced method, and you generally do not need to manually update the store.
 
@@ -212,6 +212,11 @@ Call this to manually update the cached value of `requestKey` with `res`.
 
 Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
 to determine if a call to `fetchDedupe` will hit the cache or not.
+
+##### `responseCache.delete( requestKey )`
+
+Deletes the cached value associated with `requestKey`. Returns `false` if the value did not
+exist in the cache, or `true` if it existed and has been deleted.
 
 ##### `responseCache.clear()`
 
