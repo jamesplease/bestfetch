@@ -16,26 +16,29 @@ export function isRequestInFlight(requestKey) {
   return Boolean(requestCache[requestKey]);
 }
 
-export function isResponseCached(requestKey) {
-  return Boolean(responseCache[requestKey]);
-}
+export const fetchCache = {
+  get(requestKey) {
+    return responseCache[requestKey];
+  },
 
-export function getCachedResponse(requestKey) {
-  return isResponseCached(requestKey) ? responseCache[requestKey] : undefined;
-}
+  set(requestKey, res) {
+    responseCache[requestKey] = res;
+    return responseCache[requestKey];
+  },
 
+  has(requestKey) {
+    // `undefined` is not a valid JSON key, so we can reliably use
+    // it to determine if the value exists or not.dfs
+    return typeof responseCache[requestKey] !== 'undefined';
+  },
 
-export function writeToCache(requestKey, res) {
-  responseCache[requestKey] = res;
-  return responseCache[requestKey];
+  clear() {
+    responseCache = {};
+  }
 }
 
 export function clearRequestCache() {
   requestCache = {};
-}
-
-export function clearResponseCache() {
-  responseCache = {};
 }
 
 // This loops through all of the handlers for the request and either

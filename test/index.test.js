@@ -3,17 +3,14 @@ import {
   fetchDedupe,
   getRequestKey,
   isRequestInFlight,
-  isResponseCached,
   clearRequestCache,
-  clearResponseCache,
-  getCachedResponse,
-  writeToCache
+  fetchCache,
 } from '../src';
 import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
 beforeEach(() => {
   clearRequestCache();
-  clearResponseCache();
+  fetchCache.clear();
 });
 
 function hangingPromise() {
@@ -631,9 +628,9 @@ describe('cachePolicy', () => {
   });
 });
 
-describe('isResponseCached', () => {
+describe('fetchCache.has', () => {
   test('behaves as expected', done => {
-    expect(isResponseCached('test')).toBe(false);
+    expect(fetchCache.has('test')).toBe(false);
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(res => {
@@ -648,19 +645,19 @@ describe('isResponseCached', () => {
           ok: true,
         })
       );
-      expect(isResponseCached('test')).toBe(true);
+      expect(fetchCache.has('test')).toBe(true);
       done();
     });
   });
 });
 
-describe('getCachedResponse', () => {
+describe('fetchCache.get', () => {
   test('behaves as expected', done => {
-    expect(getCachedResponse('test')).toBeUndefined();
+    expect(fetchCache.get('test')).toBeUndefined();
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
-      expect(getCachedResponse('test').data).toEqual(
+      expect(fetchCache.get('test').data).toEqual(
         { "a": true }
       );
       done();
@@ -668,29 +665,29 @@ describe('getCachedResponse', () => {
   });
 });
 
-describe('writeToCache', () => {
+describe('fetchCache.set', () => {
   test('behaves as expected when cache has response', (done) => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
-      const response = getCachedResponse('test');
+      const response = fetchCache.get('test');
       expect(response.data).toEqual(
         { "a": true }
       );
-      writeToCache('test', Object.assign({}, response, {
+      fetchCache.set('test', Object.assign({}, response, {
         data: { "a": false }
       }));
-      expect(getCachedResponse('test').data).toEqual(
+      expect(fetchCache.get('test').data).toEqual(
         { "a": false }
       );
       done();
     });
   });
   test('behaves as expected when response has not been cached', () => {
-    const response = getCachedResponse('test');
+    const response = fetchCache.get('test');
     expect(response).toBeUndefined();
-    writeToCache('test', { data: { "a": false }});
-    const newResponse = getCachedResponse('test');
+    fetchCache.set('test', { data: { "a": false }});
+    const newResponse = fetchCache.get('test');
     expect(newResponse).toEqual({ data: { "a": false } });
   });
 });
