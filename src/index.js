@@ -14,15 +14,24 @@ export function getRequestKey({
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
-// Returns `true` if a request with `requestKey` is in flight,
-// and `false` otherwise.
-export function isRequestInFlight(requestKey) {
-  return Boolean(activeRequestsStore[requestKey]);
-}
+const activeRequests = {
+  // Returns `true` if a request with `requestKey` is in flight,
+  // and `false` otherwise.
+  isRequestInFlight(requestKey) {
+    const handlers = activeRequestsStore[requestKey];
+    if (handlers && handlers.length) {
+      return Boolean(handlers.length);
+    } else {
+      return false;
+    }
+  },
 
-export function clearActiveRequests() {
-  activeRequestsStore = {};
-}
+  clear() {
+    activeRequestsStore = {};
+  },
+};
+
+export { activeRequests };
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.

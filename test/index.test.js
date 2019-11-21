@@ -2,14 +2,18 @@ import fetchMock from 'fetch-mock';
 import {
   fetchDedupe,
   getRequestKey,
-  isRequestInFlight,
-  clearActiveRequests,
+  activeRequests,
   responseCache,
 } from '../src';
-import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
+import {
+  successfulResponse,
+  jsonResponse,
+  emptyResponse,
+  serverErrorResponse,
+} from './responses';
 
 beforeEach(() => {
-  clearActiveRequests();
+  activeRequests.clear();
   responseCache.clear();
 });
 
@@ -59,14 +63,14 @@ fetchMock.get(
     })
 );
 
-describe('isRequestInFlight', () => {
+describe('activeRequests.isRequestInFlight', () => {
   test('renders false when it is not in flight', () => {
-    expect(isRequestInFlight('pasta')).toBe(false);
+    expect(activeRequests.isRequestInFlight('pasta')).toBe(false);
   });
 
   test('renders true when it is not in flight', () => {
     fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
-    expect(isRequestInFlight('pasta')).toBe(true);
+    expect(activeRequests.isRequestInFlight('pasta')).toBe(true);
   });
 });
 
@@ -194,11 +198,13 @@ describe('fetchDedupe', () => {
   });
 
   test('allows for optional dedupeOptions', () => {
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
-    expect(fetchMock.lastOptions('/test/hangs')).toEqual({ headers: { 'Authorization': 'Bearer abc123' } });
+    expect(fetchMock.lastOptions('/test/hangs')).toEqual({
+      headers: { Authorization: 'Bearer abc123' },
+    });
   });
 
   test('allows for optional request key', () => {
@@ -329,7 +335,7 @@ describe('fetchDedupe', () => {
           status: 500,
           statusText: 'Internal Server Error',
           bodyUsed: true,
-          ok: false
+          ok: false,
         })
       );
       done();
@@ -657,37 +663,34 @@ describe('responseCache.get', () => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
-      expect(responseCache.get('test').data).toEqual(
-        { "a": true }
-      );
+      expect(responseCache.get('test').data).toEqual({ a: true });
       done();
     });
   });
 });
 
 describe('responseCache.set', () => {
-  test('behaves as expected when cache has response', (done) => {
+  test('behaves as expected when cache has response', done => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
       const response = responseCache.get('test');
-      expect(response.data).toEqual(
-        { "a": true }
+      expect(response.data).toEqual({ a: true });
+      responseCache.set(
+        'test',
+        Object.assign({}, response, {
+          data: { a: false },
+        })
       );
-      responseCache.set('test', Object.assign({}, response, {
-        data: { "a": false }
-      }));
-      expect(responseCache.get('test').data).toEqual(
-        { "a": false }
-      );
+      expect(responseCache.get('test').data).toEqual({ a: false });
       done();
     });
   });
   test('behaves as expected when response has not been cached', () => {
     const response = responseCache.get('test');
     expect(response).toBeUndefined();
-    responseCache.set('test', { data: { "a": false }});
+    responseCache.set('test', { data: { a: false } });
     const newResponse = responseCache.get('test');
-    expect(newResponse).toEqual({ data: { "a": false } });
+    expect(newResponse).toEqual({ data: { a: false } });
   });
 });
