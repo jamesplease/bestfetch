@@ -14,7 +14,7 @@ const responseCache = {
   set(requestKey, res) {
     responseCacheStore[requestKey] = {
       timestamp: Number(new Date()),
-      res
+      res,
     };
 
     return responseCache;
@@ -39,11 +39,13 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  setCacheCheck(fn) {
+  configureCacheCheck(fn) {
     if (typeof fn === 'function') {
       accssFn = fn;
     } else {
-      throw new TypeError('The first argument to `responseCache.setCacheCheck()` must be a function.')
+      throw new TypeError(
+        'The first argument to `responseCache.configureCacheCheck()` must be a function.'
+      );
     }
   },
 };

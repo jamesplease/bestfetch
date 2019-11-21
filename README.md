@@ -97,7 +97,7 @@ This library exports the following methods:
   - `.has()`
   - `.delete()`
   - `.clear()`
-  - `.setCacheCheck()`
+  - `.configureCacheCheck()`
 - `isRequestInFlight()`
 - `clearActiveRequests()`
 
@@ -224,7 +224,7 @@ exist in the cache, or `true` if it existed and has been deleted.
 
 Remove all responses from the cache.
 
-##### `responseCache.setCacheCheck( fn )`
+##### `responseCache.configureCacheCheck( fn )`
 
 By default, fetch-dedupe caches responses indefinitely. You can customize this behavior by calling this
 method a single time when your app is initialized.
@@ -244,7 +244,7 @@ import { responseCache } from 'fetch-dedupe';
 // * 10 = 10 minutes
 const TEN_MINUTES = 1000 * 60 * 10;
 
-responseCache.setCacheCheck((cachedResponse, timestamp) => {
+responseCache.configureCacheCheck((cachedResponse, timestamp) => {
   const currentTimestamp = Number(new Date());
   return currentTimestamp - timestamp <= TEN_MINUTES;
 });
