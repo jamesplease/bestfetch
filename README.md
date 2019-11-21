@@ -232,9 +232,8 @@ Wipe the cache of responses.
 
 ##### Caching
 
-The way the cache works is like this: any time a response from the server is received, it will be
-cached using the request's request key. Subsequent requests are matched with existing cached server
-responses using their request key.
+Any time tbat a response from the server is received, it will be cached using the request's request key.
+Subsequent requests are matched with existing cached server responses using their request key.
 
 Interactions with the cache can be controlled with the `cachePolicy` option. There are three possible
 values:
@@ -261,13 +260,13 @@ exists in the cache, then an error will be passed into the render prop function.
 
 ##### Why is `response.data` set to `null` sometimes?
 
-If the response cannot be interpreted as the `responseType`, then it will be set as `null`.
+If the response cannot be parsed as the `responseType`, then it will be set as `null`.
 
 There are two common situations for this:
 
-- The backend returns an empty string when you specify `responseType: 'json'`
+- The response body is an empty string when you specify `responseType: 'json'`
 
-- The backend returns a raw text string when you specify `responseType: 'json'`
+- The response body is a raw text string when you specify `responseType: 'json'` (i.e.; invalid JSON)
 
 You can use the `responseType` option to have fine-grained control over the parsing of the
 response body from the server.
