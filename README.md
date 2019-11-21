@@ -274,7 +274,8 @@ const readingBooksAlready = isRequestInFlight(key);
 
 ##### `clearActiveRequests()`
 
-Removes all of the tracked in-flight requests.
+Removes all of the tracked in-flight requests. In-flight requests are not cancelled: calling this
+method only ensures that subsequent identical requests are not deduped.
 
 > Note: it is very unlikely that you would ever need to call this method.
 
