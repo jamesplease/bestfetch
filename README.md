@@ -10,7 +10,7 @@ A thin wrapper around
 [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 that implements request deduplication and response caching.
 
-### Motivation
+## Motivation
 
 Making a single HTTP request is not difficult to do in JavaScript. However, complex web applications often make many
 requests as the user navigates through the app.
@@ -21,7 +21,7 @@ bugs.
 `fetch-dedupe` is a wrapper around fetch that includes request deduplication and response caching for you, and it's a delight
 to use.
 
-### Installation
+## Installation
 
 Install using [npm](https://www.npmjs.com):
 
@@ -35,7 +35,7 @@ or [yarn](https://yarnpkg.com/):
 yarn add fetch-dedupe
 ```
 
-### Getting Started
+## Getting Started
 
 This example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
@@ -61,7 +61,7 @@ fetchDedupe('/test/2', fetchOptions).then(res => {
 });
 ```
 
-#### Important: Read this!
+### Important: Read this!
 
 When using `fetch`, you typically read the body yourself by calling, say, `.json()` on the
 response. Fetch Dedupe reads the body for you, so you **cannot** do it, or else an error
@@ -85,7 +85,7 @@ fetchDedupe(url, init)
   .then(data => console.log('got some cool data', data));
 ```
 
-### API
+## API
 
 This library exports the following methods:
 
@@ -282,9 +282,9 @@ method only ensures that subsequent identical requests are not deduped.
 
 > Note: you typically should not need to use this method.
 
-### Guides
+## Guides
 
-##### Caching
+#### Caching
 
 Any time tbat a response from the server is received, it will be cached using the request's request key.
 Subsequent requests are matched with existing cached server responses using their request key.
@@ -310,9 +310,9 @@ The cache is ignored, and a network request is always made.
 If a response exists in the cache, then it will be returned. If no response
 exists in the cache, then an error will be passed into the render prop function.
 
-### FAQ & Troubleshooting
+## FAQ & Troubleshooting
 
-##### Why is `response.data` set to `null` sometimes?
+#### Why is `response.data` set to `null` sometimes?
 
 If the response cannot be parsed as the `responseType`, then it will be set as `null`.
 
@@ -325,7 +325,7 @@ There are two common situations for this:
 You can use the `responseType` option to have fine-grained control over the parsing of the
 response body from the server.
 
-##### Why is `responseType` even an option?
+#### Why is `responseType` even an option?
 
 The argument that is returned to you in the `.then` callback of a call to `fetch()` is a
 [Response object](https://developer.mozilla.org/en-US/docs/Web/API/Response). The body of a Response
@@ -336,12 +336,12 @@ For Fetch Dedupe to work, it must pass the result of a single request to many "c
 only way for this to work is if the library reads it for you, which requires that the library
 know what its content type is.
 
-##### What request body types are supported?
+#### What request body types are supported?
 
 Just strings for now, which should work for the majority of APIs. Support for other body types
 is in the works.
 
-##### Is the data duplicated?
+#### Is the data duplicated?
 
 Although you receive a new `Response` object with every call to `fetch-dedupe`, the body will be read,
 so the response's body stream will be empty. In addition, the `data` property between every
@@ -350,7 +350,7 @@ so the response's body stream will be empty. In addition, the `data` property be
 This is an optimization that allows `fetch-dedupe` to be used in applications that fetch
 large payloads.
 
-### Requirements
+## Requirements
 
 - a global [fetch()](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch) method. If your browser does not support it, then we
   recommend GitHub's [fetch polyfill](https://github.com/github/fetch).
@@ -358,7 +358,7 @@ large payloads.
 > Note: Node users can try and use [node-fetch](https://github.com/bitinn/node-fetch), although we aren't currently targeting Node support with this
 > library.
 
-### Implementors
+## Implementors
 
 These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
 
@@ -366,6 +366,6 @@ These are projects that build abstractions around HTTP requests using Fetch Dedu
 
 Are you using it on a project? Add it to this list by opening a Pull Request
 
-### Acknowledgements
+## Acknowledgements
 
 [Apollo](https://www.apollographql.com/) inspired me to write this library.
