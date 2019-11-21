@@ -44,14 +44,18 @@ const fetchOptions = {
 // The API of `fetchDedupe` is the same as fetch, except that it
 // has an additional argument. Pass the `requestKey` in that
 // third argument
-fetchDedupe('/test/2', fetchOptions).then(res => {
-  console.log('Got some data', res.data);
-});
+fetchDedupe('/test/2', fetchOptions)
+  .then(res => res.json())
+  .then(data => {
+    console.log('Got some data', data);
+  });
 
 // Additional requests are deduped. Nifty.
-fetchDedupe('/test/2', fetchOptions).then(res => {
-  console.log('Got some data', res.data);
-});
+fetchDedupe('/test/2', fetchOptions)
+  .then(res => res.json())
+  .then(data => {
+    console.log('Got some data', data);
+  });
 ```
 
 #### Important: Read this!

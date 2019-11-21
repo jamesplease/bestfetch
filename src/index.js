@@ -1,13 +1,14 @@
+import CacheMissError from './cache-miss-error';
+
 let requestCache = {};
 let responseCache = {};
 
 export function getRequestKey({
   url = '',
   method = '',
-  responseType = '',
   body = '',
 } = {}) {
-  return [url, method.toUpperCase(), responseType, body].join('||');
+  return [url, method.toUpperCase(), body].join('||');
 }
 
 // Returns `true` if a request with `requestKey` is in flight,
@@ -35,7 +36,8 @@ function resolveRequest({ requestKey, res, err }) {
 
   handlers.forEach(handler => {
     if (res) {
-      handler.resolve(res);
+      const clonedRes = new Response(res.body, res);
+      handler.resolve(clonedRes);
     } else {
       handler.reject(err);
     }
@@ -46,21 +48,6 @@ function resolveRequest({ requestKey, res, err }) {
   requestCache[requestKey] = null;
 }
 
-function CacheMissError() {
-  var err = Error.apply(this, arguments);
-  err.name = this.name = 'CacheMissError';
-  this.message = err.message;
-  this.stack = err.stack;
-}
-
-CacheMissError.prototype = Object.create(Error.prototype, {
-  constructor: {
-    value: CacheMissError,
-    writable: true,
-    configurable: true,
-  },
-});
-
 export function fetchDedupe(input, init = {}, dedupeOptions) {
   let opts, initToUse;
   if (dedupeOptions) {
@@ -68,7 +55,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     initToUse = init;
   } else if (
     init &&
-    (init.responseType || init.dedupe || init.cachePolicy || init.requestKey)
+    (init.dedupe || init.cachePolicy || init.requestKey)
   ) {
     opts = init;
     initToUse = {};
@@ -77,7 +64,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     initToUse = init;
   }
 
-  const { requestKey, responseType = '', dedupe = true, cachePolicy } = opts;
+  const { requestKey, dedupe = true, cachePolicy } = opts;
 
   const method = initToUse.method || input.method || '';
   const upperCaseMethod = method.toUpperCase();
@@ -143,40 +130,14 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
 
   const request = fetch(input, initToUse).then(
     res => {
-      let responseTypeToUse;
-      if (responseType instanceof Function) {
-        responseTypeToUse = responseType(res);
-      } else if (responseType) {
-        responseTypeToUse = responseType;
-      } else if (res.status === 204) {
-        responseTypeToUse = 'text';
+      responseCache[requestKeyToUse] = res;
+      const clonedRes = new Response(res.body, res);
+
+      if (dedupe) {
+        resolveRequest({ requestKey: requestKeyToUse, res: clonedRes });
       } else {
-        responseTypeToUse = 'json';
+        return clonedRes;
       }
-      // The response body is a ReadableStream. ReadableStreams can only be read a single
-      // time, so we must handle that in a central location, here, before resolving
-      // the fetch.
-      return res[responseTypeToUse]().then(
-        data => {
-          res.data = data;
-          responseCache[requestKeyToUse] = res;
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return res;
-          }
-        },
-        () => {
-          res.data = null;
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return res;
-          }
-        }
-      );
     },
     err => {
       if (dedupe) {
