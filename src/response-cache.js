@@ -1,5 +1,7 @@
 let responseCacheStore = {};
 
+let accessFn = () => true;
+
 const responseCache = {
   get(requestKey) {
     if (responseCache.has(requestKey)) {
@@ -11,7 +13,7 @@ const responseCache = {
 
   set(requestKey, res) {
     responseCacheStore[requestKey] = {
-      timecode: Number(new Date()),
+      timestamp: Number(new Date()),
       res
     };
 
@@ -35,6 +37,29 @@ const responseCache = {
 
   clear() {
     responseCacheStore = {};
+  },
+
+  setCacheCheck(fn) {
+    if (typeof fn === 'function') {
+      accssFn = fn;
+    } else {
+      throw new TypeError('The first argument to `responseCache.setCacheCheck()` must be a function.')
+    }
+  },
+
+  _useCachedValue(requestKey) {
+    if (responseCache.has(requestKey)) {
+      let cacheValue = responseCache.get(requestKey);
+      const shouldAccess = accessFn(cacheValue.res, cacheValue.timestamp);
+
+      if (!shouldAccess) {
+        responseCache.delete(requestKey);
+      }
+
+      return shouldAccess;
+    } else {
+      return false;
+    }
   },
 };
 

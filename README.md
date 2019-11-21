@@ -95,7 +95,9 @@ This library exports the following methods:
   - `.get()`
   - `.set()`
   - `.has()`
+  - `.delete()`
   - `.clear()`
+  - `.setCacheCheck()`
 - `isRequestInFlight()`
 - `clearActiveRequests()`
 
@@ -222,6 +224,32 @@ exist in the cache, or `true` if it existed and has been deleted.
 
 Remove all responses from the cache.
 
+##### `responseCache.setCacheCheck( fn )`
+
+By default, fetch-dedupe caches responses indefinitely. You can customize this behavior by calling this
+method a single time when your app is initialized.
+
+This function accepts a single argument, `fn,` which is a function. This function will be called any time
+that a request is made that has a cached response. It receives two arguments: `cachedResponse, timestamp`. Return
+`true` to use the cached response, or `false` to remove the value from the cache and make a network request
+instead.
+
+For instance, to invalidate cached responses after 10 seconds:
+
+```js
+import { responseCache } from 'fetch-dedupe';
+
+// 1000 = 1 second in milliseconds
+// * 60 = 1 minute
+// * 10 = 10 minutes
+const TEN_MINUTES = 1000 * 60 * 10;
+
+responseCache.setCacheCheck((cachedResponse, timestamp) => {
+  const currentTimestamp = Number(new Date());
+  return currentTimestamp - timestamp <= TEN_MINUTES;
+});
+```
+
 ##### `isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
@@ -247,6 +275,8 @@ const readingBooksAlready = isRequestInFlight(key);
 ##### `clearActiveRequests()`
 
 Removes all of the tracked in-flight requests.
+
+> Note: it is very unlikely that you would ever need to call this method.
 
 ### Guides
 

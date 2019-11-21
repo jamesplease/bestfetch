@@ -88,7 +88,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     });
 
   if (appliedCachePolicy !== 'network-only') {
-    if (responseCache.has(requestKeyToUse)) {
+    if (responseCache._useCachedValue(requestKeyToUse)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
