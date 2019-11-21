@@ -98,8 +98,9 @@ This library exports the following methods:
   - `.delete()`
   - `.clear()`
   - `.configureCacheCheck()`
-- `isRequestInFlight()`
-- `clearActiveRequests()`
+- `activeRequests`
+  - `isRequestInFlight()`
+  - `clear()`
 
 ##### `fetchDedupe( input [, init] [, dedupeOptions] )`
 
@@ -250,14 +251,14 @@ responseCache.configureCacheCheck((cachedResponse, timestamp) => {
 });
 ```
 
-##### `isRequestInFlight( requestKey )`
+##### `activeRequests.isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
 can be used to determine if a call to `fetchDedupe()` will actually hit the network
 or not.
 
 ```js
-import { isRequestInFlight, getRequestKey } from 'fetch-dedupe';
+import { activeRequests, getRequestKey } from 'fetch-dedupe';
 
 const key = getRequestKey({
   url: '/books/2',
@@ -265,19 +266,15 @@ const key = getRequestKey({
 });
 
 // Is there already a request in flight for this?
-const readingBooksAlready = isRequestInFlight(key);
+const readingBooksAlready = activeRequests(key);
 ```
 
-> Now: We **strongly** recommend that you manually pass in `requestKey` to `fetchDedupe`
-  if you intend to use this method. In other words, _do not_ rely on being able to
-  reliably reproduce the request key that is created when a `requestKey` is not passed in.
-
-##### `clearActiveRequests()`
+##### `activeRequests.clear()`
 
 Removes all of the tracked in-flight requests. In-flight requests are not cancelled: calling this
 method only ensures that subsequent identical requests are not deduped.
 
-> Note: it is very unlikely that you would ever need to call this method.
+> Note: you typically should not need to use this method.
 
 ### Guides
 
