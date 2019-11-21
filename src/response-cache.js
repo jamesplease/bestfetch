@@ -46,21 +46,21 @@ const responseCache = {
       throw new TypeError('The first argument to `responseCache.setCacheCheck()` must be a function.')
     }
   },
-
-  _useCachedValue(requestKey) {
-    if (responseCache.has(requestKey)) {
-      let cacheValue = responseCache.get(requestKey);
-      const shouldAccess = accessFn(cacheValue.res, cacheValue.timestamp);
-
-      if (!shouldAccess) {
-        responseCache.delete(requestKey);
-      }
-
-      return shouldAccess;
-    } else {
-      return false;
-    }
-  },
 };
 
 export default responseCache;
+
+export function shouldUseCachedValue(requestKey) {
+  if (responseCache.has(requestKey)) {
+    let cacheValue = responseCache.get(requestKey);
+    const shouldAccess = accessFn(cacheValue.res, cacheValue.timestamp);
+
+    if (!shouldAccess) {
+      responseCache.delete(requestKey);
+    }
+
+    return shouldAccess;
+  } else {
+    return false;
+  }
+}

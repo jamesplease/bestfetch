@@ -1,5 +1,5 @@
 import CacheMissError from './cache-miss-error';
-import responseCache from './response-cache';
+import responseCache, { shouldUseCachedValue } from './response-cache';
 
 export { responseCache, CacheMissError };
 
@@ -88,7 +88,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     });
 
   if (appliedCachePolicy !== 'network-only') {
-    if (responseCache._useCachedValue(requestKeyToUse)) {
+    if (shouldUseCachedValue(requestKeyToUse)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
