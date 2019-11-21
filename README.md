@@ -2,7 +2,7 @@
 
 [![Travis build status](http://img.shields.io/travis/jamesplease/fetch-dedupe.svg?style=flat)](https://travis-ci.org/jamesplease/fetch-dedupe)
 [![npm version](https://img.shields.io/npm/v/fetch-dedupe.svg)](https://www.npmjs.com/package/fetch-dedupe)
-[![Test Coverage](https://codeclimate.com/github/jmeas/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jmeas/fetch-dedupe)
+[![Test Coverage](https://codeclimate.com/github/jamesplease/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jamesplease/fetch-dedupe)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
 A (very) thin wrapper around
@@ -315,7 +315,7 @@ large payloads.
 
 These are projects that build abstractions around HTTP requests using Fetch Dedupe under the hood.
 
-- [React Request](https://github.com/jmeas/react-request)
+- [React Request](https://github.com/jamesplease/react-request)
 
 Are you using it on a project? Add it to this list by opening a Pull Request
 
