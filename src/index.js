@@ -3,7 +3,7 @@ import responseCache, { shouldUseCachedValue } from './response-cache';
 
 export { responseCache, CacheMissError };
 
-let activeRequests = {};
+let activeRequestsStore = {};
 
 export function getRequestKey({
   url = '',
@@ -17,17 +17,17 @@ export function getRequestKey({
 // Returns `true` if a request with `requestKey` is in flight,
 // and `false` otherwise.
 export function isRequestInFlight(requestKey) {
-  return Boolean(activeRequests[requestKey]);
+  return Boolean(activeRequestsStore[requestKey]);
 }
 
 export function clearActiveRequests() {
-  activeRequests = {};
+  activeRequestsStore = {};
 }
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
-  const handlers = activeRequests[requestKey] || [];
+  const handlers = activeRequestsStore[requestKey] || [];
 
   handlers.forEach(handler => {
     if (res) {
@@ -39,7 +39,7 @@ function resolveRequest({ requestKey, res, err }) {
 
   // This list of handlers has been, well, handled. So we
   // clear the handlers for the next request.
-  activeRequests[requestKey] = null;
+  activeRequestsStore[requestKey] = null;
 }
 
 export function fetchDedupe(input, init = {}, dedupeOptions) {
@@ -100,11 +100,11 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
 
   let proxyReq;
   if (dedupe) {
-    if (!activeRequests[requestKeyToUse]) {
-      activeRequests[requestKeyToUse] = [];
+    if (!activeRequestsStore[requestKeyToUse]) {
+      activeRequestsStore[requestKeyToUse] = [];
     }
 
-    const handlers = activeRequests[requestKeyToUse];
+    const handlers = activeRequestsStore[requestKeyToUse];
     const requestInFlight = Boolean(handlers.length);
     const requestHandler = {};
     proxyReq = new Promise((resolve, reject) => {
