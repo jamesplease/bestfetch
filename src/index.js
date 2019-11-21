@@ -35,9 +35,7 @@ function resolveRequest({ requestKey, res, err }) {
 
   handlers.forEach(handler => {
     if (res) {
-      const resToSend = new Response(res.body, res);
-      resToSend.data = res.data;
-      handler.resolve(resToSend);
+      handler.resolve(res);
     } else {
       handler.reject(err);
     }
@@ -113,10 +111,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     cachedResponse = responseCache[requestKeyToUse];
 
     if (cachedResponse) {
-      var resp = new Response(cachedResponse.body, cachedResponse);
-      resp.data = cachedResponse.data;
-      resp.fromCache = true;
-      return Promise.resolve(resp);
+      return Promise.resolve(cachedResponse);
     } else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
         `Response for fetch request not found in cache.`
