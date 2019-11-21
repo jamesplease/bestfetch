@@ -1,7 +1,7 @@
 import CacheMissError from './cache-miss-error';
 import responseCache from './response-cache';
 
-export { responseCache };
+export { responseCache, CacheMissError };
 
 let activeRequests = {};
 
