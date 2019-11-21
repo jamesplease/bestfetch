@@ -259,9 +259,7 @@ describe('fetchDedupe', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -281,9 +279,7 @@ describe('fetchDedupe', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -318,9 +314,7 @@ describe('fetchDedupe', () => {
           data: '',
           status: 204,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -484,9 +478,7 @@ describe('cachePolicy', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -499,14 +491,10 @@ describe('cachePolicy', () => {
             },
             status: 200,
             statusText: 'OK',
-            // This is a bug with browsers and node-fetch
-            // For more, see: https://github.com/bitinn/node-fetch/issues/399
-            bodyUsed: false,
+            bodyUsed: true,
             ok: true,
-            fromCache: true,
           })
         );
-        expect(resTwo).not.toBe(res);
         expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
         done();
       });
@@ -522,9 +510,7 @@ describe('cachePolicy', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -538,9 +524,7 @@ describe('cachePolicy', () => {
               },
               status: 200,
               statusText: 'OK',
-              // This is a bug with browsers and node-fetch
-              // For more, see: https://github.com/bitinn/node-fetch/issues/399
-              bodyUsed: false,
+              bodyUsed: true,
               ok: true,
             })
           );
@@ -562,9 +546,7 @@ describe('cachePolicy', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -579,9 +561,7 @@ describe('cachePolicy', () => {
             },
             status: 200,
             statusText: 'OK',
-            // This is a bug with browsers and node-fetch
-            // For more, see: https://github.com/bitinn/node-fetch/issues/399
-            bodyUsed: false,
+            bodyUsed: true,
             ok: true,
           })
         );
@@ -602,9 +582,7 @@ describe('cachePolicy', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
@@ -625,14 +603,10 @@ describe('cachePolicy', () => {
             },
             status: 200,
             statusText: 'OK',
-            // This is a bug with browsers and node-fetch
-            // For more, see: https://github.com/bitinn/node-fetch/issues/399
-            bodyUsed: false,
+            bodyUsed: true,
             ok: true,
-            fromCache: true,
           })
         );
-        expect(resTwo).not.toBe(res);
         expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
         done();
       });
@@ -668,9 +642,7 @@ describe('isResponseCached', () => {
           },
           status: 200,
           statusText: 'OK',
-          // This is a bug with browsers and node-fetch
-          // For more, see: https://github.com/bitinn/node-fetch/issues/399
-          bodyUsed: false,
+          bodyUsed: true,
           ok: true,
         })
       );
