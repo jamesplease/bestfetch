@@ -1,3 +1,4 @@
+import CacheMissError from './cache-miss-error';
 import responseCache from './response-cache';
 
 export { responseCache };
@@ -40,21 +41,6 @@ function resolveRequest({ requestKey, res, err }) {
   // clear the handlers for the next request.
   activeRequests[requestKey] = null;
 }
-
-function CacheMissError() {
-  var err = Error.apply(this, arguments);
-  err.name = this.name = 'CacheMissError';
-  this.message = err.message;
-  this.stack = err.stack;
-}
-
-CacheMissError.prototype = Object.create(Error.prototype, {
-  constructor: {
-    value: CacheMissError,
-    writable: true,
-    configurable: true,
-  },
-});
 
 export function fetchDedupe(input, init = {}, dedupeOptions) {
   let opts, initToUse;
