@@ -4,13 +4,13 @@ import {
   getRequestKey,
   isRequestInFlight,
   clearActiveRequests,
-  fetchCache,
+  responseCache,
 } from '../src';
 import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
 beforeEach(() => {
   clearActiveRequests();
-  fetchCache.clear();
+  responseCache.clear();
 });
 
 function hangingPromise() {
@@ -628,9 +628,9 @@ describe('cachePolicy', () => {
   });
 });
 
-describe('fetchCache.has', () => {
+describe('responseCache.has', () => {
   test('behaves as expected', done => {
-    expect(fetchCache.has('test')).toBe(false);
+    expect(responseCache.has('test')).toBe(false);
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(res => {
@@ -645,19 +645,19 @@ describe('fetchCache.has', () => {
           ok: true,
         })
       );
-      expect(fetchCache.has('test')).toBe(true);
+      expect(responseCache.has('test')).toBe(true);
       done();
     });
   });
 });
 
-describe('fetchCache.get', () => {
+describe('responseCache.get', () => {
   test('behaves as expected', done => {
-    expect(fetchCache.get('test')).toBeUndefined();
+    expect(responseCache.get('test')).toBeUndefined();
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
-      expect(fetchCache.get('test').data).toEqual(
+      expect(responseCache.get('test').data).toEqual(
         { "a": true }
       );
       done();
@@ -665,29 +665,29 @@ describe('fetchCache.get', () => {
   });
 });
 
-describe('fetchCache.set', () => {
+describe('responseCache.set', () => {
   test('behaves as expected when cache has response', (done) => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
-      const response = fetchCache.get('test');
+      const response = responseCache.get('test');
       expect(response.data).toEqual(
         { "a": true }
       );
-      fetchCache.set('test', Object.assign({}, response, {
+      responseCache.set('test', Object.assign({}, response, {
         data: { "a": false }
       }));
-      expect(fetchCache.get('test').data).toEqual(
+      expect(responseCache.get('test').data).toEqual(
         { "a": false }
       );
       done();
     });
   });
   test('behaves as expected when response has not been cached', () => {
-    const response = fetchCache.get('test');
+    const response = responseCache.get('test');
     expect(response).toBeUndefined();
-    fetchCache.set('test', { data: { "a": false }});
-    const newResponse = fetchCache.get('test');
+    responseCache.set('test', { data: { "a": false }});
+    const newResponse = responseCache.get('test');
     expect(newResponse).toEqual({ data: { "a": false } });
   });
 });

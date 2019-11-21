@@ -1,5 +1,5 @@
 let activeRequests = {};
-let responseCache = {};
+let responseCacheStore = {};
 
 export function getRequestKey({
   url = '',
@@ -16,24 +16,24 @@ export function isRequestInFlight(requestKey) {
   return Boolean(activeRequests[requestKey]);
 }
 
-export const fetchCache = {
+export const responseCache = {
   get(requestKey) {
-    return responseCache[requestKey];
+    return responseCacheStore[requestKey];
   },
 
   set(requestKey, res) {
-    responseCache[requestKey] = res;
-    return responseCache[requestKey];
+    responseCacheStore[requestKey] = res;
+    return responseCacheStore[requestKey];
   },
 
   has(requestKey) {
     // `undefined` is not a valid JSON key, so we can reliably use
     // it to determine if the value exists or not.dfs
-    return typeof responseCache[requestKey] !== 'undefined';
+    return typeof responseCacheStore[requestKey] !== 'undefined';
   },
 
   clear() {
-    responseCache = {};
+    responseCacheStore = {};
   }
 }
 
@@ -121,7 +121,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
 
   let cachedResponse;
   if (appliedCachePolicy !== 'network-only') {
-    cachedResponse = responseCache[requestKeyToUse];
+    cachedResponse = responseCacheStore[requestKeyToUse];
 
     if (cachedResponse) {
       return Promise.resolve(cachedResponse);
@@ -172,7 +172,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
       return res[responseTypeToUse]().then(
         data => {
           res.data = data;
-          responseCache[requestKeyToUse] = res;
+          responseCacheStore[requestKeyToUse] = res;
 
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
