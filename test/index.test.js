@@ -3,13 +3,13 @@ import {
   fetchDedupe,
   getRequestKey,
   isRequestInFlight,
-  clearRequestCache,
+  clearActiveRequests,
   fetchCache,
 } from '../src';
 import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
 
 beforeEach(() => {
-  clearRequestCache();
+  clearActiveRequests();
   fetchCache.clear();
 });
 
