@@ -97,7 +97,7 @@ This library exports the following methods:
   - `.has()`
   - `.delete()`
   - `.clear()`
-  - `.configureCacheCheck()`
+  - `.useCachedResponse()`
 - `activeRequests`
   - `isRequestInFlight()`
   - `clear()`
@@ -225,16 +225,23 @@ exist in the cache, or `true` if it existed and has been deleted.
 
 Remove all responses from the cache.
 
-##### `responseCache.configureCacheCheck( fn )`
+##### `responseCache.useCachedResponse( fn )`
 
 By default, fetch-dedupe caches responses indefinitely. You can customize this behavior using this method.
 
 This method accepts a single argument, `fn,` which is a function. `fn` will be called any time
-that a request is made that has a cached response. It receives two arguments: `cachedResponse, timestamp`. Return
-`true` to use the cached response, or `false` to remove the value from the cache and make a network request
+that a request is made that has a cached response. It's called with a single argument, `cacheObject`, an object
+with the following properties:
+
+- `res`: The cached response object.
+- `createdAt`: A timestamp (in milliseconds) when the value was added to the cache.
+- `lastAccessedAt`: A timestamp (in milliseconds) when the value was last read from the cache.
+- `accessCount`: An integer representing the number of times that the value has been read from the cache.
+
+Return `true` to use the cached response, or `false` to remove the value from the cache and make a network request
 instead.
 
-For instance, to invalidate cached responses after 10 seconds:
+For instance, to invalidate cached responses that are more than 10 minutes old:
 
 ```js
 import { responseCache } from 'fetch-dedupe';
@@ -244,9 +251,9 @@ import { responseCache } from 'fetch-dedupe';
 // * 10 = 10 minutes
 const TEN_MINUTES = 1000 * 60 * 10;
 
-responseCache.configureCacheCheck((cachedResponse, timestamp) => {
-  const currentTimestamp = Number(new Date());
-  return currentTimestamp - timestamp <= TEN_MINUTES;
+responseCache.useCachedResponse(({ createdAt }) => {
+  const currentTimestamp = Date.now();
+  return currentTimestamp - createdAt <= TEN_MINUTES;
 });
 ```
 

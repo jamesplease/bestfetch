@@ -5,7 +5,11 @@ let accessFn = () => true;
 const responseCache = {
   get(requestKey) {
     if (responseCache.has(requestKey)) {
-      return responseCacheStore[requestKey].res;
+      const cacheObject = responseCacheStore[requestKey];
+      cacheObject.accessCount += 1;
+      cacheObject.lastAccessedAt = Date.now();
+
+      return cacheObject.res;
     } else {
       return undefined;
     }
@@ -13,8 +17,10 @@ const responseCache = {
 
   set(requestKey, res) {
     responseCacheStore[requestKey] = {
-      timestamp: Number(new Date()),
       res,
+      createdAt: Date.now(),
+      accessCount: 0,
+      lastAccessedAt: null,
     };
 
     return responseCache;
@@ -39,12 +45,12 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  configureCacheCheck(fn) {
+  useCachedResponse(fn) {
     if (typeof fn === 'function') {
       accssFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.configureCacheCheck()` must be a function.'
+        'The first argument to `responseCache.useCachedResponse()` must be a function.'
       );
     }
   },
@@ -54,8 +60,8 @@ export default responseCache;
 
 export function shouldUseCachedValue(requestKey) {
   if (responseCache.has(requestKey)) {
-    let cacheValue = responseCache.get(requestKey);
-    const shouldAccess = accessFn(cacheValue.res, cacheValue.timestamp);
+    let cacheObject = responseCache.get(requestKey);
+    const shouldAccess = accessFn(cacheObject);
 
     if (!shouldAccess) {
       responseCache.delete(requestKey);
