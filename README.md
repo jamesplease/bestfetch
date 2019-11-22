@@ -87,7 +87,7 @@ fetchDedupe(url, init)
 
 ## API
 
-This library exports the following methods:
+This library exports the following:
 
 - `fetchDedupe()`
 - `getRequestKey()`
@@ -101,6 +101,7 @@ This library exports the following methods:
 - `activeRequests`
   - `isRequestInFlight()`
   - `clear()`
+- `CacheMissError`
 
 ##### `fetchDedupe( input [, init] [, dedupeOptions] )`
 
@@ -281,6 +282,29 @@ Removes all of the tracked in-flight requests. In-flight requests are not cancel
 method only ensures that subsequent identical requests are not deduped.
 
 > Note: you typically should not need to use this method.
+
+##### `CacheMissError`
+
+A call to `fetch-dedupe` will reject to this value if you specify a `cachePolicy` of `cache-only`,
+and there is no cached response in the store.
+
+The Promise only rejects to this whith a `cache-only` cache policy, because any other policy
+would make a network request if the value isn't found.
+
+```js
+import { CacheMissError } from 'fetch-dedupe';
+
+fetch('/api/books/23', {
+  cachePolicy: 'cache-only'
+}).then(
+  () => console.log('Succeeded'),
+  (err) => {
+    if (typeof err === CacheMissError) {
+      console.log('This request did not having an associated response in the store');
+    }
+  } 
+)
+```
 
 ## Guides
 
