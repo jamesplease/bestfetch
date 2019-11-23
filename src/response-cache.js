@@ -1,3 +1,5 @@
+import generateResponse from './generate-response';
+
 let responseCacheStore = {};
 
 let accessFn = () => true;
@@ -9,7 +11,7 @@ const responseCache = {
       cacheObject.accessCount += 1;
       cacheObject.lastAccessedAt = Date.now();
 
-      return cacheObject.res;
+      return generateResponse(cacheObject.res);
     } else {
       return undefined;
     }

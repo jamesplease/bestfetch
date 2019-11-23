@@ -1,5 +1,6 @@
 import CacheMissError from './cache-miss-error';
 import responseCache, { shouldUseCachedValue } from './response-cache';
+import generateResponse from './generate-response';
 
 export { responseCache, CacheMissError };
 
@@ -33,29 +34,6 @@ const activeRequests = {
 
 export { activeRequests };
 
-const keysToCopy = [
-  'headers',
-  'ok',
-  'redirected',
-  'status',
-  'statusText',
-  'trailers',
-  'type',
-  'url',
-  'useFinalURL',
-  'data',
-];
-
-function createRequestValue(res) {
-  const response = {};
-
-  keysToCopy.map(key => {
-    response[key] = res[key];
-  });
-
-  return response;
-}
-
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
@@ -63,7 +41,7 @@ function resolveRequest({ requestKey, res, err }) {
 
   handlers.forEach(handler => {
     if (res) {
-      handler.resolve(createRequestValue(res));
+      handler.resolve(generateResponse(res));
     } else {
       handler.reject(err);
     }
@@ -173,7 +151,7 @@ export function fetchDedupe(input, options) {
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return createRequestValue(res);
+            return generateResponse(res);
           }
         },
         () => {
@@ -182,7 +160,7 @@ export function fetchDedupe(input, options) {
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return createRequestValue(res);
+            return generateResponse(res);
           }
         }
       );
