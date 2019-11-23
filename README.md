@@ -6,9 +6,8 @@
 [![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
 
 
-A thin wrapper around
-[`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-that implements request deduplication and response caching.
+A [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)-like HTTP library that
+implements request deduplication and response caching.
 
 ## Motivation
 
@@ -18,8 +17,8 @@ requests as the user navigates through the app.
 Features such as request deduplication and response caching can often save the developer of apps like these from headache and
 bugs.
 
-`fetch-dedupe` is a wrapper around fetch that includes request deduplication and response caching for you, and it's a delight
-to use.
+`fetch-dedupe` is a library with a familiar, fetch-like API that includes request deduplication and response caching for you,
+and it's a delight to use.
 
 ## Installation
 
@@ -37,7 +36,11 @@ yarn add fetch-dedupe
 
 ## Getting Started
 
-This example demonstrates using Fetch Dedupe with the
+Because `fetch-dedupe` is such a lightweight wrapper around `fetch`, you'll benefit from having knowledge of that API.
+If you're new to fetch, I recommend reading the [Using Fetch guide on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
+It's a great introduction.
+
+The following example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
@@ -48,41 +51,16 @@ const fetchOptions = {
   body: JSON.stringify({ a: 12 })
 };
 
-// The API of `fetchDedupe` is the same as fetch, except that it
-// has an additional argument. Pass the `requestKey` in that
-// third argument
-fetchDedupe('/test/2', fetchOptions).then(res => {
-  console.log('Got some data', res.data);
-});
+fetchDedupe('/test/2', fetchOptions)
+  .then(res => {
+    console.log('Got some data', res.data);
+  });
 
-// Additional requests are deduped. Nifty.
-fetchDedupe('/test/2', fetchOptions).then(res => {
-  console.log('Got some data', res.data);
-});
-```
-
-### Important: Read this!
-
-When using `fetch`, you typically read the body yourself by calling, say, `.json()` on the
-response. Fetch Dedupe reads the body for you, so you **cannot** do it, or else an error
-will be thrown.
-
-```js
-// Normal usage of `fetch`:
-fetch(url, init)
-  .then(res => res.json())
-  .then(data => console.log('got some cool data', data));
-
-// The same code using `fetchDedupe`:
-fetchDedupe(url, init)
-  .then(res =>
-    console.log('got some cool data', res.data)
-  );
-
-// Don't do this! It will throw an error.
-fetchDedupe(url, init)
-  .then(res => res.json())
-  .then(data => console.log('got some cool data', data));
+// Additional identical requests are deduped. Nifty.
+fetchDedupe('/test/2', fetchOptions)
+  .then(res => {
+    console.log('Got some data', res.data);
+  });
 ```
 
 ## API
@@ -103,16 +81,33 @@ This library exports the following:
   - `clear()`
 - `CacheMissError`
 
-##### `fetchDedupe( input [, init] [, dedupeOptions] )`
+##### `fetchDedupe( [url] [, options] )`
 
-A wrapper around `global.fetch()`. The first two arguments are the same ones that you're used to.
-Refer to
-[the fetch() documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)
-for more.
+Creates an HTTP request. You may pass a URL as the first argument to make a basic GET request:
 
-Note that `init` is optional, as with `global.fetch()`.
+```js
+fetch('/api/books/2')
+```
 
-The third option is `dedupeOptions`, and it is also optional. This is an object with three attributes:
+If you need to configure the request with more details, you can pass a second argument, `options`:
+
+```js
+fetch('/api/books/2', {
+  method: 'POST'
+});
+```
+
+You may also only pass options, including the URL as part of the options, if you'd prefer:
+
+```js
+fetch({
+  url: '/api/books/2',
+  method: 'POST'
+});
+```
+
+In addition to all of the [options supported by fetch's init](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch),
+this library supports a few more options:
 
 * `responseType` *(String|Function)*: Any of the methods from [the Body mixin](https://developer.mozilla.org/en-US/docs/Web/API/Body).
   The default is `"json"`, unless the response status code is `"204"`, in which case `"text"` will be used.
@@ -130,42 +125,25 @@ The third option is `dedupeOptions`, and it is also optional. This is an object 
 * `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
   and `"network-only"`. For more, refer to the section on Caching.
 
-Given the two possible value types of `input`,  optional second argument, there are a way few ways that you can
-call `fetchDedupe`. Let's run through valid calls to `fetchDedupe`:
+Let's run through valid calls to `fetchDedupe`:
 
 ```js
 import { fetchDedupe } from 'fetch-dedupe';
 
-// Omitting everything except for the URL
 fetchDedupe('/test/2');
 
-// Just a URL and some init option
 fetchDedupe('/test/2', {
   method: 'DELETE'
 });
 
-// Omitting `init` and using a URL string as `input`
-fetchDedupe('/test/2', {responseType: 'json'});
-
-// Using a URL string as `input`, with numerous `init` configurations
-// and specifying several `dedupeOptions`
 fetchDedupe('/test/2', {
   method: 'PATCH',
   body: JSON.stringify({value: true}),
-  credentials: 'include'
-}, {
+  credentials: 'include',
   responseType: 'json',
   requestKey: generateCustomKey(opts),
-  dedupe: false
-})
-
-// Omitting `init` and using a Request as `input`
-const req = new Request('/test/2');
-fetchDedupe(req, {responseType: 'json'});
-
-// Request as `input` with an `init` object. Note that the `init`
-// object takes precedence over the Request values.
-fetchDedupe(req, {method: 'PATCH'}, {responseType: 'json'});
+  dedupe: false,
+});
 ```
 
 ##### `getRequestKey({ url, method, responseType, body })`

@@ -33,6 +33,29 @@ const activeRequests = {
 
 export { activeRequests };
 
+const keysToCopy = [
+  'headers',
+  'ok',
+  'redirected',
+  'status',
+  'statusText',
+  'trailers',
+  'type',
+  'url',
+  'useFinalURL',
+  'data',
+];
+
+function createRequestValue(res) {
+  const response = {};
+
+  keysToCopy.map(key => {
+    response[key] = res[key];
+  });
+
+  return response;
+}
+
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
@@ -40,7 +63,7 @@ function resolveRequest({ requestKey, res, err }) {
 
   handlers.forEach(handler => {
     if (res) {
-      handler.resolve(res);
+      handler.resolve(createRequestValue(res));
     } else {
       handler.reject(err);
     }
@@ -51,25 +74,26 @@ function resolveRequest({ requestKey, res, err }) {
   activeRequestsStore[requestKey] = null;
 }
 
-export function fetchDedupe(input, init = {}, dedupeOptions) {
-  let opts, initToUse;
-  if (dedupeOptions) {
-    opts = dedupeOptions;
-    initToUse = init;
-  } else if (
-    init &&
-    (init.responseType || init.dedupe || init.cachePolicy || init.requestKey)
-  ) {
-    opts = init;
-    initToUse = {};
-  } else {
-    opts = {};
-    initToUse = init;
+export function fetchDedupe(input, options) {
+  let url;
+  let opts;
+  if (typeof input === 'string') {
+    url = input;
+    opts = options || {};
+  } else if (typeof input === 'object') {
+    opts = input || {};
+    url = opts.url;
   }
 
-  const { requestKey, responseType = '', dedupe = true, cachePolicy } = opts;
+  const {
+    requestKey,
+    responseType = '',
+    dedupe = true,
+    cachePolicy,
+    ...init
+  } = opts;
 
-  const method = initToUse.method || input.method || '';
+  const method = init.method || '';
   const upperCaseMethod = method.toUpperCase();
 
   let appliedCachePolicy;
@@ -89,11 +113,9 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     requestKey ||
     getRequestKey({
       // If `input` is a request, then we use that URL
-      url: input.url || input,
-      // We prefer values from `init` over request objects. With `fetch()`, init
-      // takes priority over a passed-in request
-      method: initToUse.method || input.method || '',
-      body: initToUse.body || input.body || '',
+      url,
+      method: init.method || '',
+      body: init.body || '',
     });
 
   if (appliedCachePolicy !== 'network-only') {
@@ -128,7 +150,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     }
   }
 
-  const request = fetch(input, initToUse).then(
+  const request = fetch(url, init).then(
     res => {
       let responseTypeToUse;
       if (responseType instanceof Function) {
@@ -151,7 +173,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return res;
+            return createRequestValue(res);
           }
         },
         () => {
@@ -160,7 +182,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return res;
+            return createRequestValue(res);
           }
         }
       );
