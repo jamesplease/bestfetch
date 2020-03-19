@@ -1,5 +1,5 @@
 {
-  "name": "fetch-dedupe",
+  "name": "bestfetch",
   "version": "4.0.0",
   "description": "A thin wrapper around fetch that prevents duplicate requests.",
   "main": "lib/index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jamesplease/fetch-dedupe.git"
+    "url": "https://github.com/jamesplease/bestfetch.git"
   },
   "keywords": [
     "http",
@@ -36,7 +36,7 @@
   "author": "James Smith <jamesplease2@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jamesplease/fetch-dedupe/issues"
+    "url": "https://github.com/jamesplease/bestfetch/issues"
   },
   "files": [
     "dist",

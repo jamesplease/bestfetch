@@ -52,7 +52,7 @@ function resolveRequest({ requestKey, res, err }) {
   activeRequestsStore[requestKey] = null;
 }
 
-export function fetchDedupe(input, options) {
+export function bestfetch(input, options) {
   let url;
   let opts;
   if (typeof input === 'string') {

@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import {
-  fetchDedupe,
+  bestfetch,
   getRequestKey,
   activeRequests,
   responseCache,
@@ -69,7 +69,7 @@ describe('activeRequests.isRequestInFlight', () => {
   });
 
   test('renders true when it is not in flight', () => {
-    fetchDedupe('/test/hangs', { requestKey: 'pasta' });
+    bestfetch('/test/hangs', { requestKey: 'pasta' });
     expect(activeRequests.isRequestInFlight('pasta')).toBe(true);
   });
 });
@@ -151,36 +151,36 @@ describe('getRequestKey', () => {
   });
 });
 
-describe('fetchDedupe', () => {
+describe('bestfetch', () => {
   test('only calls fetch once for duplicate requests', () => {
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('respects the dedupe:false option', () => {
-    fetchDedupe('/test/hangs', {
+    bestfetch('/test/hangs', {
       requestKey: 'pasta',
       dedupe: false,
       responseType: 'json',
     });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(2);
   });
 
   test('allows for optional init', () => {
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
-    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('allows for optional dedupeOptions', () => {
-    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
     expect(fetchMock.lastOptions('/test/hangs')).toEqual({
       headers: { Authorization: 'Bearer abc123' },
@@ -188,23 +188,23 @@ describe('fetchDedupe', () => {
   });
 
   test('allows for optional request key', () => {
-    fetchDedupe('/test/hangs', { responseType: 'json' });
-    fetchDedupe('/test/hangs', { responseType: 'json' });
-    fetchDedupe('/test/hangs', { responseType: 'json' });
+    bestfetch('/test/hangs', { responseType: 'json' });
+    bestfetch('/test/hangs', { responseType: 'json' });
+    bestfetch('/test/hangs', { responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('allows for optional request key, still producing a unique key', () => {
     // First request to /test/hangs/2
-    fetchDedupe('/test/hangs', { responseType: 'json' });
-    fetchDedupe('/test/hangs', { responseType: 'json' });
+    bestfetch('/test/hangs', { responseType: 'json' });
+    bestfetch('/test/hangs', { responseType: 'json' });
 
     // First request to /test/hangs
-    fetchDedupe('/test/hangs/2', { responseType: 'json' });
-    fetchDedupe('/test/hangs/2', { responseType: 'json' });
+    bestfetch('/test/hangs/2', { responseType: 'json' });
+    bestfetch('/test/hangs/2', { responseType: 'json' });
 
     // Second request to /test/hangs/2
-    fetchDedupe('/test/hangs/2', { body: 'hello', responseType: 'json' });
+    bestfetch('/test/hangs/2', { body: 'hello', responseType: 'json' });
 
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
     expect(fetchMock.calls('/test/hangs/2').length).toBe(2);
@@ -214,14 +214,14 @@ describe('fetchDedupe', () => {
     const req = new Request('/test/hangs', {
       method: 'GET',
     });
-    fetchDedupe(req, { responseType: 'json' });
-    fetchDedupe(req, { responseType: 'json' });
-    fetchDedupe(req, { responseType: 'json' });
+    bestfetch(req, { responseType: 'json' });
+    bestfetch(req, { responseType: 'json' });
+    bestfetch(req, { responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
-    fetchDedupe('/test/succeeds/json').then(res => {
+    bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -240,7 +240,7 @@ describe('fetchDedupe', () => {
     const responseType = res => {
       return res.ok ? 'json' : 'text';
     };
-    fetchDedupe('/test/succeeds/json', { responseType }).then(res => {
+    bestfetch('/test/succeeds/json', { responseType }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -266,7 +266,7 @@ describe('fetchDedupe', () => {
     const responseType = res => {
       return res.ok ? 'json' : 'text';
     };
-    fetchDedupe('/test/fails/text', { responseType }).then(
+    bestfetch('/test/fails/text', { responseType }).then(
       () => done.fail(),
       err => {
         expect(err).toEqual('Failed');
@@ -276,7 +276,7 @@ describe('fetchDedupe', () => {
   });
 
   test('requests that succeeds with empty responses, with no response type specified, to behave as expected', done => {
-    fetchDedupe('/test/succeeds/empty').then(res => {
+    bestfetch('/test/succeeds/empty').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: '',
@@ -290,7 +290,7 @@ describe('fetchDedupe', () => {
   });
 
   test('requests that fails with text responses, with no response type specified, to behave as expected', done => {
-    fetchDedupe('/test/fails/internal-server-error').then(res => {
+    bestfetch('/test/fails/internal-server-error').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: null,
@@ -304,7 +304,7 @@ describe('fetchDedupe', () => {
   });
 
   test('non-deduped requests that succeed to behave as expected', done => {
-    fetchDedupe('/test/succeeds', {
+    bestfetch('/test/succeeds', {
       requestKey: 'pasta',
       dedupe: false,
       responseType: 'text',
@@ -322,7 +322,7 @@ describe('fetchDedupe', () => {
   });
 
   test('non-deduped requests that succeeds with JSON to behave as expected', done => {
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       requestKey: 'pasta',
       dedupe: false,
       responseType: 'json',
@@ -351,7 +351,7 @@ describe('fetchDedupe', () => {
       })
     );
 
-    fetchDedupe('/test/fails', {
+    bestfetch('/test/fails', {
       requestKey: 'pasta',
       dedupe: false,
       responseType: 'text',
@@ -376,12 +376,12 @@ describe('fetchDedupe', () => {
       })
     );
 
-    const requestOne = fetchDedupe('/test/succeeds/dedupe', {
+    const requestOne = bestfetch('/test/succeeds/dedupe', {
       requestKey: 'pasta',
       responseType: 'text',
     });
 
-    const requestTwo = fetchDedupe('/test/succeeds/dedupe', {
+    const requestTwo = bestfetch('/test/succeeds/dedupe', {
       requestKey: 'pasta',
       responseType: 'text',
     });
@@ -403,12 +403,12 @@ describe('fetchDedupe', () => {
       })
     );
 
-    const requestOne = fetchDedupe('/test/fails/dedupe', {
+    const requestOne = bestfetch('/test/fails/dedupe', {
       requestKey: 'pasta',
       responseType: 'text',
     });
 
-    const requestTwo = fetchDedupe('/test/fails/dedupe', {
+    const requestTwo = bestfetch('/test/fails/dedupe', {
       requestKey: 'pasta',
       responseType: 'text',
     });
@@ -430,7 +430,7 @@ describe('fetchDedupe', () => {
 
 describe('cachePolicy', () => {
   test('Defaults with a GET should be cache-first', done => {
-    fetchDedupe('/test/succeeds/json').then(res => {
+    bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -442,7 +442,7 @@ describe('cachePolicy', () => {
         })
       );
 
-      fetchDedupe('/test/succeeds/json').then(resTwo => {
+      bestfetch('/test/succeeds/json').then(resTwo => {
         expect(resTwo).toEqual(
           expect.objectContaining({
             data: {
@@ -460,7 +460,7 @@ describe('cachePolicy', () => {
   });
 
   test('network-only ignores the cache', done => {
-    fetchDedupe('/test/succeeds/json').then(res => {
+    bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -472,7 +472,7 @@ describe('cachePolicy', () => {
         })
       );
 
-      fetchDedupe('/test/succeeds/json', { cachePolicy: 'network-only' }).then(
+      bestfetch('/test/succeeds/json', { cachePolicy: 'network-only' }).then(
         res => {
           expect(res).toEqual(
             expect.objectContaining({
@@ -492,7 +492,7 @@ describe('cachePolicy', () => {
   });
 
   test('default for "write" requests is network-only', done => {
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       method: 'POST',
     }).then(res => {
       expect(res).toEqual(
@@ -506,7 +506,7 @@ describe('cachePolicy', () => {
         })
       );
 
-      fetchDedupe('/test/succeeds/json', {
+      bestfetch('/test/succeeds/json', {
         method: 'POST',
       }).then(res => {
         expect(res).toEqual(
@@ -526,7 +526,7 @@ describe('cachePolicy', () => {
   });
 
   test('cache options work for "write" requests, too', done => {
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       method: 'POST',
     }).then(res => {
       expect(res).toEqual(
@@ -540,7 +540,7 @@ describe('cachePolicy', () => {
         })
       );
 
-      fetchDedupe('/test/succeeds/json', {
+      bestfetch('/test/succeeds/json', {
         method: 'POST',
         cachePolicy: 'cache-first',
       }).then(resTwo => {
@@ -561,7 +561,7 @@ describe('cachePolicy', () => {
   });
 
   test('cache-only with empty cache rejects with an Error', done => {
-    fetchDedupe('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
+    bestfetch('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
       () => done.fail(),
       err => {
         expect(err).toEqual(
@@ -579,7 +579,7 @@ describe('cachePolicy', () => {
 describe('responseCache.has', () => {
   test('behaves as expected', done => {
     expect(responseCache.has('test')).toBe(false);
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       requestKey: 'test',
     }).then(res => {
       expect(res).toEqual(
@@ -601,7 +601,7 @@ describe('responseCache.has', () => {
 describe('responseCache.get', () => {
   test('behaves as expected', done => {
     expect(responseCache.get('test')).toBeUndefined();
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
       expect(responseCache.get('test').data).toEqual({ a: true });
@@ -612,7 +612,7 @@ describe('responseCache.get', () => {
 
 describe('responseCache.set', () => {
   test('behaves as expected when cache has response', done => {
-    fetchDedupe('/test/succeeds/json', {
+    bestfetch('/test/succeeds/json', {
       requestKey: 'test',
     }).then(() => {
       const response = responseCache.get('test');

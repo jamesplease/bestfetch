@@ -1,10 +1,11 @@
 # Changelog
 
-### v4.0.0 (2018/7/14)
+### v4.0.0 (2020/3/19)
 
 **Breaking Changes**
 
 - Response caching is now built in, and enabled by default.
+- Project renamed to `bestfetch` (from `fetch-dedupe`)
 
 ### v3.0.0 (2018/4/12)
 

@@ -1,10 +1,9 @@
-# Fetch Dedupe
+# bestfetch
 
-[![Travis build status](http://img.shields.io/travis/jamesplease/fetch-dedupe.svg?style=flat)](https://travis-ci.org/jamesplease/fetch-dedupe)
-[![npm version](https://img.shields.io/npm/v/fetch-dedupe.svg)](https://www.npmjs.com/package/fetch-dedupe)
-[![Test Coverage](https://codeclimate.com/github/jamesplease/fetch-dedupe/badges/coverage.svg)](https://codeclimate.com/github/jamesplease/fetch-dedupe)
-[![gzip size](http://img.badgesize.io/https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js?compression=gzip)](https://unpkg.com/fetch-dedupe/dist/fetch-dedupe.min.js)
-
+[![Travis build status](http://img.shields.io/travis/jamesplease/bestfetch.svg?style=flat)](https://travis-ci.org/jamesplease/bestfetch)
+[![npm version](https://img.shields.io/npm/v/bestfetch.svg)](https://www.npmjs.com/package/bestfetch)
+[![Test Coverage](https://codeclimate.com/github/jamesplease/bestfetch/badges/coverage.svg)](https://codeclimate.com/github/jamesplease/bestfetch)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/bestfetch/dist/bestfetch.min.js?compression=gzip)](https://unpkg.com/bestfetch/dist/bestfetch.min.js)
 
 A [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)-like HTTP library that
 implements request deduplication and response caching.
@@ -17,7 +16,7 @@ requests as the user navigates through the app.
 Features such as request deduplication and response caching can often save the developer of apps like these from headache and
 bugs.
 
-`fetch-dedupe` is a library with a familiar, fetch-like API that includes request deduplication and response caching for you,
+`bestfetch` is a library with a familiar, fetch-like API that includes request deduplication and response caching for you,
 and it's a delight to use.
 
 ## Installation
@@ -25,18 +24,18 @@ and it's a delight to use.
 Install using [npm](https://www.npmjs.com):
 
 ```
-npm install fetch-dedupe
+npm install bestfetch
 ```
 
 or [yarn](https://yarnpkg.com/):
 
 ```
-yarn add fetch-dedupe
+yarn add bestfetch
 ```
 
 ## Getting Started
 
-Because `fetch-dedupe` is such a lightweight wrapper around `fetch`, you'll benefit from having knowledge of that API.
+Because `bestfetch` is such a lightweight wrapper around `fetch`, you'll benefit from having knowledge of that API.
 If you're new to fetch, I recommend reading the [Using Fetch guide on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
 It's a great introduction.
 
@@ -44,20 +43,20 @@ The following example demonstrates using Fetch Dedupe with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
-import { fetchDedupe } from 'fetch-dedupe';
+import { bestfetch } from 'bestfetch';
 
 const fetchOptions = {
   method: 'PATCH',
   body: JSON.stringify({ a: 12 })
 };
 
-fetchDedupe('/test/2', fetchOptions)
+bestfetch('/test/2', fetchOptions)
   .then(res => {
     console.log('Got some data', res.data);
   });
 
 // Additional identical requests are deduped. Nifty.
-fetchDedupe('/test/2', fetchOptions)
+bestfetch('/test/2', fetchOptions)
   .then(res => {
     console.log('Got some data', res.data);
   });
@@ -67,7 +66,7 @@ fetchDedupe('/test/2', fetchOptions)
 
 This library exports the following:
 
-- `fetchDedupe()`
+- `bestfetch()`
 - `getRequestKey()`
 - `responseCache`
   - `.get()`
@@ -81,7 +80,7 @@ This library exports the following:
   - `clear()`
 - `CacheMissError`
 
-##### `fetchDedupe( [url] [, options] )`
+##### `bestfetch( [url] [, options] )`
 
 Creates an HTTP request. You may pass a URL as the first argument to make a basic GET request:
 
@@ -125,18 +124,18 @@ this library supports a few more options:
 * `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
   and `"network-only"`. For more, refer to the section on Caching.
 
-Let's run through valid calls to `fetchDedupe`:
+Let's run through valid calls to `bestfetch`:
 
 ```js
-import { fetchDedupe } from 'fetch-dedupe';
+import { bestfetch } from 'bestfetch';
 
-fetchDedupe('/test/2');
+bestfetch('/test/2');
 
-fetchDedupe('/test/2', {
+bestfetch('/test/2', {
   method: 'DELETE'
 });
 
-fetchDedupe('/test/2', {
+bestfetch('/test/2', {
   method: 'PATCH',
   body: JSON.stringify({value: true}),
   credentials: 'include',
@@ -160,7 +159,7 @@ most information that you can.
   in whatever way that you want. This should work for most use cases, though.
 
 ```js
-import { getRequestKey } from 'fetch-dedupe';
+import { getRequestKey } from 'bestfetch';
 
 const keyOne = getRequestKey({
   url: '/books/2',
@@ -193,7 +192,7 @@ Call this to manually update the cached value of `requestKey` with `res`. Return
 ##### `responseCache.has( requestKey )`
 
 Pass in a `requestKey` to see if there is a cache entry for the request. This can be used
-to determine if a call to `fetchDedupe` will hit the cache or not.
+to determine if a call to `bestfetch` will hit the cache or not.
 
 ##### `responseCache.delete( requestKey )`
 
@@ -206,7 +205,7 @@ Remove all responses from the cache.
 
 ##### `responseCache.useCachedResponse( fn )`
 
-By default, fetch-dedupe caches responses indefinitely. You can customize this behavior using this method.
+By default, bestfetch caches responses indefinitely. You can customize this behavior using this method.
 
 This method accepts a single argument, `fn,` which is a function. `fn` will be called any time
 that a request is made that has a cached response. It's called with a single argument, `cacheObject`, an object
@@ -223,7 +222,7 @@ instead.
 For instance, to invalidate cached responses that are more than 10 minutes old:
 
 ```js
-import { responseCache } from 'fetch-dedupe';
+import { responseCache } from 'bestfetch';
 
 // 1000 = 1 second in milliseconds
 // * 60 = 1 minute
@@ -239,11 +238,11 @@ responseCache.useCachedResponse(({ createdAt }) => {
 ##### `activeRequests.isRequestInFlight( requestKey )`
 
 Pass in a `requestKey` to see if there's already a request in flight for it. This
-can be used to determine if a call to `fetchDedupe()` will actually hit the network
+can be used to determine if a call to `bestfetch()` will actually hit the network
 or not.
 
 ```js
-import { activeRequests, getRequestKey } from 'fetch-dedupe';
+import { activeRequests, getRequestKey } from 'bestfetch';
 
 const key = getRequestKey({
   url: '/books/2',
@@ -263,14 +262,14 @@ method only ensures that subsequent identical requests are not deduped.
 
 ##### `CacheMissError`
 
-A call to `fetch-dedupe` will reject to this value if you specify a `cachePolicy` of `cache-only`,
+A call to `bestfetch` will reject to this value if you specify a `cachePolicy` of `cache-only`,
 and there is no cached response in the store.
 
 The Promise only rejects to this whith a `cache-only` cache policy, because any other policy
 would make a network request if the value isn't found.
 
 ```js
-import { CacheMissError } from 'fetch-dedupe';
+import { CacheMissError } from 'bestfetch';
 
 fetch('/api/books/23', {
   cachePolicy: 'cache-only'
@@ -345,11 +344,11 @@ is in the works.
 
 #### Is the data duplicated?
 
-Although you receive a new `Response` object with every call to `fetch-dedupe`, the body will be read,
+Although you receive a new `Response` object with every call to `bestfetch`, the body will be read,
 so the response's body stream will be empty. In addition, the `data` property between every
 `response` is shared. Accordingly, the data returned by the server is never duplicated.
 
-This is an optimization that allows `fetch-dedupe` to be used in applications that fetch
+This is an optimization that allows `bestfetch` to be used in applications that fetch
 large payloads.
 
 ## Requirements

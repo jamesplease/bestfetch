@@ -10,7 +10,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      name: 'fetchDedupe',
+      name: 'bestfetch',
       file: pkg.browser,
       format: 'umd',
     },
