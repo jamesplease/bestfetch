@@ -67,7 +67,6 @@ bestfetch('/test/2', fetchOptions)
 This library exports the following:
 
 - [`bestfetch()`](https://github.com/jamesplease/bestfetch#bestfetch-url--options-)
-- [`getRequestKey()`](https://github.com/jamesplease/bestfetch#getrequestkey-url-method-responsetype-body-)
 - [`responseCache`](https://github.com/jamesplease/bestfetch#responsecache)
   - [`.get()`](https://github.com/jamesplease/bestfetch#responsecacheget-requestkey-)
   - [`.set()`](https://github.com/jamesplease/bestfetch#responsecacheset-requestkey-res-)
@@ -79,6 +78,7 @@ This library exports the following:
   - [`isRequestInFlight()`](https://github.com/jamesplease/bestfetch#activerequestsisrequestinflight-requestkey-)
   - [`clear()`](https://github.com/jamesplease/bestfetch#activerequestsclear)
 - [`CacheMissError`](https://github.com/jamesplease/bestfetch#cachemisserror)
+- [`getRequestKey()`](https://github.com/jamesplease/bestfetch#getrequestkey-url-method-responsetype-body-)
 
 ##### `bestfetch( [url] [, options] )`
 
@@ -143,39 +143,6 @@ bestfetch('/test/2', {
   dedupe: false,
   cachePolicy: 'network-only'
 });
-```
-
-##### `getRequestKey({ url, method, responseType, body })`
-
-Returns a unique request key based on the passed-in values. All of the values,
-including `body`, must be strings.
-
-Every value is optional, but the deduplication logic is improved by adding the
-most information that you can.
-
-> Note: The `method` option is case-insensitive.
-
-> Note: You do not need to use this method to generate a request key. You can generate the key
-  in whatever way that you want. This should work for most use cases, though.
-
-```js
-import { getRequestKey } from 'bestfetch';
-
-const keyOne = getRequestKey({
-  url: '/books/2',
-  method: 'get'
-});
-
-const keyTwo = getRequestKey({
-  url: '/books/2',
-  method: 'patch',
-  body: JSON.stringify({
-    title: 'My Name is Red'
-  })
-});
-
-keyOne === keyTwo;
-// => false
 ```
 
 ##### `responseCache`
@@ -245,6 +212,8 @@ responseCache.useCachedResponse(({ createdAt }) => {
 
 ##### `activeRequests`
 
+> Typically you will not need to use this interface.
+
 An interface for in-flight requests. This interface powers the request deduplication system.
 
 ##### `activeRequests.isRequestInFlight( requestKey )`
@@ -293,6 +262,41 @@ fetch('/api/books/23', {
     }
   } 
 )
+```
+
+##### `getRequestKey({ url, method, responseType, body })`
+
+> Typically you will not need to use this function.
+
+Returns a unique request key based on the passed-in values. All of the values,
+including `body`, must be strings.
+
+Every value is optional, but the deduplication logic is improved by adding the
+most information that you can.
+
+> Note: The `method` option is case-insensitive.
+
+> Note: You do not need to use this method to generate a request key. You can generate the key
+  in whatever way that you want. This should work for most use cases, though.
+
+```js
+import { getRequestKey } from 'bestfetch';
+
+const keyOne = getRequestKey({
+  url: '/books/2',
+  method: 'get'
+});
+
+const keyTwo = getRequestKey({
+  url: '/books/2',
+  method: 'patch',
+  body: JSON.stringify({
+    title: 'My Name is Red'
+  })
+});
+
+keyOne === keyTwo;
+// => false
 ```
 
 ## Guides
