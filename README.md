@@ -140,8 +140,8 @@ bestfetch('/test/2', {
   body: JSON.stringify({value: true}),
   credentials: 'include',
   responseType: 'json',
-  requestKey: generateCustomKey(opts),
   dedupe: false,
+  cachePolicy: 'network-only'
 });
 ```
 
