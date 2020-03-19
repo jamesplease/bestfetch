@@ -39,7 +39,7 @@ Because `bestfetch` is such a lightweight wrapper around `fetch`, you'll benefit
 If you're new to fetch, I recommend reading the [Using Fetch guide on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
 It's a great introduction.
 
-The following example demonstrates using Fetch Dedupe with the
+The following example demonstrates using bestfetch with the
 [ES2015 module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
 ```js
@@ -345,7 +345,7 @@ The argument that is returned to you in the `.then` callback of a call to `fetch
 object can only be read a single time, because it is a
 [ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream).
 
-For Fetch Dedupe to work, it must pass the result of a single request to many "consumers." The
+For bestfetch to work, it must pass the result of a single request to many "consumers." The
 only way for this to work is if the library reads it for you, which requires that the library
 know what its content type is.
 
