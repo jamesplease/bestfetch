@@ -114,15 +114,15 @@ this library supports a few more options:
   If a function is passed, then it will be passed the `response` object. This lets you dynamically determine the
   response type based on information about the response, such as the status code.
 
-* `requestKey` *(String)*: A string that is used to determine if two requests are identical. You may pass this
-  to configure how the request key is generated. A default key will be generated for you if this is
-  omitted.
-
 * `dedupe` *(Boolean)*: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
 
 * `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
   and `"network-only"`. For more, refer to [the section on Caching](https://github.com/jamesplease/bestfetch#caching).
+
+* `requestKey` *(String)*: You will not typically need to specify this option. `requestKey` is a string that is used to determine if two
+  requests are identical. You may pass this to configure how the request key is generated. A default key is generated for you if this is
+  omitted. For most use cases, the default key is sufficient.
 
 Let's run through valid calls to `bestfetch`:
 
