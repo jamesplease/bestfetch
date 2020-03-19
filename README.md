@@ -325,7 +325,7 @@ The cache is ignored, and a network request is always made.
 **`cache-only`**
 
 If a response exists in the cache, then it will be returned. If no response
-exists in the cache, then an error will be passed into the render prop function.
+exists in the cache, then [an error](https://github.com/jamesplease/bestfetch#cachemisserror) will be passed into the render prop function.
 
 ## FAQ & Troubleshooting
 
@@ -355,8 +355,7 @@ know what its content type is.
 
 #### What request body types are supported?
 
-Just strings for now, which should work for the majority of APIs. Support for other body types
-is in the works.
+Just strings, which should work for the use cases that this library is built to support.
 
 #### Is the data duplicated?
 
