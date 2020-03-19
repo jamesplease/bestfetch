@@ -117,7 +117,7 @@ this library supports a few more options:
 * `dedupe` *(Boolean)*: Whether or not to dedupe the request. Pass `false` and it will be as if this library
   was not even being used. Defaults to `true`.
 
-* `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
+* `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"` (the default), `"cache-only"`,
   and `"network-only"`. For more, refer to [the section on Caching](https://github.com/jamesplease/bestfetch#caching).
 
 * `requestKey` *(String)*: You will not typically need to specify this option. `requestKey` is a string that is used to determine if two
@@ -303,7 +303,7 @@ keyOne === keyTwo;
 
 ### Caching
 
-Any time tbat a response from the server is received, it will be cached using the request's request key.
+Any time that a response from the server is received, it will be cached using the request's request key.
 Subsequent requests are matched with existing cached server responses using their request key.
 
 Interactions with the cache can be controlled with the `cachePolicy` option. There are three possible
