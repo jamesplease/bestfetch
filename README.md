@@ -3,7 +3,7 @@
 [![Travis build status](http://img.shields.io/travis/jamesplease/bestfetch.svg?style=flat)](https://travis-ci.org/jamesplease/bestfetch)
 [![npm version](https://img.shields.io/npm/v/bestfetch.svg)](https://www.npmjs.com/package/bestfetch)
 [![Test Coverage](https://coveralls.io/repos/github/jamesplease/bestfetch/badge.svg?branch=master)](https://coveralls.io/github/jamesplease/bestfetch?branch=master)
-[![gzip size](http://img.badgesize.io/https://unpkg.com/bestfetch/dist/bestfetch.min.js?compression=gzip)](https://unpkg.com/bestfetch/dist/bestfetch.min.js)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/bestfetch/lib/index.js?compression=gzip)](https://unpkg.com/bestfetch/lib/index.js)
 
 A [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)-like HTTP library that
 implements request deduplication and response caching.
