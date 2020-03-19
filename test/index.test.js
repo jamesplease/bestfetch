@@ -220,21 +220,6 @@ describe('fetchDedupe', () => {
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
-  // test('prefers init values with request values', () => {
-  //   const req = new Request('/test/hangs', {
-  //     method: 'GET',
-  //     body: 'what',
-  //   });
-
-  //   fetchDedupe(req, { method: 'PATCH', body: 'ok', responseType: 'json' });
-  //   fetchDedupe('/test/hangs', {
-  //     method: 'PATCH',
-  //     body: 'ok',
-  //     responseType: 'json',
-  //   });
-  //   expect(fetchMock.calls('/test/hangs').length).toBe(1);
-  // });
-
   test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
     fetchDedupe('/test/succeeds/json').then(res => {
       expect(res).toEqual(
