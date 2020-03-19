@@ -2,13 +2,19 @@ import fetchMock from 'fetch-mock';
 import {
   fetchDedupe,
   getRequestKey,
-  isRequestInFlight,
-  clearRequestCache
+  activeRequests,
+  responseCache,
 } from '../src';
-import { successfulResponse, jsonResponse, emptyResponse, serverErrorResponse } from './responses';
+import {
+  successfulResponse,
+  jsonResponse,
+  emptyResponse,
+  serverErrorResponse,
+} from './responses';
 
 beforeEach(() => {
-  clearRequestCache();
+  activeRequests.clear();
+  responseCache.clear();
 });
 
 function hangingPromise() {
@@ -33,6 +39,14 @@ fetchMock.get(
     })
 );
 
+fetchMock.post(
+  '/test/succeeds/json',
+  () =>
+    new Promise(resolve => {
+      resolve(jsonResponse());
+    })
+);
+
 fetchMock.get(
   '/test/succeeds/empty',
   () =>
@@ -49,14 +63,14 @@ fetchMock.get(
     })
 );
 
-describe('isRequestInFlight', () => {
+describe('activeRequests.isRequestInFlight', () => {
   test('renders false when it is not in flight', () => {
-    expect(isRequestInFlight('pasta')).toBe(false);
+    expect(activeRequests.isRequestInFlight('pasta')).toBe(false);
   });
 
   test('renders true when it is not in flight', () => {
-    fetchDedupe('/test/hangs', {}, { requestKey: 'pasta' });
-    expect(isRequestInFlight('pasta')).toBe(true);
+    fetchDedupe('/test/hangs', { requestKey: 'pasta' });
+    expect(activeRequests.isRequestInFlight('pasta')).toBe(true);
   });
 });
 
@@ -74,7 +88,7 @@ describe('getRequestKey', () => {
   test('it returns a string', () => {
     const key = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
     expect(typeof key).toBe('string');
   });
@@ -82,12 +96,12 @@ describe('getRequestKey', () => {
   test('it ignores the casing of method', () => {
     const keyOne = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'get'
+      method: 'get',
     });
 
     expect(keyOne).toBe(keyTwo);
@@ -96,12 +110,12 @@ describe('getRequestKey', () => {
   test('it produces different keys for different methods', () => {
     const keyOne = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'DELETE'
+      method: 'DELETE',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -110,12 +124,12 @@ describe('getRequestKey', () => {
   test('it produces different keys for different URLs', () => {
     const keyOne = getRequestKey({
       url: '/test/1',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/2',
-      method: 'GET'
+      method: 'GET',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -124,13 +138,13 @@ describe('getRequestKey', () => {
   test('it produces different keys for different options', () => {
     const keyOne = getRequestKey({
       url: '/test/1',
-      method: 'GET'
+      method: 'GET',
     });
 
     const keyTwo = getRequestKey({
       url: '/test/1',
       method: 'GET',
-      body: 'sandwiches'
+      body: 'sandwiches',
     });
 
     expect(keyOne).not.toBe(keyTwo);
@@ -139,40 +153,20 @@ describe('getRequestKey', () => {
 
 describe('fetchDedupe', () => {
   test('only calls fetch once for duplicate requests', () => {
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', responseType: 'json' }
-    );
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', responseType: 'json' }
-    );
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', responseType: 'json' }
-    );
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
   test('respects the dedupe:false option', () => {
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', dedupe: false, responseType: 'json' }
-    );
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', responseType: 'json' }
-    );
-    fetchDedupe(
-      '/test/hangs',
-      {},
-      { requestKey: 'pasta', responseType: 'json' }
-    );
+    fetchDedupe('/test/hangs', {
+      requestKey: 'pasta',
+      dedupe: false,
+      responseType: 'json',
+    });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
+    fetchDedupe('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(2);
   });
 
@@ -184,11 +178,13 @@ describe('fetchDedupe', () => {
   });
 
   test('allows for optional dedupeOptions', () => {
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
-    fetchDedupe('/test/hangs', { headers: { 'Authorization': 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
+    fetchDedupe('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
-    expect(fetchMock.lastOptions('/test/hangs')).toEqual({ headers: { 'Authorization': 'Bearer abc123' } });
+    expect(fetchMock.lastOptions('/test/hangs')).toEqual({
+      headers: { Authorization: 'Bearer abc123' },
+    });
   });
 
   test('allows for optional request key', () => {
@@ -208,7 +204,7 @@ describe('fetchDedupe', () => {
     fetchDedupe('/test/hangs/2', { responseType: 'json' });
 
     // Second request to /test/hangs/2
-    fetchDedupe('/test/hangs/2', { body: 'hello' }, { responseType: 'json' });
+    fetchDedupe('/test/hangs/2', { body: 'hello', responseType: 'json' });
 
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
     expect(fetchMock.calls('/test/hangs/2').length).toBe(2);
@@ -216,40 +212,39 @@ describe('fetchDedupe', () => {
 
   test('supports a Request as input', () => {
     const req = new Request('/test/hangs', {
-      method: 'GET'
-    });
-    fetchDedupe(req, { responseType: 'json' });
-    fetchDedupe(req, { responseType: 'json' });
-    fetchDedupe(req, { responseType: 'json' });
-    expect(fetchMock.calls('/test/hangs').length).toBe(1);
-  });
-
-  test('prefers init values with request values', () => {
-    const req = new Request('/test/hangs', {
       method: 'GET',
-      body: 'what'
     });
-
-    fetchDedupe(req, { method: 'PATCH', body: 'ok' }, { responseType: 'json' });
-    fetchDedupe(
-      '/test/hangs',
-      { method: 'PATCH', body: 'ok' },
-      { responseType: 'json' }
-    );
+    fetchDedupe(req, { responseType: 'json' });
+    fetchDedupe(req, { responseType: 'json' });
+    fetchDedupe(req, { responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
+
+  // test('prefers init values with request values', () => {
+  //   const req = new Request('/test/hangs', {
+  //     method: 'GET',
+  //     body: 'what',
+  //   });
+
+  //   fetchDedupe(req, { method: 'PATCH', body: 'ok', responseType: 'json' });
+  //   fetchDedupe('/test/hangs', {
+  //     method: 'PATCH',
+  //     body: 'ok',
+  //     responseType: 'json',
+  //   });
+  //   expect(fetchMock.calls('/test/hangs').length).toBe(1);
+  // });
 
   test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
     fetchDedupe('/test/succeeds/json').then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -259,17 +254,16 @@ describe('fetchDedupe', () => {
   test('requests that succeeds with JSON, with function as response type, to behave as expected', done => {
     const responseType = res => {
       return res.ok ? 'json' : 'text';
-    }
+    };
     fetchDedupe('/test/succeeds/json', { responseType }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -286,11 +280,8 @@ describe('fetchDedupe', () => {
 
     const responseType = res => {
       return res.ok ? 'json' : 'text';
-    }
-    fetchDedupe(
-      '/test/fails/text',
-      { responseType }
-    ).then(
+    };
+    fetchDedupe('/test/fails/text', { responseType }).then(
       () => done.fail(),
       err => {
         expect(err).toEqual('Failed');
@@ -306,8 +297,7 @@ describe('fetchDedupe', () => {
           data: '',
           status: 204,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -321,8 +311,7 @@ describe('fetchDedupe', () => {
           data: null,
           status: 500,
           statusText: 'Internal Server Error',
-          bodyUsed: true,
-          ok: false
+          ok: false,
         })
       );
       done();
@@ -330,18 +319,17 @@ describe('fetchDedupe', () => {
   });
 
   test('non-deduped requests that succeed to behave as expected', done => {
-    fetchDedupe(
-      '/test/succeeds',
-      {},
-      { requestKey: 'pasta', dedupe: false, responseType: 'text' }
-    ).then(res => {
+    fetchDedupe('/test/succeeds', {
+      requestKey: 'pasta',
+      dedupe: false,
+      responseType: 'text',
+    }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: 'hi',
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -352,17 +340,16 @@ describe('fetchDedupe', () => {
     fetchDedupe('/test/succeeds/json', {
       requestKey: 'pasta',
       dedupe: false,
-      responseType: 'json'
+      responseType: 'json',
     }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
-            a: true
+            a: true,
           },
           status: 200,
           statusText: 'OK',
-          bodyUsed: true,
-          ok: true
+          ok: true,
         })
       );
       done();
@@ -374,21 +361,21 @@ describe('fetchDedupe', () => {
       '/test/fails',
       new Promise((resolve, reject) => {
         reject({
-          message: 'Network error'
+          message: 'Network error',
         });
       })
     );
 
-    fetchDedupe(
-      '/test/fails',
-      {},
-      { requestKey: 'pasta', dedupe: false, responseType: 'text' }
-    ).then(
+    fetchDedupe('/test/fails', {
+      requestKey: 'pasta',
+      dedupe: false,
+      responseType: 'text',
+    }).then(
       () => done.fail(),
       err => {
         expect(err).toEqual(
           expect.objectContaining({
-            message: 'Network error'
+            message: 'Network error',
           })
         );
         done();
@@ -404,17 +391,15 @@ describe('fetchDedupe', () => {
       })
     );
 
-    const requestOne = fetchDedupe(
-      '/test/succeeds/dedupe',
-      {},
-      { requestKey: 'pasta', responseType: 'text' }
-    );
+    const requestOne = fetchDedupe('/test/succeeds/dedupe', {
+      requestKey: 'pasta',
+      responseType: 'text',
+    });
 
-    const requestTwo = fetchDedupe(
-      '/test/succeeds/dedupe',
-      {},
-      { requestKey: 'pasta', responseType: 'text' }
-    );
+    const requestTwo = fetchDedupe('/test/succeeds/dedupe', {
+      requestKey: 'pasta',
+      responseType: 'text',
+    });
 
     Promise.all([requestOne, requestTwo]).then(([resOne, resTwo]) => {
       expect(fetchMock.calls('/test/succeeds/dedupe').length).toBe(1);
@@ -428,22 +413,20 @@ describe('fetchDedupe', () => {
       '/test/fails/dedupe',
       new Promise((resolve, reject) => {
         reject({
-          message: 'Network error'
+          message: 'Network error',
         });
       })
     );
 
-    const requestOne = fetchDedupe(
-      '/test/fails/dedupe',
-      {},
-      { requestKey: 'pasta', responseType: 'text' }
-    );
+    const requestOne = fetchDedupe('/test/fails/dedupe', {
+      requestKey: 'pasta',
+      responseType: 'text',
+    });
 
-    const requestTwo = fetchDedupe(
-      '/test/fails/dedupe',
-      {},
-      { requestKey: 'pasta', responseType: 'text' }
-    );
+    const requestTwo = fetchDedupe('/test/fails/dedupe', {
+      requestKey: 'pasta',
+      responseType: 'text',
+    });
 
     Promise.all([requestOne, requestTwo]).then(
       () => done.fail(),
@@ -451,11 +434,219 @@ describe('fetchDedupe', () => {
         expect(fetchMock.calls('/test/fails/dedupe').length).toBe(1);
         expect(err).toEqual(
           expect.objectContaining({
-            message: 'Network error'
+            message: 'Network error',
           })
         );
         done();
       }
     );
+  });
+});
+
+describe('cachePolicy', () => {
+  test('Defaults with a GET should be cache-first', done => {
+    fetchDedupe('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  test('network-only ignores the cache', done => {
+    fetchDedupe('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json', { cachePolicy: 'network-only' }).then(
+        res => {
+          expect(res).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              ok: true,
+            })
+          );
+          expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+          done();
+        }
+      );
+    });
+  });
+
+  test('default for "write" requests is network-only', done => {
+    fetchDedupe('/test/succeeds/json', {
+      method: 'POST',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json', {
+        method: 'POST',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
+    });
+  });
+
+  test('cache options work for "write" requests, too', done => {
+    fetchDedupe('/test/succeeds/json', {
+      method: 'POST',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      fetchDedupe('/test/succeeds/json', {
+        method: 'POST',
+        cachePolicy: 'cache-first',
+      }).then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+        done();
+      });
+    });
+  });
+
+  test('cache-only with empty cache rejects with an Error', done => {
+    fetchDedupe('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
+      () => done.fail(),
+      err => {
+        expect(err).toEqual(
+          expect.objectContaining({
+            message: 'Response for fetch request not found in cache.',
+            name: 'CacheMissError',
+          })
+        );
+        done();
+      }
+    );
+  });
+});
+
+describe('responseCache.has', () => {
+  test('behaves as expected', done => {
+    expect(responseCache.has('test')).toBe(false);
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      expect(responseCache.has('test')).toBe(true);
+      done();
+    });
+  });
+});
+
+describe('responseCache.get', () => {
+  test('behaves as expected', done => {
+    expect(responseCache.get('test')).toBeUndefined();
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(() => {
+      expect(responseCache.get('test').data).toEqual({ a: true });
+      done();
+    });
+  });
+});
+
+describe('responseCache.set', () => {
+  test('behaves as expected when cache has response', done => {
+    fetchDedupe('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(() => {
+      const response = responseCache.get('test');
+      expect(response.data).toEqual({ a: true });
+      responseCache.set(
+        'test',
+        Object.assign({}, response, {
+          data: { a: false },
+        })
+      );
+      expect(responseCache.get('test').data).toEqual({ a: false });
+      done();
+    });
+  });
+  test('behaves as expected when response has not been cached', () => {
+    const response = responseCache.get('test');
+    expect(response).toBeUndefined();
+    responseCache.set('test', { data: { a: false } });
+    const newResponse = responseCache.get('test');
+    expect(newResponse).toEqual({ data: { a: false } });
   });
 });

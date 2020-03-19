@@ -1,35 +1,47 @@
-// This is a cache of in-flight requests. Each request key maps to an
-// array of Promises. When the request resolves, each promise in the
-// array is pushed to.
-let requests = {};
+import CacheMissError from './cache-miss-error';
+import responseCache, { shouldUseCachedValue } from './response-cache';
+import generateResponse from './generate-response';
+
+export { responseCache, CacheMissError };
+
+let activeRequestsStore = {};
 
 export function getRequestKey({
   url = '',
   method = '',
   responseType = '',
-  body = ''
+  body = '',
 } = {}) {
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
-// Returns `true` if a request with `requestKey` is in flight,
-// and `false` otherwise.
-export function isRequestInFlight(requestKey) {
-  return Boolean(requests[requestKey]);
-}
+const activeRequests = {
+  // Returns `true` if a request with `requestKey` is in flight,
+  // and `false` otherwise.
+  isRequestInFlight(requestKey) {
+    const handlers = activeRequestsStore[requestKey];
+    if (handlers && handlers.length) {
+      return Boolean(handlers.length);
+    } else {
+      return false;
+    }
+  },
 
-export function clearRequestCache() {
-  requests = {};
-}
+  clear() {
+    activeRequestsStore = {};
+  },
+};
+
+export { activeRequests };
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
-  const handlers = requests[requestKey] || [];
+  const handlers = activeRequestsStore[requestKey] || [];
 
   handlers.forEach(handler => {
     if (res) {
-      handler.resolve(res);
+      handler.resolve(generateResponse(res));
     } else {
       handler.reject(err);
     }
@@ -37,43 +49,71 @@ function resolveRequest({ requestKey, res, err }) {
 
   // This list of handlers has been, well, handled. So we
   // clear the handlers for the next request.
-  requests[requestKey] = null;
+  activeRequestsStore[requestKey] = null;
 }
 
-export function fetchDedupe(input, init = {}, dedupeOptions) {
-  let opts, initToUse;
-  if (dedupeOptions) {
-    opts = dedupeOptions;
-    initToUse = init;
-  } else if (init.responseType) {
-    opts = init;
-    initToUse = {};
-  } else {
-    opts = {};
-    initToUse = init;
+export function fetchDedupe(input, options) {
+  let url;
+  let opts;
+  if (typeof input === 'string') {
+    url = input;
+    opts = options || {};
+  } else if (typeof input === 'object') {
+    opts = input || {};
+    url = opts.url;
   }
 
-  const { requestKey, responseType = '', dedupe = true } = opts;
+  const {
+    requestKey,
+    responseType = '',
+    dedupe = true,
+    cachePolicy,
+    ...init
+  } = opts;
 
+  const method = init.method || '';
+  const upperCaseMethod = method.toUpperCase();
+
+  let appliedCachePolicy;
+  if (cachePolicy) {
+    appliedCachePolicy = cachePolicy;
+  } else {
+    const isReadRequest =
+      upperCaseMethod === 'GET' ||
+      upperCaseMethod === 'OPTIONS' ||
+      upperCaseMethod === 'HEAD' ||
+      upperCaseMethod === '';
+
+    appliedCachePolicy = isReadRequest ? 'cache-first' : 'network-only';
+  }
   // Build the default request key if one is not passed
   let requestKeyToUse =
     requestKey ||
     getRequestKey({
       // If `input` is a request, then we use that URL
-      url: input.url || input,
-      // We prefer values from `init` over request objects. With `fetch()`, init
-      // takes priority over a passed-in request
-      method: initToUse.method || input.method || '',
-      body: initToUse.body || input.body || ''
+      url,
+      method: init.method || '',
+      body: init.body || '',
     });
+
+  if (appliedCachePolicy !== 'network-only') {
+    if (shouldUseCachedValue(requestKeyToUse)) {
+      return Promise.resolve(responseCache.get(requestKeyToUse));
+    } else if (cachePolicy === 'cache-only') {
+      const cacheError = new CacheMissError(
+        `Response for fetch request not found in cache.`
+      );
+      return Promise.reject(cacheError);
+    }
+  }
 
   let proxyReq;
   if (dedupe) {
-    if (!requests[requestKeyToUse]) {
-      requests[requestKeyToUse] = [];
+    if (!activeRequestsStore[requestKeyToUse]) {
+      activeRequestsStore[requestKeyToUse] = [];
     }
 
-    const handlers = requests[requestKeyToUse];
+    const handlers = activeRequestsStore[requestKeyToUse];
     const requestInFlight = Boolean(handlers.length);
     const requestHandler = {};
     proxyReq = new Promise((resolve, reject) => {
@@ -88,7 +128,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
     }
   }
 
-  const request = fetch(input, initToUse).then(
+  const request = fetch(url, init).then(
     res => {
       let responseTypeToUse;
       if (responseType instanceof Function) {
@@ -106,11 +146,12 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
       return res[responseTypeToUse]().then(
         data => {
           res.data = data;
+          responseCache.set(requestKeyToUse, res);
 
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return res;
+            return generateResponse(res);
           }
         },
         () => {
@@ -119,7 +160,7 @@ export function fetchDedupe(input, init = {}, dedupeOptions) {
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
-            return res;
+            return generateResponse(res);
           }
         }
       );
