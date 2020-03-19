@@ -66,19 +66,19 @@ bestfetch('/test/2', fetchOptions)
 
 This library exports the following:
 
-- `bestfetch()`
-- `getRequestKey()`
-- `responseCache`
-  - `.get()`
-  - `.set()`
-  - `.has()`
-  - `.delete()`
-  - `.clear()`
-  - `.useCachedResponse()`
-- `activeRequests`
-  - `isRequestInFlight()`
-  - `clear()`
-- `CacheMissError`
+- [`bestfetch()`](https://github.com/jamesplease/bestfetch#bestfetch-url--options-)
+- [`getRequestKey()`](https://github.com/jamesplease/bestfetch#getrequestkey-url-method-responsetype-body-)
+- [`responseCache`](https://github.com/jamesplease/bestfetch#responsecache)
+  - [`.get()`](https://github.com/jamesplease/bestfetch#responsecacheget-requestkey-)
+  - [`.set()`](https://github.com/jamesplease/bestfetch#responsecacheset-requestkey-res-)
+  - [`.has()`](https://github.com/jamesplease/bestfetch#responsecachehas-requestkey-)
+  - [`.delete()`](https://github.com/jamesplease/bestfetch#responsecachedelete-requestkey-)
+  - [`.clear()`](https://github.com/jamesplease/bestfetch#responsecacheclear)
+  - [`.useCachedResponse()`](https://github.com/jamesplease/bestfetch#responsecacheusecachedresponse-fn-)
+- [`activeRequests`](https://github.com/jamesplease/bestfetch#activerequests)
+  - [`isRequestInFlight()`](https://github.com/jamesplease/bestfetch#activerequestsisrequestinflight-requestkey-)
+  - [`clear()`](https://github.com/jamesplease/bestfetch#activerequestsclear)
+- [`CacheMissError`](https://github.com/jamesplease/bestfetch#cachemisserror)
 
 ##### `bestfetch( [url] [, options] )`
 
@@ -178,6 +178,14 @@ keyOne === keyTwo;
 // => false
 ```
 
+##### `responseCache`
+
+An interface for the response cache.
+
+```js
+import { responseCache } from 'bestfetch';
+```
+
 ##### `responseCache.get( requestKey )`
 
 Returns the cached response for `requestKey`. If the response does not exist, then `undefined`
@@ -234,6 +242,10 @@ responseCache.useCachedResponse(({ createdAt }) => {
   return currentTimestamp - createdAt <= TEN_MINUTES;
 });
 ```
+
+##### `activeRequests`
+
+An interface for in-flight requests. This interface powers the request deduplication system.
 
 ##### `activeRequests.isRequestInFlight( requestKey )`
 
