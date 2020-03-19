@@ -16,8 +16,8 @@ requests as the user navigates through the app.
 Features such as request deduplication and response caching can often save the developer of apps like these from headache and
 bugs.
 
-`bestfetch` is a library with a familiar, fetch-like API that includes request deduplication and response caching for you,
-and it's a delight to use.
+`bestfetch` is a library with a familiar, fetch-like API, and it includes request deduplication and response caching. Plus,
+it's a delight to use.
 
 ## Installation
 
