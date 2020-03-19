@@ -122,7 +122,7 @@ this library supports a few more options:
   was not even being used. Defaults to `true`.
 
 * `cachePolicy` *(String)*: Determines interactions with the cache. Valid options are `"cache-first"`, `"cache-only"`,
-  and `"network-only"`. For more, refer to the section on Caching.
+  and `"network-only"`. For more, refer to [the section on Caching](https://github.com/jamesplease/bestfetch#caching).
 
 Let's run through valid calls to `bestfetch`:
 
