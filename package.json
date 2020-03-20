@@ -1,71 +1,24 @@
 {
-  "name": "bestfetch",
-  "version": "4.0.0",
-  "description": "A thin wrapper around fetch that prevents duplicate requests.",
-  "main": "lib/index.js",
-  "module": "es/index.js",
+  "name": "bestfetch-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentation for bestfetch.",
   "scripts": {
-    "clean": "rimraf dist es tmp lib",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "jest --watch",
-    "prepublishOnly": "npm run build",
-    "build": "rollup -c",
-    "build-docs": "rimraf docs && next build && next export -o docs && touch docs/.nojekyll"
+    "build": "rimraf docs && next build && next export -o docs && touch docs/.nojekyll"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/jamesplease/bestfetch.git"
   },
-  "keywords": [
-    "http",
-    "https",
-    "request",
-    "dedupe",
-    "deduplication",
-    "cache",
-    "caching",
-    "fetch",
-    "xhr",
-    "requests",
-    "performance",
-    "network",
-    "graphql",
-    "json",
-    "jsonapi",
-    "json-api",
-    "api",
-    "request",
-    "response",
-    "browser"
-  ],
   "author": "James Smith <jamesplease2@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jamesplease/bestfetch/issues"
   },
-  "files": [
-    "dist",
-    "lib",
-    "es"
-  ],
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
-    "@rollup/plugin-replace": "^2.2.1",
-    "babel-jest": "^24.9.0",
-    "coveralls": "^3.0.11",
-    "cross-env": "^5.1.3",
-    "fetch-mock": "^6.0.0",
-    "isomorphic-fetch": "^2.2.1",
-    "jest": "^24.9.0",
     "next": "^9.3.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "rimraf": "^2.7.1",
-    "rollup": "^1.0.0",
-    "rollup-plugin-babel": "^4.2.0",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-uglify": "^6.0.3"
+    "rimraf": "^2.7.1"
   }
 }

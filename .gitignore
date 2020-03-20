@@ -27,3 +27,4 @@ package-lock.json.*
 dist
 es
 lib
+.next

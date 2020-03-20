@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - "12"
-sudo: false
-notifications:
-  email: false
-after_success:
-  # Upload to coveralls, but don't _fail_ if coveralls is down.
-  - cat coverage/lcov.info | node_modules/.bin/coveralls || echo "Coveralls upload failed" 
