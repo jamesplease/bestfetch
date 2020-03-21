@@ -4,6 +4,7 @@
   "private": true,
   "description": "Documentation for bestfetch.",
   "scripts": {
+    "dev": "next",
     "deploy": "rimraf docs && next build && next export -o docs && touch docs/.nojekyll && gh-pages -d docs"
   },
   "repository": {

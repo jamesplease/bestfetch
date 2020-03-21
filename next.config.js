@@ -9,6 +9,26 @@ module.exports = {
     return {
       '/': { page: '/' },
       '/about': { page: '/about' },
+
+      '/guides': { page: '/guides/index' },
+      '/getting-started': { page: '/getting-started' },
+      '/guides/invalidating-the-cache': {
+        page: '/guides/invalidating-the-cache',
+      },
+      '/guides/caching-responses': { page: '/guides/caching-responses' },
+      '/guides/deduplicating-requests': {
+        page: '/guides/deduplicating-requests',
+      },
+      '/guides/faq': {
+        page: '/guides/faq',
+      },
+
+      '/api': { page: '/api/index' },
+      '/api/bestfetch': { page: '/api/bestfetch' },
+      '/api/responsecache': { page: '/api/response-cache' },
+      '/api/activerequests': { page: '/api/active-requests' },
+      '/api/cachemisserror': { page: '/api/cache-miss-error' },
+      '/api/getrequestkey': { page: '/api/get-request-key' },
     };
   },
   assetPrefix: !debug ? '/bestfetch/' : '',

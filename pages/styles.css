@@ -1,0 +1,89 @@
+:root {
+  --mainColor: #2b5dfd;
+  --maxAppWidth: 950px;
+  --navWidth: 300px;
+  --headerHeight: 55px;
+  --appBodyPadding: 40px;
+  --appTopPadding: 30px;
+  --standardContentPadding: 1.25rem;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #111;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+
+  font-size: 0.9em;
+}
+
+.codeBlock {
+  display: block;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  display: block;
+  background: #182a4a;
+  color: #eaf4ff;
+  white-space: pre;
+}
+
+a {
+  color: var(--mainColor);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  position: relative;
+}
+
+.page h1 {
+  font-weight: 900;
+  font-size: 2.4rem;
+}
+
+.page p {
+  line-height: 1.7;
+}
+
+.page li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+.page li a {
+  text-decoration: none;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page .indexTitle {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+}
+
+.page h2 {
+  font-weight: 900;
+  font-size: 1.7rem;
+}
+
+.badgeList {
+  margin-bottom: 50px;
+}
+
+.badgeList > * {
+  padding-right: 5px;
+}

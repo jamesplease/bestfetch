@@ -1,0 +1,61 @@
+.footer {
+  margin-top: auto;
+  flex: 0 0 80px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #e1dfe7;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.footer_licenseIcon {
+  display: inline-block;
+  margin: 0 3px 0 6px;
+}
+
+.footer_licenseLink {
+  outline: none;
+  padding: 3px 3px;
+}
+
+.footer_licenseLink.focus-visible {
+  background-color: #f0f5ff;
+}
+
+.footer_licenseLink-short {
+  color: inherit;
+}
+
+.footer_githubLink {
+  margin-left: auto;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  outline: none;
+  border-radius: 3px;
+  padding: 3px 5px;
+}
+
+.footer_githubLink.focus-visible {
+  color: var(--mainColor);
+  background-color: #f0f5ff;
+}
+
+.footer_icon {
+  font-size: 1.3rem;
+  margin-right: 5px;
+}
+
+.footer_licenseTextShort {
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .footer_licenseText {
+    display: none;
+  }
+  .footer_licenseTextShort {
+    display: flex;
+    align-items: center;
+  }
+}

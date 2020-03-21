@@ -1,0 +1,18 @@
+.bodyContents {
+  min-height: calc(100vh - var(--headerHeight));
+  margin: var(--headerHeight) 0 0 var(--navWidth);
+  padding: var(--appTopPadding) var(--appBodyPadding) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bodyContents > * {
+  width: 100%;
+  max-width: calc(var(--maxAppWidth) - var(--navWidth));
+  margin: 0 auto;
+  flex: 1;
+}
+
+.bodyContents > *:first-child {
+  margin-bottom: 100px;
+}
