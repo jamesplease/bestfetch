@@ -19,6 +19,17 @@ export default () => {
         <code>bestfetch</code> supports all of the same options as{' '}
         <code>fetch</code>.
       </p>
+      <p>
+        <p>
+          In fact, because bestfetch is a lightweight wrapper around fetch, it
+          can be beneficial for you to be familiar with that API. If you're new
+          to fetch, you may wish to read the{' '}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">
+            Using Fetch guide on MDN
+          </a>
+          .
+        </p>
+      </p>
       <h3>Specifying the URL</h3>
       <p>
         You can pass a URL as the first argument, or you can pass an{' '}
@@ -59,7 +70,8 @@ bestfetch({
         knows how to interpret the data:
       </p>
       <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+        {`bestfetch({
+  url: 'https://jsonplaceholder.typicode.com/todos/1',
   method: 'post',
   body: JSON.stringify(data),
   headers: {
@@ -150,7 +162,7 @@ bestfetch(\`/api/books/2?\${qs}\`)
       </ul>
       <p>
         So far, this guide has covered the most commonly-used options. For more
-        information on the other options, refer to{' '}
+        information on these other options, refer to{' '}
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch">
           the <code>fetch()</code> documentation
         </a>{' '}
@@ -159,8 +171,7 @@ bestfetch(\`/api/books/2?\${qs}\`)
       <h2>Receiving Responses</h2>
       <p>
         <code>bestfetch</code> returns a Promise. This Promise resolves if a
-        response from the server is received, or if a cached value exists, and
-        it rejects otherwise.
+        response from the server or cache is received, and it rejects otherwise.
       </p>
       <h3>Successful Respones</h3>
       <p>
@@ -176,9 +187,9 @@ bestfetch(\`/api/books/2?\${qs}\`)
       <h3>Errors</h3>
       <p>
         If the server replies with an error response, then the Promise will
-        still resolve. This may be unexpected. If your server utilizes HTTP
-        status codes, then you can check for server errors with the following
-        code:
+        still resolve. This is important to note, because it may be surprising
+        to you. If your server utilizes HTTP status codes, then you can check
+        for server errors with the following code:
       </p>
       <code className="codeBlock">
         {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
@@ -218,11 +229,11 @@ bestfetch(\`/api/books/2?\${qs}\`)
       <h2>Trying It Out</h2>
       <p>
         This webpage has <code>bestfetch</code> available on the window for you
-        to use. Go ahead and to try out making requests with{' '}
+        to use. You can try it out by making requests to{' '}
         <a href="https://jsonplaceholder.typicode.com/">
           the JSON Placeholder API
         </a>
-        !
+        .
       </p>
       <p>Here are a few examples to get you started.</p>
       <h3>Fetching a Resource</h3>

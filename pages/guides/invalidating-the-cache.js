@@ -80,8 +80,8 @@ responseCache.useCachedResponse(() => /* return true or false */);`}
       </ul>
       <h2>Example: Invalidating Every Cached Entry</h2>
       <p>
-        The simplest example to demonstrate how to use this function is to
-        define a strategy that rejects <i>every</i> cached entry.
+        The simplest example is to define a strategy that rejects <i>every</i>{' '}
+        cached entry.
       </p>
       <code className="codeBlock">
         {`import { responseCache } from 'bestfetch';

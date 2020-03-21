@@ -6,7 +6,7 @@ export default () => {
       <h1>Other Response Types</h1>
       <div className="advanced">
         <span className="emoji">💁‍♀️</span> <b>Heads up!</b> This is an advanced
-        API that most people will not need to use.
+        API that is not necessary for most apps.
       </div>
       <p>
         bestfetch assumes that all requests return JSON responses. If you have

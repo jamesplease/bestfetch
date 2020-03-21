@@ -1,12 +1,16 @@
+import Lowlight from 'react-lowlight';
 import { bestfetch } from 'bestfetch';
+import js from 'highlight.js/lib/languages/javascript';
 import './styles.css';
+import './code-styles.css';
 import style from './app.module.css';
 import Header from '../components/header';
 import Nav from '../components/nav';
 import Footer from '../components/footer';
 
+Lowlight.registerLanguage('js', js);
+
 if (typeof window !== 'undefined') {
-  console.log('hi');
   window.bestfetch = bestfetch;
 }
 // This default export is required in a new `pages/_app.js` file.

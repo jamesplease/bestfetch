@@ -101,6 +101,11 @@ bestfetch('/api/books/2')
   });`}
       </code>
       <h2>Configuring the Deduplication Behavior</h2>
+      <div className="advanced">
+        <span className="emoji">💁‍♀️</span> <b>Heads up!</b> This is an advanced
+        API that very few applications should ever need to use. Be careful if
+        you decide to use it in your app.
+      </div>
       <p>
         In rare situations, you may wish to have control over when two requests
         are considered to be identical. You can do this by specifying a{' '}

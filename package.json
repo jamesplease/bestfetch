@@ -24,6 +24,7 @@
     "rimraf": "^2.7.1"
   },
   "dependencies": {
-    "bestfetch": "^4.0.0"
+    "bestfetch": "^4.0.0",
+    "react-lowlight": "^2.0.0"
   }
 }

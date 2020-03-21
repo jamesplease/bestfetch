@@ -5,8 +5,8 @@ export default function API() {
     <div className="page">
       <h1>API</h1>
       <p>
-        This library has a named export that you will use most often: bestfetch.
-        Most of the time it is all that you will need.
+        This library has a named export that you will use most often:{' '}
+        <code>bestfetch</code>. Most of the time it is all that you will need.
       </p>
       <ul>
         <li>
@@ -16,7 +16,7 @@ export default function API() {
         </li>
       </ul>
       <h2>Other APIs</h2>
-      <p>The following named exports are less commonly used.</p>
+      <p>These are the other named exports of this library.</p>
       <ul>
         <li>
           <Link href="/bestfetch">
