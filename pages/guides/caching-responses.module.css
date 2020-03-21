@@ -1,0 +1,18 @@
+.grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.grid > * {
+  padding: 0.35rem 10px;
+}
+
+.gridTitle {
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  color: #444;
+}
+
+.gridTitle code {
+  color: #444;
+}

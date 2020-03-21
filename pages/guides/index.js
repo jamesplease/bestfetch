@@ -9,8 +9,13 @@ export default function Guides() {
       </p>
       <ul>
         <li>
-          <Link href="/guides/response-caching">
-            <a>Response Caching</a>
+          <Link href="/guides/making-requests">
+            <a>Making Requests</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/guides/caching-responses">
+            <a>Caching Responses</a>
           </Link>
         </li>
         <li>
@@ -21,6 +26,11 @@ export default function Guides() {
         <li>
           <Link href="/guides/deduplicating-requests">
             <a>Deduplicating Requests</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/guides/other-response-types">
+            <a>Other Response Types</a>
           </Link>
         </li>
         <li>

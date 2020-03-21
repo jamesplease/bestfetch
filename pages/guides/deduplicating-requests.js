@@ -5,9 +5,9 @@ export default function DeduplicatingRequests() {
     <div className="page">
       <h1>Deduplicating Requests</h1>
       <p>
-        bestfetch prevents multiple identical requests from being made at the
-        same time. It will batch all identical requests into a single request
-        and then reuse the response.
+        bestfetch automatically prevents multiple identical requests from being
+        made at the same time. It will batch all identical requests into a
+        single request and then reuse the response.
       </p>
       <p>
         This is best understood with an example. Consider the following fetch

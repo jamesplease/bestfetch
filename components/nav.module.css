@@ -20,7 +20,7 @@
 }
 
 .navListItem {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 .navListItem:last-child {
@@ -67,4 +67,33 @@
 
 .navApiSubList .navLink {
   font-size: 0.95rem;
+}
+
+.navSubLink:after,
+.navLink:after,
+.navSectionLink:after {
+  content: '';
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  z-index: -1;
+  background: #e9e9e9;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 100ms ease-in-out;
+}
+
+.navSubLink.active:after,
+.navSubLink:hover:after,
+.navSectionLink.active:after,
+.navSectionLink:hover:after,
+.navLink.active:after,
+.navLink:hover:after,
+.navLink:focus:after,
+.navSectionLink:focus:after,
+.navSubLink:focus:after {
+  opacity: 1;
 }

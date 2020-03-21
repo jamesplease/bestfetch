@@ -5,16 +5,17 @@ export default function CachingResponses() {
     <div className="page">
       <h1>Invalidating the Cache</h1>
       <p>
-        Out of the box, <code>bestfech</code> will never invalidate your cached
-        responses. What this means is that a particular request will only ever
-        hit the server <b>once</b>, unless you configure the library to behave
+        Out of the box, bestfech will never invalidate your cached responses.
+        What this means is that a particular request will only ever hit the
+        server <b>once</b>, unless you configure bestfetch to behave
         differently.
       </p>
       <p>
-        The reason the library works this way is because cache invalidation is a
-        difficult problem, and each application has its own particular needs. It
-        would be impossible for this library to include a default invalidation
-        strategy and expect it to work for every use case in every app.
+        The reason this library works this way is because cache invalidation is
+        a difficult problem, and each application has its own particular needs.
+        It would be impossible for this library to include a default
+        invalidation strategy and expect it to work for every use case in every
+        app.
       </p>
       <h2>Defining Your Invalidation Strategy</h2>
       <p>
@@ -27,7 +28,7 @@ export default function CachingResponses() {
         start your application.
       </p>
       <p>
-        To get started, import the <code>responseCache</code> interface:
+        To get started, import the <code>responseCache</code> object:
       </p>
       <code className="codeBlock">
         {`import { responseCache } from 'bestfetch';`}

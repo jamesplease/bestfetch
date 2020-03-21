@@ -8,10 +8,12 @@ module.exports = {
   exportPathMap: function() {
     return {
       '/': { page: '/' },
-      '/about': { page: '/about' },
+      '/getting-started': { page: '/getting-started' },
 
       '/guides': { page: '/guides/index' },
-      '/getting-started': { page: '/getting-started' },
+      '/guides/making-requests': {
+        page: '/guides/making-requests',
+      },
       '/guides/invalidating-the-cache': {
         page: '/guides/invalidating-the-cache',
       },
@@ -22,13 +24,14 @@ module.exports = {
       '/guides/faq': {
         page: '/guides/faq',
       },
+      '/guides/other-response-types': { page: '/guides/other-response-types' },
 
-      '/api': { page: '/api/index' },
-      '/api/bestfetch': { page: '/api/bestfetch' },
-      '/api/responsecache': { page: '/api/response-cache' },
-      '/api/activerequests': { page: '/api/active-requests' },
-      '/api/cachemisserror': { page: '/api/cache-miss-error' },
-      '/api/getrequestkey': { page: '/api/get-request-key' },
+      '/docs': { page: '/docs/index' },
+      '/docs/bestfetch': { page: '/docs/bestfetch' },
+      '/docs/response-cache': { page: '/docs/response-cache' },
+      '/docs/active-requests': { page: '/docs/active-requests' },
+      '/docs/cache-miss-error': { page: '/docs/cache-miss-error' },
+      '/docs/get-request-key': { page: '/docs/get-request-key' },
     };
   },
   assetPrefix: !debug ? '/bestfetch/' : '',
