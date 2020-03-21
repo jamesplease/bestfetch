@@ -5,7 +5,7 @@
   "description": "Documentation for bestfetch.",
   "scripts": {
     "dev": "next",
-    "deploy": "rimraf docs && next build && next export -o docs && touch docs/.nojekyll && gh-pages -d docs"
+    "deploy": "rimraf docs && next build && next export -o docs && touch docs/.nojekyll && gh-pages -d docs -t true"
   },
   "repository": {
     "type": "git",
