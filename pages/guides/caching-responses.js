@@ -1,3 +1,4 @@
+import Lowlight from 'react-lowlight';
 import Link from 'next/link';
 import styles from './caching-responses.module.css';
 
@@ -38,12 +39,14 @@ export default function CachingResponses() {
         The following example shows how to specify the{' '}
         <code>"network-only"</code> option:
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2', { cachePolicy: 'network-only' })
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books/2', { cachePolicy: 'network-only' })
   .then(res => {
     console.log('Got the book', res.data);
   });`}
-      </code>
+      />
       <h2>The Default Behavior</h2>
       <p>
         The default value of <code>cache-policy</code> is determined by the

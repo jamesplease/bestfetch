@@ -1,3 +1,4 @@
+import Lowlight from 'react-lowlight';
 import Link from 'next/link';
 
 export default function DeduplicatingRequests() {
@@ -13,8 +14,10 @@ export default function DeduplicatingRequests() {
         This is best understood with an example. Consider the following fetch
         code:
       </p>
-      <code className="codeBlock">
-        {`fetch('/api/books/2')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`fetch('/api/books/2')
   .then(res => {
     console.log('Received the book:', res);
   });
@@ -23,15 +26,17 @@ fetch('/api/books/2')
   .then(res => {
     console.log('Received the book:', res);
   });`}
-      </code>
+      />
       <p>
         This code makes two requests to the same exact endpoint, and,
         accordingly, two network requests are made. Because these requests are
         targeting the same exact endpoint, it would be more efficient to make
         just one network request. That's what bestfetch will do:
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books/2')
   .then(res => {
     console.log('Received the book:', res);
   });
@@ -42,7 +47,7 @@ bestfetch('/api/books/2')
   .then(res => {
     console.log('Received the book:', res);
   });`}
-      </code>
+      />
       <h2>What Makes a Request Identical?</h2>
       <p>
         This library looks at the following pieces of information about a
@@ -94,12 +99,14 @@ bestfetch('/api/books/2')
         Pass <code>dedupe: false</code> when calling <code>bestfetch</code> to
         disable request deduplication for a particular request.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2', { dedupe: false })
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books/2', { dedupe: false })
   .then(res => {
     console.log('Received the book:', res);
   });`}
-      </code>
+      />
       <h2>Configuring the Deduplication Behavior</h2>
       <div className="advanced">
         <span className="emoji">💁‍♀️</span> <b>Heads up!</b> This is an advanced
@@ -122,12 +129,14 @@ bestfetch('/api/books/2')
         By default, a <code>requestKey</code> is generated for you, but you may
         pass your own to override this behavior.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2', { requestKey: 'my-custom-key' })
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books/2', { requestKey: 'my-custom-key' })
   .then(res => {
     console.log('Received the book:', res);
   });`}
-      </code>
+      />
     </div>
   );
 }

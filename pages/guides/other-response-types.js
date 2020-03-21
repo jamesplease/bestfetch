@@ -1,3 +1,4 @@
+import Lowlight from 'react-lowlight';
 import Link from 'next/link';
 
 export default () => {
@@ -70,8 +71,10 @@ export default () => {
         The following example would support an endpoint that returns JSON for
         every request except for when the status code is <code>400</code>.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books/2', {
   responseType(res) {
     if (res.status === 400) {
       return 'text';
@@ -81,7 +84,7 @@ export default () => {
   }
 })
   .then(handlResponse);`}
-      </code>
+      />
     </div>
   );
 };

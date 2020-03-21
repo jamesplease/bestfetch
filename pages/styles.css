@@ -116,11 +116,11 @@ a code {
 .advanced {
   color: #323e58;
   font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  padding: 0.65rem 1rem;
   border-radius: 0.25rem;
   background: #e2eeff;
 }
 
 .emoji {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
