@@ -38,6 +38,11 @@ export default function GettingStarted() {
         .
       </p>
 
+      <div className="advanced">
+        <span className="emoji">💁‍♀️</span> <b>Heads up!</b> You can copy and
+        paste these code snippets into your browser's developer tools to try
+        them out!
+      </div>
       <code className="codeBlock">
         {`import { bestfetch } from 'bestfetch';
 
@@ -52,6 +57,10 @@ bestfetch('https://jsonplaceholder.typicode.com/todos/1')
     console.log('Got some data', res.data);
   });`}
       </code>
+      <p>
+        If you copy the above code and run it in your browser's developer tools,
+        you can observe that only a single network request is made.
+      </p>
       <p>
         If you're familiar with <code>fetch</code>, you may have noticed that
         we're not calling <code>.json()</code>

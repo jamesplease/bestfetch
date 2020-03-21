@@ -39,9 +39,7 @@ export default function CachingResponses() {
         <code>"network-only"</code> option:
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('/api/books/2', { cachePolicy: 'network-only' })
+        {`bestfetch('/api/books/2', { cachePolicy: 'network-only' })
   .then(res => {
     console.log('Got the book', res.data);
   });`}

@@ -55,12 +55,33 @@ export default () => {
         </li>
       </ul>
       <p>
-        For more information, please reference{' '}
+        For more information on these options, please reference{' '}
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/Body#Methods">
           the Body mixin documentation
         </a>{' '}
         on MDN.
       </p>
+      <p>
+        You may also pass a function as <code>responseType</code>, which will be
+        called with one argument, the <code>response</code>. This allows you to
+        inspect the response object before deciding how to parse it.
+      </p>
+      <p>
+        The following example would support an endpoint that returns JSON for
+        every request except for when the status code is <code>400</code>.
+      </p>
+      <code className="codeBlock">
+        {`bestfetch('/api/books/2', {
+  responseType(res) {
+    if (res.status === 400) {
+      return 'text';
+    } else {
+      return 'json';
+    }
+  }
+})
+  .then(handlResponse);`}
+      </code>
     </div>
   );
 };

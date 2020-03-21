@@ -5,7 +5,7 @@ export default function FAQ() {
     <div className="page">
       <h1>FAQ</h1>
       <h2>
-        Why is <code>res.data</code> set to <code>null</code>?
+        Sometimes <code>res.data</code> set to <code>null</code>, why is that?
       </h2>
       <p>
         If the response cannot be parsed as the <code>responseType</code>, then{' '}
@@ -31,15 +31,15 @@ export default function FAQ() {
       </p>
 
       <h2>
-        Why is <code>responseType</code> an option?
+        Why is <code>responseType</code> even an option?
       </h2>
       <p>
-        The reason that this option exists requires going into some of the
-        details of the <code>fetch</code> API.
+        This option exists because of the inner workings of the{' '}
+        <code>fetch</code> API.
       </p>
       <p>
-        The argument that is returned to you in the <code>.then</code> callback
-        of a call to <code>fetch()</code> is a{' '}
+        The argument that is passed to the <code>.then()</code> callback of a{' '}
+        <code>fetch()</code> call is a{' '}
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/Response">
           Response object
         </a>
@@ -56,9 +56,9 @@ export default function FAQ() {
         bestfetch.
       </p>
       <p>
-        If each of these "consumers" tried to read the body, then there would be
-        an error. To avoid that, bestfetch reads it for you – once – and passes
-        the result to each consumer.
+        If more than one "consumer" tried to read the body, then an error would
+        be thrown. To get around this problem, bestfetch reads the body for you
+        – one time – and passes that result to each consumer.
       </p>
 
       <h2>Is the data duplicated?</h2>

@@ -5,9 +5,15 @@ export default () => {
     <div className="page">
       <h1>Making Requests</h1>
       <p>
-        <code>bestfetch</code> is based off of <code>fetch</code>, so your
-        knowledge of fetch will carry over when using this library.
+        This guide will cover how to configure requests as well as how to handle
+        the responses that you receive.
       </p>
+      <p>
+        To begin, import the <code>bestfetch</code> function:
+      </p>
+      <code className="codeBlock">
+        {`import { bestfetch } from 'bestfetch';`}
+      </code>
       <h2>Configuring Requests</h2>
       <p>
         <code>bestfetch</code> supports all of the same options as{' '}
@@ -20,9 +26,7 @@ export default () => {
         absolute or relative.
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(handleResponse);
 
 bestfetch({
@@ -40,9 +44,7 @@ bestfetch({
         <code>POST</code> request:
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
   method: 'post'
 })
   .then(handleResponse);`}
@@ -57,9 +59,7 @@ bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
         knows how to interpret the data:
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
   method: 'post',
   body: JSON.stringify(data),
   headers: {
@@ -73,9 +73,7 @@ bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
         Include query parameters in the <code>url</code>.
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('/api/books/2?sort=author')
+        {`bestfetch('/api/books/2?sort=author')
   .then(handleResponse);`}
       </code>
       <p>
@@ -88,8 +86,7 @@ bestfetch('/api/books/2?sort=author')
         :
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-import queryString from 'query-string';
+        {`import queryString from 'query-string';
 
 const qs = queryString.stringify({ sort: 'author' });
 
@@ -162,24 +159,62 @@ bestfetch(\`/api/books/2?\${qs}\`)
       <h2>Receiving Responses</h2>
       <p>
         <code>bestfetch</code> returns a Promise. This Promise resolves if a
-        response from the server is received, and it rejects if a network error
-        occurs.
+        response from the server is received, or if a cached value exists, and
+        it rejects otherwise.
       </p>
       <h3>Successful Respones</h3>
       <p>
-        When a response is successful, you can access the data from the response
+        When a response is successful you can access the data from the response
         on <code>res.data</code>.
       </p>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(res => {
     console.log('Got the data', res.data);
   });`}
       </code>
       <h3>Errors</h3>
-      <p>Coming soon.</p>
+      <p>
+        If the server replies with an error response, then the Promise will
+        still resolve. This may be unexpected. If your server utilizes HTTP
+        status codes, then you can check for server errors with the following
+        code:
+      </p>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+  .then(res => {
+    if (res.ok) {
+      console.log('The request was successful');
+    } else {
+      console.log('The request was unsuccessful.');
+    }
+  });`}
+      </code>
+      <p>If no response is received, then the promise will reject.</p>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+  .catch(err => {
+    console.log('Another kind of error occurred.', err);
+  });`}
+      </code>
+      <p>
+        The Promise will also reject with a{' '}
+        <Link href="/api/cachemisserror">
+          <a>CacheMissError</a>
+        </Link>{' '}
+        if the <code>cachePolicy</code> of the request is set to{' '}
+        <code>"cache-only"</code> and nothing was found in the cache.
+      </p>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+  cachePolicy: 'cache-only'
+})
+  .catch(err => {
+    if (typeof err === CacheMissError) {
+      console.log('This request did not having a response in the cache.');
+    }
+  });`}
+      </code>
     </div>
   );
 };
