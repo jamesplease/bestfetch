@@ -31,22 +31,27 @@ export default function GettingStarted() {
       </p>
       <h2>Basic Usage</h2>
       <p>
-        The following example demonstrates using bestfetch with the{' '}
+        Get started by importing the <code>bestfetch</code> method from the
+        library. The following example demonstrates using bestfetch with the{' '}
         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">
           ES2015 module syntax
         </a>
         .
       </p>
-
+      <code className="codeBlock">
+        {`import { bestfetch } from 'bestfetch';`}
+      </code>
+      <p>
+        You're now ready to make a request! In the following example, two
+        requests are made to fetch a todo item from an API.
+      </p>
       <div className="advanced">
         <span className="emoji">💁‍♀️</span> <b>Heads up!</b> You can copy and
-        paste these code snippets into your browser's developer tools to try
-        them out!
+        paste this code snippet into your browser's developer tools to try it
+        out!
       </div>
       <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';
-
-bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(res => {
     console.log('Got some data', res.data);
   });
@@ -75,9 +80,13 @@ bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   });`}
       </code>
       <p>
-        What you're doing when you call <code>.json()</code> is read the request
-        body, parsing it as a JSON string. When you use bestfetch, the request
-        body is read and parsed as JSON automatically for you.
+        When you call <code>.json()</code> you're reading the response body from
+        the server and parsing it as JSON. When you use bestfetch, the request
+        body is read and parsed as JSON automatically for you (although this{' '}
+        <Link href="/guides/other-response-types">
+          <a>can be configured</a>
+        </Link>
+        ).
       </p>
       <h2>Next Steps</h2>
       <p>

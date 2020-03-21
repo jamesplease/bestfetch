@@ -215,6 +215,68 @@ bestfetch(\`/api/books/2?\${qs}\`)
     }
   });`}
       </code>
+      <h2>Trying It Out</h2>
+      <p>
+        This webpage has <code>bestfetch</code> available on the window for you
+        to use. Go ahead and to try out making requests with{' '}
+        <a href="https://jsonplaceholder.typicode.com/">
+          the JSON Placeholder API
+        </a>
+        !
+      </p>
+      <p>Here are a few examples to get you started.</p>
+      <h3>Fetching a Resource</h3>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+  .then(res => {
+    console.log('Got the todo', res.data);
+  });`}
+      </code>
+      <h3>Creating a Resource</h3>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'post',
+    body: JSON.stringify({
+      title: 'My first post',
+      body: 'This is a draft post.',
+      userId: 1
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  })
+  .then(res => console.log('Created:', res.data));`}
+      </code>
+      <h3>Updating a Resource</h3>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
+    method: 'put',
+    body: JSON.stringify({
+      id: 1,
+      title: 'foo',
+      body: 'bar',
+      userId: 1
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  })
+  .then(res => console.log('Updated:', res.data));`}
+      </code>
+      <h3>Deleting a Resource</h3>
+      <code className="codeBlock">
+        {`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
+  method: 'delete'
+})`}
+      </code>
+      <h3>Other Examples</h3>
+      <p>
+        Check out{' '}
+        <a href="https://jsonplaceholder.typicode.com/guide.html">
+          the JSON Placeholder examples
+        </a>{' '}
+        for more inspiration.
+      </p>
     </div>
   );
 };
