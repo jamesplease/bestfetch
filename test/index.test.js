@@ -600,6 +600,29 @@ describe('responseCache.has', () => {
   });
 });
 
+describe('responseCache.delete', () => {
+  test('behaves as expected', done => {
+    expect(responseCache.delete('test')).toBe(false);
+    bestfetch('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      expect(responseCache.delete('test')).toBe(true);
+      expect(responseCache.has('test')).toBe(false);
+      done();
+    });
+  });
+});
+
 describe('responseCache.get', () => {
   test('behaves as expected', done => {
     expect(responseCache.get('test')).toBeUndefined();

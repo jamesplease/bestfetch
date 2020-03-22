@@ -48,7 +48,7 @@ const responseCache = {
     if (!responseCache.has(requestKey)) {
       return false;
     } else {
-      delete responseCache[requestKey];
+      delete responseCacheStore[requestKey];
       return true;
     }
   },
