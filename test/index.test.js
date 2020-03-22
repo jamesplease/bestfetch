@@ -431,7 +431,9 @@ describe('bestfetch', () => {
 
 describe('cacheWritePolicy', () => {
   test('default does not cache 500 server errors', done => {
-    bestfetch('/test/fails/internal-server-error').then(res => {
+    bestfetch('/test/fails/internal-server-error', {
+      requestKey: 'will-error',
+    }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: null,
@@ -441,7 +443,11 @@ describe('cacheWritePolicy', () => {
         })
       );
 
-      bestfetch('/test/fails/internal-server-error').then(resTwo => {
+      expect(responseCache.has('will-error')).toBe(false);
+
+      bestfetch('/test/fails/internal-server-error', {
+        requestKey: 'will-error',
+      }).then(resTwo => {
         expect(resTwo).toEqual(
           expect.objectContaining({
             data: null,
@@ -450,6 +456,7 @@ describe('cacheWritePolicy', () => {
             ok: false,
           })
         );
+        expect(responseCache.has('will-error')).toBe(false);
         expect(
           fetchMock.calls('/test/fails/internal-server-error').length
         ).toBe(2);
@@ -460,6 +467,7 @@ describe('cacheWritePolicy', () => {
 
   test('can be overridden on a per-request basis using `saveToCache`', done => {
     bestfetch('/test/fails/internal-server-error', {
+      requestKey: 'will-error',
       saveToCache: true,
       responseType: 'text',
     }).then(res => {
@@ -471,8 +479,12 @@ describe('cacheWritePolicy', () => {
           ok: false,
         })
       );
+      expect(responseCache.has('will-error')).toBe(true);
 
-      bestfetch('/test/fails/internal-server-error').then(resTwo => {
+      bestfetch('/test/fails/internal-server-error', {
+        requestKey: 'will-error',
+        responseType: 'text',
+      }).then(resTwo => {
         expect(resTwo).toEqual(
           expect.objectContaining({
             data: 'Server error message',
@@ -481,6 +493,7 @@ describe('cacheWritePolicy', () => {
             ok: false,
           })
         );
+        expect(responseCache.has('will-error')).toBe(true);
         expect(
           fetchMock.calls('/test/fails/internal-server-error').length
         ).toBe(1);
