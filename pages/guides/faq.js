@@ -58,19 +58,6 @@ export default function FAQ() {
         be thrown. To get around this problem, bestfetch reads the body for you
         – one time – and passes that result to each consumer.
       </p>
-
-      <h2>Is the data duplicated?</h2>
-      <p>
-        Although you receive a new <code>Response</code> object with every call
-        to <code>bestfetch</code>, the body will be read, so the response's body
-        stream will be empty. In addition, the `data` property between every{' '}
-        <code>response</code> is shared. Accordingly, the data returned by the
-        server is never duplicated.
-      </p>
-      <p>
-        This is an optimization that allows <code>bestfetch</code> to be used in
-        applications that fetch large payloads.
-      </p>
     </div>
   );
 }
