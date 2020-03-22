@@ -7131,7 +7131,7 @@ function bestfetch() {
       lineNumber: 11,
       columnNumber: 7
     }
-  }), __jsx("h2", {
+  }), __jsx("h3", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -7710,7 +7710,7 @@ function bestfetch() {
       lineNumber: 146,
       columnNumber: 9
     }
-  }, "the MDN documentation"), "."), __jsx("h2", {
+  }, "the MDN documentation"), "."), __jsx("h3", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -7732,7 +7732,7 @@ function bestfetch() {
       lineNumber: 154,
       columnNumber: 9
     }
-  }, "Promise"), ' ', "that resolves once the response is received from the server or cache. It rejects otherwise."), __jsx("h2", {
+  }, "Promise"), ' ', "that resolves once the response is received from the server or cache. It rejects otherwise."), __jsx("h3", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -7776,7 +7776,7 @@ function bestfetch() {
 
 /***/ }),
 
-/***/ 6:
+/***/ 11:
 /*!**********************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fapi-reference%2Fbestfetch&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fapi-reference%2Fbestfetch.js ***!
   \**********************************************************************************************************************************************************************/
@@ -7799,5 +7799,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[6,"static/runtime/webpack.js"]]]);
+},[[11,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=bestfetch.js.map

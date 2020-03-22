@@ -804,7 +804,7 @@ function Nav() {
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/api-reference/active-requests",
+    href: "/api-reference/cache-miss-error",
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -819,7 +819,7 @@ function Nav() {
       lineNumber: 95,
       columnNumber: 17
     }
-  }, "activeRequests"))), __jsx("li", {
+  }, "CacheMissError"))), __jsx("li", {
     className: _nav_module_css__WEBPACK_IMPORTED_MODULE_2___default.a.navSubListItem,
     __self: this,
     __source: {
@@ -829,7 +829,7 @@ function Nav() {
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/api-reference/cache-miss-error",
+    href: "/api-reference/active-requests",
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -844,7 +844,7 @@ function Nav() {
       lineNumber: 102,
       columnNumber: 17
     }
-  }, "CacheMissError"))), __jsx("li", {
+  }, "activeRequests"))), __jsx("li", {
     className: _nav_module_css__WEBPACK_IMPORTED_MODULE_2___default.a.navSubListItem,
     __self: this,
     __source: {

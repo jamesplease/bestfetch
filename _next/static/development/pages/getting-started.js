@@ -7354,7 +7354,7 @@ function GettingStarted() {
 
 /***/ }),
 
-/***/ 12:
+/***/ 2:
 /*!**************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fgetting-started&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fgetting-started.js ***!
   \**************************************************************************************************************************************************/
@@ -7377,5 +7377,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[12,"static/runtime/webpack.js"]]]);
+},[[2,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=getting-started.js.map

@@ -8062,7 +8062,7 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 /***/ }),
 
-/***/ 10:
+/***/ 4:
 /*!********************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fguides%2Fmaking-requests&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fguides%2Fmaking-requests.js ***!
   \********************************************************************************************************************************************************************/
@@ -8085,5 +8085,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[10,"static/runtime/webpack.js"]]]);
+},[[4,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=making-requests.js.map
