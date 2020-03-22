@@ -7,7 +7,7 @@ let readPolicyFn = () => true;
 
 // By default server errors are not cached, but every other successful response is.
 let writePolicyFn = res => {
-  if (res.code >= 500) {
+  if (res.status >= 500) {
     return false;
   } else {
     return true;
