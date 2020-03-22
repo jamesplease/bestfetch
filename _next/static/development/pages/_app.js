@@ -651,7 +651,7 @@ function Nav() {
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs",
+    href: "/api-reference",
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -684,7 +684,7 @@ function Nav() {
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs/bestfetch",
+    href: "/api-reference/bestfetch",
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -696,7 +696,7 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 72,
+      lineNumber: 74,
       columnNumber: 17
     }
   }, "bestfetch()"))), __jsx("li", {
@@ -704,16 +704,16 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 75,
+      lineNumber: 77,
       columnNumber: 13
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs/response-cache",
+    href: "/api-reference/response-cache",
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 76,
+      lineNumber: 78,
       columnNumber: 15
     }
   }, __jsx("a", {
@@ -721,7 +721,7 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 77,
+      lineNumber: 81,
       columnNumber: 17
     }
   }, "responseCache"))), __jsx("li", {
@@ -729,16 +729,16 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 80,
+      lineNumber: 84,
       columnNumber: 13
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs/active-requests",
+    href: "/api-reference/active-requests",
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 81,
+      lineNumber: 85,
       columnNumber: 15
     }
   }, __jsx("a", {
@@ -746,7 +746,7 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 84,
+      lineNumber: 88,
       columnNumber: 17
     }
   }, "activeRequests"))), __jsx("li", {
@@ -754,16 +754,16 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 87,
+      lineNumber: 91,
       columnNumber: 13
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs/cache-miss-error",
+    href: "/api-reference/cache-miss-error",
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88,
+      lineNumber: 92,
       columnNumber: 15
     }
   }, __jsx("a", {
@@ -771,7 +771,7 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 91,
+      lineNumber: 95,
       columnNumber: 17
     }
   }, "CacheMissError"))), __jsx("li", {
@@ -779,16 +779,16 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 94,
+      lineNumber: 98,
       columnNumber: 13
     }
   }, __jsx(_active_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
     activeClassName: "activeNavLink",
-    href: "/docs/get-request-key",
+    href: "/api-reference/get-request-key",
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 95,
+      lineNumber: 99,
       columnNumber: 15
     }
   }, __jsx("a", {
@@ -796,7 +796,7 @@ function Nav() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 98,
+      lineNumber: 102,
       columnNumber: 17
     }
   }, "getRequestKey()")))))));
