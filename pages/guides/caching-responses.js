@@ -15,11 +15,10 @@ export default function CachingResponses() {
       </p>
       <ul>
         <li>
-          <code>"cache-first"</code>: Requests will first look at the cache to
-          see if a response for the same request key exists. If a response is
-          found, then it will be returned, and no network request will be made.
-          If no response exists in the cache, then a network request will be
-          made.
+          <code>"cache-first"</code>: The cache is checked to see if a response
+          already exists for the request. If a response is found, then it will
+          be returned, and no network request will be made. If no response
+          exists in the cache, then a network request will be made.
         </li>
         <li>
           <code>"network-only"</code>: The cache is ignored, and a network
