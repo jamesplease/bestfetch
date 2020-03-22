@@ -1,5 +1,8 @@
 import CacheMissError from './cache-miss-error';
-import responseCache, { shouldUseCachedValue } from './response-cache';
+import responseCache, {
+  shouldUseCachedValue,
+  shouldWriteCachedValue,
+} from './response-cache';
 import generateResponse from './generate-response';
 
 export { responseCache, CacheMissError };
@@ -146,7 +149,9 @@ export function bestfetch(input, options) {
       return res[responseTypeToUse]().then(
         data => {
           res.data = data;
-          responseCache.set(requestKeyToUse, res);
+          if (shouldWriteCachedValue(res)) {
+            responseCache.set(requestKeyToUse, res);
+          }
 
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
