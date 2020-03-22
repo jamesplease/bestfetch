@@ -51,9 +51,8 @@ export default function GettingStarted() {
   });`}
       />
       <p>
-        If you copy the above code you can run it your browser's developer
-        tools. Run it several times and you'll see that only a single network
-        request is made; subsequent requests hit the cache and resolve
+        If you run that code snippet several times you'll see that a single
+        network request is made; subsequent requests hit the cache and resolve
         immediately.
       </p>
       <p>

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Lowlight from 'react-lowlight';
 
 export default function CachingResponses() {
   return (
@@ -30,9 +30,11 @@ export default function CachingResponses() {
       <p>
         To get started, import the <code>responseCache</code> object:
       </p>
-      <code className="codeBlock">
-        {`import { responseCache } from 'bestfetch';`}
-      </code>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';`}
+      />
       <p>
         <code>responseCache.useCachedResponse()</code> accepts a single
         argument: a function.
@@ -44,12 +46,14 @@ export default function CachingResponses() {
         from the function to use the cached response, or <code>false</code> to
         immediately invalidate it.
       </p>
-      <code className="codeBlock">
-        {`import { responseCache } from 'bestfetch';
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';
 
 // Call this method a single time: before your app mounts.
 responseCache.useCachedResponse(() => /* return true or false */);`}
-      </code>
+      />
       <h2>
         <code>cacheObject</code>
       </h2>
@@ -83,11 +87,13 @@ responseCache.useCachedResponse(() => /* return true or false */);`}
         The simplest example is to define a strategy that rejects <i>every</i>{' '}
         cached entry.
       </p>
-      <code className="codeBlock">
-        {`import { responseCache } from 'bestfetch';
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';
 
 responseCache.useCachedResponse(() => false);`}
-      </code>
+      />
       <p>
         With this invalidation strategy in place, it is as if this library
         doesn't cache any responses at all. This isn't particularly useful, so
@@ -98,8 +104,10 @@ responseCache.useCachedResponse(() => false);`}
         In the following example, we reject cached responses that are older than
         10 minutes.
       </p>
-      <code className="codeBlock">
-        {`import { responseCache } from 'bestfetch';
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';
 
 // 1000 = 1 second in milliseconds
 // * 60 = 1 minute
@@ -110,19 +118,21 @@ responseCache.useCachedResponse(cacheObject => {
   const currentTimestamp = Date.now();
   return currentTimestamp - cacheObject.createdAt <= TEN_MINUTES;
 });`}
-      </code>
+      />
       <h2>Example: Invalidate After 10 Times</h2>
       <p>
         In the following example, we only allow a cached response to be used up
         to 10 times.
       </p>
-      <code className="codeBlock">
-        {`import { responseCache } from 'bestfetch';
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';
 
 responseCache.useCachedResponse(cacheObject => {
   return cacheObject.accessCount <= 10;
 });`}
-      </code>
+      />
     </div>
   );
 }

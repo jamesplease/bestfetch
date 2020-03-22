@@ -1,3 +1,4 @@
+import Lowlight from 'react-lowlight';
 import Link from 'next/link';
 
 export default () => {
@@ -11,24 +12,24 @@ export default () => {
       <p>
         To begin, import the <code>bestfetch</code> function:
       </p>
-      <code className="codeBlock">
-        {`import { bestfetch } from 'bestfetch';`}
-      </code>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { bestfetch } from 'bestfetch';`}
+      />
       <h2>Configuring Requests</h2>
       <p>
         <code>bestfetch</code> supports all of the same options as{' '}
         <code>fetch</code>.
       </p>
       <p>
-        <p>
-          In fact, because bestfetch is a lightweight wrapper around fetch, it
-          can be beneficial for you to be familiar with that API. If you're new
-          to fetch, you may wish to read the{' '}
-          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">
-            Using Fetch guide on MDN
-          </a>
-          .
-        </p>
+        In fact, because bestfetch is a lightweight wrapper around fetch, it can
+        be beneficial for you to be familiar with that API. If you're new to
+        fetch, you may wish to read the{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">
+          Using Fetch guide on MDN
+        </a>
+        .
       </p>
       <h3>Specifying the URL</h3>
       <p>
@@ -36,42 +37,44 @@ export default () => {
         <code>options</code> object and specify the URL there. URLs can be both
         absolute or relative.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(handleResponse);
 
 bestfetch({
   url: '/api/books/2'
 })
   .then(handleResponse);`}
-      </code>
-      <p>
-        Similarly to <code>fetch()</code>, you may also use <code>uri</code>{' '}
-        instead of <code>url</code> in the options.
-      </p>
-      <h3>Specifying the Method</h3>
+      />
+      <h3>Specifying the HTTP Method</h3>
       <p>
         Pass the <code>method</code> option. For instance, to make a{' '}
         <code>POST</code> request:
       </p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
   method: 'post'
 })
   .then(handleResponse);`}
-      </code>
+      />
       <p>
-        The <code>method</code> option is case-insensitive.
+        The <code>method</code> option is case-insensitive, so both{' '}
+        <code>"POST"</code> and <code>"post"</code> work.
       </p>
       <h3>Sending Data in the Request Body</h3>
       <p>
         Use the <code>body</code> option to send data to the server. To do this,
         stringify your data and pass the correct headers so that the server
-        knows how to interpret the data:
+        knows how to parse the data:
       </p>
-      <code className="codeBlock">
-        {`bestfetch({
-  url: 'https://jsonplaceholder.typicode.com/todos/1',
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
   method: 'post',
   body: JSON.stringify(data),
   headers: {
@@ -79,15 +82,17 @@ bestfetch({
   }
 })
   .then(handleResponse);`}
-      </code>
+      />
       <h3>Sending Query Parameters</h3>
       <p>
         Include query parameters in the <code>url</code>.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('/api/books/2?sort=author')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('/api/books?sort=author')
   .then(handleResponse);`}
-      </code>
+      />
       <p>
         You may find it preferable to use a library that stringifies query
         parameters from an object. The following example shows how you can use{' '}
@@ -97,14 +102,16 @@ bestfetch({
         </a>
         :
       </p>
-      <code className="codeBlock">
-        {`import queryString from 'query-string';
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import queryString from 'query-string';
 
 const qs = queryString.stringify({ sort: 'author' });
 
-bestfetch(\`/api/books/2?\${qs}\`)
+bestfetch(\`/api/books?\${qs}\`)
   .then(handleResponse);`}
-      </code>
+      />
       <h3>Configuring the Caching Behavior</h3>
       <p>
         <code>bestfetch</code> will intelligently cache your responses to reduce
@@ -168,6 +175,46 @@ bestfetch(\`/api/books/2?\${qs}\`)
         </a>{' '}
         on MDN.
       </p>
+      <p>
+        In addition to the options that come from <code>fetch</code>, there are
+        additional options introduced in bestfetch. These are used for the
+        caching and deduplication features.
+      </p>
+      <ul>
+        <li>
+          <code>cachePolicy</code>: Controls the caching behavior. Learn more in
+          the{' '}
+          <Link href="/guides/caching-responses">
+            <a>caching guide</a>
+          </Link>
+          .
+        </li>
+        <li>
+          <code>dedupe</code>: Whether or not to dedupe this request. Learn more
+          in the{' '}
+          <Link href="/guides/deduplicating-requests">
+            <a>deduplication guide</a>
+          </Link>
+          .
+        </li>
+        <li>
+          <code>responseType</code>. Use this option when making requests to
+          endpoints that do not return JSON. Learn more{' '}
+          <Link href="/guides/other-response-types">
+            <a>here</a>
+          </Link>
+          .
+        </li>
+        <li>
+          <code>requestKey</code>. An advanced option that is used to determine
+          which requests are identical. You probably won't need this. Learn more
+          in the{' '}
+          <Link href="/guides/deduplicating-requests">
+            <a>deduplication guide</a>
+          </Link>
+          .
+        </li>
+      </ul>
       <h2>Receiving Responses</h2>
       <p>
         <code>bestfetch</code> returns a Promise. This Promise resolves if a
@@ -178,21 +225,26 @@ bestfetch(\`/api/books/2?\${qs}\`)
         When a response is successful you can access the data from the response
         on <code>res.data</code>.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(res => {
     console.log('Got the data', res.data);
   });`}
-      </code>
+      />
       <h3>Errors</h3>
       <p>
         If the server replies with an error response, then the Promise will
-        still resolve. This is important to note, because it may be surprising
-        to you. If your server utilizes HTTP status codes, then you can check
-        for server errors with the following code:
+        still resolve. This is important to note, because it may be unexpected.
+        If your server returns HTTP status codes that are greater than or equal
+        to 400 when there are errors, then you can check for server errors with
+        the following code:
       </p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(res => {
     if (res.ok) {
       console.log('The request was successful');
@@ -200,14 +252,16 @@ bestfetch(\`/api/books/2?\${qs}\`)
       console.log('The request was unsuccessful.');
     }
   });`}
-      </code>
+      />
       <p>If no response is received, then the promise will reject.</p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .catch(err => {
     console.log('Another kind of error occurred.', err);
   });`}
-      </code>
+      />
       <p>
         The Promise will also reject with a{' '}
         <Link href="/api/cachemisserror">
@@ -216,8 +270,10 @@ bestfetch(\`/api/books/2?\${qs}\`)
         if the <code>cachePolicy</code> of the request is set to{' '}
         <code>"cache-only"</code> and nothing was found in the cache.
       </p>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
   cachePolicy: 'cache-only'
 })
   .catch(err => {
@@ -225,7 +281,7 @@ bestfetch(\`/api/books/2?\${qs}\`)
       console.log('This request did not having a response in the cache.');
     }
   });`}
-      </code>
+      />
       <h2>Trying It Out</h2>
       <p>
         This webpage has <code>bestfetch</code> available on the window for you
@@ -237,15 +293,19 @@ bestfetch(\`/api/books/2?\${qs}\`)
       </p>
       <p>Here are a few examples to get you started.</p>
       <h3>Fetching a Resource</h3>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1')
   .then(res => {
     console.log('Got the todo', res.data);
   });`}
-      </code>
+      />
       <h3>Creating a Resource</h3>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/posts', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/posts', {
     method: 'post',
     body: JSON.stringify({
       title: 'My first post',
@@ -257,10 +317,12 @@ bestfetch(\`/api/books/2?\${qs}\`)
     }
   })
   .then(res => console.log('Created:', res.data));`}
-      </code>
+      />
       <h3>Updating a Resource</h3>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
     method: 'put',
     body: JSON.stringify({
       id: 1,
@@ -273,13 +335,15 @@ bestfetch(\`/api/books/2?\${qs}\`)
     }
   })
   .then(res => console.log('Updated:', res.data));`}
-      </code>
+      />
       <h3>Deleting a Resource</h3>
-      <code className="codeBlock">
-        {`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/posts/1', {
   method: 'delete'
 })`}
-      </code>
+      />
       <h3>Other Examples</h3>
       <p>
         Check out{' '}
