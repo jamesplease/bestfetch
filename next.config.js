@@ -26,12 +26,20 @@ module.exports = {
       },
       '/guides/other-response-types': { page: '/guides/other-response-types' },
 
-      '/docs': { page: '/docs/index' },
-      '/docs/bestfetch': { page: '/docs/bestfetch' },
-      '/docs/response-cache': { page: '/docs/response-cache' },
-      '/docs/active-requests': { page: '/docs/active-requests' },
-      '/docs/cache-miss-error': { page: '/docs/cache-miss-error' },
-      '/docs/get-request-key': { page: '/docs/get-request-key' },
+      '/api-reference': { page: '/api-reference/index' },
+      '/api-reference/bestfetch': { page: '/api-reference/bestfetch' },
+      '/api-reference/response-cache': {
+        page: '/api-reference/response-cache',
+      },
+      '/api-reference/active-requests': {
+        page: '/api-reference/active-requests',
+      },
+      '/api-reference/cache-miss-error': {
+        page: '/api-reference/cache-miss-error',
+      },
+      '/api-reference/get-request-key': {
+        page: '/api-reference/get-request-key',
+      },
     };
   },
   assetPrefix: !debug ? '/bestfetch/' : '',

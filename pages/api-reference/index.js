@@ -10,7 +10,7 @@ export default function API() {
       </p>
       <ul>
         <li>
-          <Link href="/api/bestfetch">
+          <Link href="/api-reference/bestfetch">
             <a>bestfetch()</a>
           </Link>
         </li>
@@ -19,22 +19,22 @@ export default function API() {
       <p>These are the other named exports of this library.</p>
       <ul>
         <li>
-          <Link href="/bestfetch">
+          <Link href="/api-reference/response-cache">
             <a>responseCache</a>
           </Link>
         </li>
         <li>
-          <Link href="/bestfetch">
+          <Link href="/api-reference/active-requests">
             <a>activeRequests</a>
           </Link>
         </li>
         <li>
-          <Link href="/bestfetch">
+          <Link href="/api-reference/cache-miss-error">
             <a>CacheMissError</a>
           </Link>
         </li>
         <li>
-          <Link href="/bestfetch">
+          <Link href="/api-reference/get-request-key">
             <a>getRequestKey()</a>
           </Link>
         </li>

@@ -68,33 +68,37 @@ export default function Nav() {
           </Link>
           <ul className={`${styles.navSubList} ${styles.navApiSubList}`}>
             <li className={styles.navSubListItem}>
-              <Link activeClassName="activeNavLink" href="/docs/bestfetch">
+              <Link
+                activeClassName="activeNavLink"
+                href="/api-reference/bestfetch">
                 <a className={styles.navLink}>bestfetch()</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
-              <Link activeClassName="activeNavLink" href="/docs/response-cache">
+              <Link
+                activeClassName="activeNavLink"
+                href="/api-reference/response-cache">
                 <a className={styles.navLink}>responseCache</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/docs/active-requests">
+                href="/api-reference/active-requests">
                 <a className={styles.navLink}>activeRequests</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/docs/cache-miss-error">
+                href="/api-reference/cache-miss-error">
                 <a className={styles.navLink}>CacheMissError</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/docs/get-request-key">
+                href="/api-reference/get-request-key">
                 <a className={styles.navLink}>getRequestKey()</a>
               </Link>
             </li>
