@@ -2,10 +2,11 @@
   position: sticky;
   top: 0;
   width: var(--navWidth);
-  height: 100vh;
+  max-height: 100vh;
+  overflow-y: scroll;
   /* min-height: calc(100%); */
   background: #f7f7f7;
-  padding: var(--appTopPadding) 0;
+  padding: var(--appTopPadding) 0 50px;
 }
 
 .navSubList,
