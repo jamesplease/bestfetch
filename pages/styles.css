@@ -97,6 +97,7 @@ a code {
 
 .badgeList {
   margin-bottom: 50px;
+  min-height: 20px;
 }
 
 .badgeList > * {
@@ -123,4 +124,52 @@ a code {
 
 .emoji {
   font-size: 1rem;
+}
+
+.heroProps {
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.heroPropContainer {
+  padding: 0 1.5rem;
+  flex: 0 0 50%;
+}
+
+.heroEmoji {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.heroProp {
+  text-align: center;
+  font-weight: 900;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.heroDescription {
+  line-height: 1.7;
+}
+
+.getStartedLink {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: white;
+  background: var(--mainColor);
+  box-shadow: 0 0 25px 2px rgba(43, 93, 253, 0.5);
+}
+
+.getStartedLink:hover {
+  background: #3968ff;
+}
+
+.getStartedLink:active {
+  background: #2354f1;
 }
