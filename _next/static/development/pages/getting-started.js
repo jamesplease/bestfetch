@@ -7174,18 +7174,55 @@ function GettingStarted() {
       lineNumber: 22,
       columnNumber: 7
     }
-  }, "Basic Usage"), __jsx("p", {
+  }, "Prerequisites"), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
       lineNumber: 23,
       columnNumber: 7
     }
+  }, "A global", ' ', __jsx("a", {
+    href: "https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 25,
+      columnNumber: 9
+    }
+  }, "fetch"), ' ', "method is required to use bestfetch. If you need to run bestfetch in a browser without ", __jsx("code", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 29,
+      columnNumber: 25
+    }
+  }, "fetch"), ", then we recommend using GitHub's", ' ', __jsx("a", {
+    href: "https://github.com/github/fetch",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 30,
+      columnNumber: 9
+    }
+  }, "fetch polyfill"), "."), __jsx("h2", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 32,
+      columnNumber: 7
+    }
+  }, "Basic Usage"), __jsx("p", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 33,
+      columnNumber: 7
+    }
   }, "Get started by importing the ", __jsx("code", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 24,
+      lineNumber: 34,
       columnNumber: 38
     }
   }, "bestfetch"), " function. The following example demonstrates importing it using the", ' ', __jsx("a", {
@@ -7193,7 +7230,7 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 26,
+      lineNumber: 36,
       columnNumber: 9
     }
   }, "ES2015 module syntax"), "."), __jsx(react_lowlight__WEBPACK_IMPORTED_MODULE_1___default.a, {
@@ -7203,14 +7240,14 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 31,
+      lineNumber: 41,
       columnNumber: 7
     }
   }), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 36,
+      lineNumber: 46,
       columnNumber: 7
     }
   }, "Use this function to make requests. In the following example, a request is made to fetch a todo item from an API."), __jsx("div", {
@@ -7218,7 +7255,7 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 40,
+      lineNumber: 50,
       columnNumber: 7
     }
   }, __jsx("span", {
@@ -7226,14 +7263,14 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41,
+      lineNumber: 51,
       columnNumber: 9
     }
   }, "\uD83D\uDC81\u200D\u2640\uFE0F"), " ", __jsx("b", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41,
+      lineNumber: 51,
       columnNumber: 46
     }
   }, "Heads up!"), " You can copy and paste the following code snippet into your browser's developer tools to try it out!"), __jsx(react_lowlight__WEBPACK_IMPORTED_MODULE_1___default.a, {
@@ -7243,42 +7280,42 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 45,
+      lineNumber: 55,
       columnNumber: 7
     }
   }), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 53,
+      lineNumber: 63,
       columnNumber: 7
     }
   }, "If you run that code snippet several times you'll see that a single network request is made; subsequent requests hit the cache and resolve immediately."), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 58,
+      lineNumber: 68,
       columnNumber: 7
     }
   }, "If you're familiar with ", __jsx("code", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 59,
+      lineNumber: 69,
       columnNumber: 33
     }
   }, "fetch"), ", you may have noticed that we're not calling ", __jsx("code", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 60,
+      lineNumber: 70,
       columnNumber: 27
     }
   }, ".json()"), "on the response. Typical ", __jsx("code", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 61,
+      lineNumber: 71,
       columnNumber: 34
     }
   }, "fetch"), " usage would look like the following:"), __jsx(react_lowlight__WEBPACK_IMPORTED_MODULE_1___default.a, {
@@ -7288,21 +7325,21 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 64,
+      lineNumber: 74,
       columnNumber: 7
     }
   }), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 73,
+      lineNumber: 83,
       columnNumber: 7
     }
   }, "When you call ", __jsx("code", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 74,
+      lineNumber: 84,
       columnNumber: 23
     }
   }, ".json()"), " you're reading the response body from the server and parsing it as JSON. When you use bestfetch, the request body is read and parsed as JSON automatically for you (although this", ' ', __jsx(_components_link__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -7310,28 +7347,28 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 77,
+      lineNumber: 87,
       columnNumber: 9
     }
   }, __jsx("a", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 78,
+      lineNumber: 88,
       columnNumber: 11
     }
   }, "can be configured")), ")."), __jsx("h2", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 82,
+      lineNumber: 92,
       columnNumber: 7
     }
   }, "Next Steps"), __jsx("p", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 83,
+      lineNumber: 93,
       columnNumber: 7
     }
   }, "Now that you've seen the basic usage of bestfetch, read the", ' ', __jsx(_components_link__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -7339,14 +7376,14 @@ function GettingStarted() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 85,
+      lineNumber: 95,
       columnNumber: 9
     }
   }, __jsx("a", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 86,
+      lineNumber: 96,
       columnNumber: 11
     }
   }, "Making Requests")), ' ', "guide to learn more."));
@@ -7354,7 +7391,7 @@ function GettingStarted() {
 
 /***/ }),
 
-/***/ 3:
+/***/ 1:
 /*!**************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fgetting-started&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fgetting-started.js ***!
   \**************************************************************************************************************************************************/
@@ -7377,5 +7414,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[3,"static/runtime/webpack.js"]]]);
+},[[1,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=getting-started.js.map

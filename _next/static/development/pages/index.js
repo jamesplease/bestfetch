@@ -4850,7 +4850,7 @@ function Index() {
       lineNumber: 43,
       columnNumber: 33
     }
-  }, "considerably"), " by caching responses. Only make network requests when you need to.")), __jsx("div", {
+  }, "considerably"), " by caching responses. Use bestfetch to only make network requests when you need to.")), __jsx("div", {
     className: "heroPropContainer",
     __self: this,
     __source: {
