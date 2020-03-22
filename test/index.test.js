@@ -326,6 +326,23 @@ describe('bestfetch', () => {
     });
   });
 
+  test('non-deduped requests that succeed, but cannot be parsed, behave as expected', done => {
+    bestfetch('/test/succeeds', {
+      requestKey: 'pasta',
+      dedupe: false,
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: null,
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      done();
+    });
+  });
+
   test('non-deduped requests that succeeds with JSON to behave as expected', done => {
     bestfetch('/test/succeeds/json', {
       requestKey: 'pasta',
