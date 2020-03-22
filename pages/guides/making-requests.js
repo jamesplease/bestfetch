@@ -284,8 +284,9 @@ bestfetch(\`/api/books?\${qs}\`)
       />
       <h2>Trying It Out</h2>
       <p>
-        This webpage has <code>bestfetch</code> available on the window for you
-        to use. You can try it out by making requests to{' '}
+        This webpage has <code>bestfetch</code> available on the{' '}
+        <code>window</code> for you to use. You can try it out by making
+        requests to{' '}
         <a href="https://jsonplaceholder.typicode.com/">
           the JSON Placeholder API
         </a>

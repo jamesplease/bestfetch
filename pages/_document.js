@@ -10,7 +10,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head />
-        <title>⭐️bestfetch ⭐️</title>
+        <title>bestfetch</title>
         <body>
           <Main />
           <NextScript />

@@ -10,7 +10,7 @@ export default function Header() {
       <a
         className={styles.githubLink}
         href="https://github.com/jamesplease/bestfetch">
-        GitHub
+        <img src="/github-logo.svg" className={styles.githubLogo} />
       </a>
     </header>
   );

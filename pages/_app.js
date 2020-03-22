@@ -28,7 +28,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <React.Fragment>
       <Header />
-      <div>
+      <div className={style.appContents}>
         <Nav />
         <div className={style.bodyContents}>
           <Component {...pageProps} />

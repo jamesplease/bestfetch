@@ -68,9 +68,9 @@ export default function Index() {
             <div className="heroEmoji">⚡️</div>
             <div className="heroProp">Efficient</div>
             <div className="heroDescription">
-              bestfetch is great for your users, too: many people worldwide
-              browse the web on mobile phones with limited data plans. Use less
-              of their data by leveraging bestfetch.
+              bestfetch is great for your users: many people worldwide browse
+              the web on mobile phones with limited data plans. Use less of
+              their data by leveraging bestfetch.
             </div>
           </div>
         </div>

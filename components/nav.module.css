@@ -1,9 +1,9 @@
 .nav {
-  position: fixed;
-  top: var(--headerHeight);
-  left: 0;
+  position: sticky;
+  top: 0;
   width: var(--navWidth);
-  min-height: calc(100% - var(--headerHeight));
+  height: 100vh;
+  /* min-height: calc(100%); */
   background: #f7f7f7;
   padding: var(--appTopPadding) 0;
 }

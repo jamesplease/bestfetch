@@ -1,20 +1,18 @@
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
   height: var(--headerHeight);
-  background: var(--mainColor);
-  color: white;
+  color: #111;
   padding: 0 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #e4e4e4;
+  background: white;
 }
 
 .logo {
-  color: white;
+  color: #111;
   text-decoration: none;
   margin: 0;
   padding: 0;
@@ -24,6 +22,17 @@
 }
 
 .githubLink {
-  color: white;
+  color: #111;
   text-decoration: none;
+}
+
+.githubLogo {
+  width: 24px;
+  height: 24px;
+  will-change: opacity;
+  transition: opacity 90ms ease-out;
+}
+
+.githubLogo:hover {
+  opacity: 0.75;
 }
