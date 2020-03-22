@@ -56,7 +56,7 @@ export default () => {
       <Lowlight
         language="js"
         inline={false}
-        value={`activeRequests.isRequestInFlight('my-request-key')`}
+        value={`activeRequests.isRequestInFlight('my-request-key');`}
       />
 
       <h2>
@@ -72,7 +72,11 @@ export default () => {
       <h3>Returns</h3>
       <p>This method does not return anything.</p>
       <h3>Example Usage</h3>
-      <Lowlight language="js" inline={false} value={`activeRequests.clear()`} />
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`activeRequests.clear();`}
+      />
     </div>
   );
 };
