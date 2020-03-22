@@ -28,7 +28,7 @@ export default function CachingResponses() {
           <code>"cache-only"</code>: If a response exists in the cache, then it
           will be returned. If no response exists in the cache, then the Promise
           will reject to a{' '}
-          <Link href="/api/cachemisserror">
+          <Link href="/api-reference/cache-miss-error">
             <a>CacheMissError</a>
           </Link>
           .

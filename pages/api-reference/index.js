@@ -6,7 +6,7 @@ export default function API() {
       <h1>API</h1>
       <p>
         This library has a named export that you will use most often:{' '}
-        <code>bestfetch</code>. Most of the time it is all that you will need.
+        <code>bestfetch</code>.
       </p>
       <ul>
         <li>

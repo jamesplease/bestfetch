@@ -61,9 +61,9 @@ export default function FAQ() {
 
       <h2>Is the data duplicated?</h2>
       <p>
-        Although you receive a new `Response` object with every call to
-        <code>bestfetch</code>, the body will be read, so the response's body
-        stream will be empty. In addition, the `data` property between every
+        Although you receive a new <code>Response</code> object with every call
+        to <code>bestfetch</code>, the body will be read, so the response's body
+        stream will be empty. In addition, the `data` property between every{' '}
         <code>response</code> is shared. Accordingly, the data returned by the
         server is never duplicated.
       </p>

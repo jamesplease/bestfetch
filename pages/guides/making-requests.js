@@ -266,7 +266,7 @@ bestfetch(\`/api/books?\${qs}\`)
       />
       <p>
         The Promise will also reject with a{' '}
-        <Link href="/api/cachemisserror">
+        <Link href="/api-reference/cache-miss-error">
           <a>CacheMissError</a>
         </Link>{' '}
         if the <code>cachePolicy</code> of the request is set to{' '}

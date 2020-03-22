@@ -60,11 +60,6 @@ export default function DeduplicatingRequests() {
         <code>requestKey</code> when calling <code>bestfetch</code>.
       </p>
       <p>
-        When two requests have the same key, then they are deduped.
-        Additionally, the request key is used to determine when to pull from the
-        cache.
-      </p>
-      <p>
         By default, a <code>requestKey</code> is generated for you, but you may
         pass your own to override this behavior.
       </p>
@@ -76,6 +71,10 @@ export default function DeduplicatingRequests() {
     console.log('Received the book:', res);
   });`}
       />
+      <p>
+        Be careful when specifying your own request keys – it will affect the
+        behavior of both request deduplication and response caching!
+      </p>
     </div>
   );
 }
