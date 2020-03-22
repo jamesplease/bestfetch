@@ -47,12 +47,12 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  useCachedResponse(fn) {
+  configureCacheReadPolicy(fn) {
     if (typeof fn === 'function') {
       accssFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.useCachedResponse()` must be a function.'
+        'The first argument to `responseCache.configureCacheReadPolicy()` must be a function.'
       );
     }
   },
