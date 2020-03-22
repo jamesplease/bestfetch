@@ -429,7 +429,67 @@ describe('bestfetch', () => {
   });
 });
 
+describe('cacheWritePolicy', () => {
+  test('default does not cache 500 server errors', done => {
+    bestfetch('/test/fails/internal-server-error').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: null,
+          status: 500,
+          statusText: 'Internal Server Error',
+          ok: false,
+        })
+      );
+
+      bestfetch('/test/fails/internal-server-error').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: null,
+            status: 500,
+            statusText: 'Internal Server Error',
+            ok: false,
+          })
+        );
+        expect(
+          fetchMock.calls('/test/fails/internal-server-error').length
+        ).toBe(2);
+        done();
+      });
+    });
+  });
+});
+
 describe('cachePolicy', () => {
+  test('Defaults with a GET should be cache-first', done => {
+    bestfetch('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      bestfetch('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+        done();
+      });
+    });
+  });
+
   test('Defaults with a GET should be cache-first', done => {
     bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
