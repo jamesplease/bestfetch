@@ -62,8 +62,8 @@ bestfetch({
   .then(handleResponse);`}
       />
       <p>
-        The <code>method</code> option is case-insensitive, so both{' '}
-        <code>"POST"</code> and <code>"post"</code> work.
+        The <code>method</code> option is case-insensitive, so either{' '}
+        <code>"POST"</code> and <code>"post"</code> will work.
       </p>
       <h3>Sending Data in the Request Body</h3>
       <p>
@@ -237,6 +237,8 @@ bestfetch(\`/api/books?\${qs}\`)
       <p>
         If the server replies with an error response, then the Promise will
         still resolve. This is important to note, because it may be unexpected.
+      </p>
+      <p>
         If your server returns HTTP status codes that are greater than or equal
         to 400 when there are errors, then you can check for server errors with
         the following code:
