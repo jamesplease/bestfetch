@@ -415,6 +415,19 @@ describe('bestfetch', () => {
     });
   });
 
+  // Note: clearing `activeRequests` will prevent any deduped request from ever resolving. This is
+  // because we always return the proxy request from a deduped request, rather than the actual request.
+  // test('deduped requests that wipe the activeRequests store mid-flight do not error', done => {
+  //   bestfetch('/test/succeeds/json', {
+  //     requestKey: 'pasta',
+  //     responseType: 'text',
+  //   }).then(() => {
+  //     expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+  //     done();
+  //   });
+  //   activeRequests.clear();
+  // });
+
   test('deduped requests that succeed to behave as expected', done => {
     fetchMock.get(
       '/test/fails/dedupe',
