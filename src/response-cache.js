@@ -2,17 +2,20 @@ import generateResponse from './generate-response';
 
 let responseCacheStore = {};
 
-// By default we always read from the cache when a value exists.
-let readPolicyFn = () => true;
-
-// By default server errors are not cached, but every other successful response is.
-let writePolicyFn = res => {
-  if (res.code >= 500) {
+export const defaultReadPolicy = () => true;
+export const defaultWritePolicy = res => {
+  if (res.status >= 500) {
     return false;
   } else {
     return true;
   }
 };
+
+// By default we always read from the cache when a value exists.
+let readPolicyFn = defaultReadPolicy;
+
+// By default server errors are not cached, but every other successful response is.
+let writePolicyFn = defaultWritePolicy;
 
 const responseCache = {
   get(requestKey) {
@@ -48,7 +51,7 @@ const responseCache = {
     if (!responseCache.has(requestKey)) {
       return false;
     } else {
-      delete responseCache[requestKey];
+      delete responseCacheStore[requestKey];
       return true;
     }
   },

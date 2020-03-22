@@ -4,7 +4,9 @@ import {
   getRequestKey,
   activeRequests,
   responseCache,
+  CacheMissError,
 } from '../src';
+import { defaultReadPolicy, defaultWritePolicy } from '../src/response-cache';
 import {
   successfulResponse,
   jsonResponse,
@@ -15,6 +17,9 @@ import {
 beforeEach(() => {
   activeRequests.clear();
   responseCache.clear();
+
+  responseCache.configureCacheReadPolicy(defaultReadPolicy);
+  responseCache.configureCacheWritePolicy(defaultWritePolicy);
 });
 
 function hangingPromise() {
@@ -321,6 +326,23 @@ describe('bestfetch', () => {
     });
   });
 
+  test('non-deduped requests that succeed, but cannot be parsed, behave as expected', done => {
+    bestfetch('/test/succeeds', {
+      requestKey: 'pasta',
+      dedupe: false,
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: null,
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      done();
+    });
+  });
+
   test('non-deduped requests that succeeds with JSON to behave as expected', done => {
     bestfetch('/test/succeeds/json', {
       requestKey: 'pasta',
@@ -425,6 +447,128 @@ describe('bestfetch', () => {
         done();
       }
     );
+  });
+});
+
+describe('cacheReadPolicy', () => {
+  test('It errors if you pass an invalid function', () => {
+    expect(() => {
+      responseCache.configureCacheReadPolicy({});
+    }).toThrow();
+  });
+
+  test('Overriding it to ignore the entire cache should work', done => {
+    responseCache.configureCacheReadPolicy(() => false);
+
+    bestfetch('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      bestfetch('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
+    });
+  });
+});
+
+describe('cacheWritePolicy', () => {
+  test('It errors if you pass an invalid function', () => {
+    expect(() => {
+      responseCache.configureCacheWritePolicy({});
+    }).toThrow();
+  });
+
+  test('default does not cache 500 server errors', done => {
+    bestfetch('/test/fails/internal-server-error', {
+      requestKey: 'will-error',
+      responseType: 'text',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: 'Server error message',
+          status: 500,
+          statusText: 'Internal Server Error',
+          ok: false,
+        })
+      );
+
+      expect(responseCache.has('will-error')).toBe(false);
+
+      bestfetch('/test/fails/internal-server-error', {
+        requestKey: 'will-error',
+        responseType: 'text',
+      }).then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: 'Server error message',
+            status: 500,
+            statusText: 'Internal Server Error',
+            ok: false,
+          })
+        );
+        expect(responseCache.has('will-error')).toBe(false);
+        expect(
+          fetchMock.calls('/test/fails/internal-server-error').length
+        ).toBe(2);
+        done();
+      });
+    });
+  });
+
+  test('can be overridden on a per-request basis using `saveToCache`', done => {
+    bestfetch('/test/fails/internal-server-error', {
+      requestKey: 'will-error',
+      saveToCache: true,
+      responseType: 'text',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: 'Server error message',
+          status: 500,
+          statusText: 'Internal Server Error',
+          ok: false,
+        })
+      );
+      expect(responseCache.has('will-error')).toBe(true);
+
+      bestfetch('/test/fails/internal-server-error', {
+        requestKey: 'will-error',
+        responseType: 'text',
+      }).then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: 'Server error message',
+            status: 500,
+            statusText: 'Internal Server Error',
+            ok: false,
+          })
+        );
+        expect(responseCache.has('will-error')).toBe(true);
+        expect(
+          fetchMock.calls('/test/fails/internal-server-error').length
+        ).toBe(1);
+        done();
+      });
+    });
   });
 });
 
@@ -564,6 +708,7 @@ describe('cachePolicy', () => {
     bestfetch('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
       () => done.fail(),
       err => {
+        expect(err instanceof CacheMissError).toBe(true);
         expect(err).toEqual(
           expect.objectContaining({
             message: 'Response for fetch request not found in cache.',
@@ -593,6 +738,29 @@ describe('responseCache.has', () => {
         })
       );
       expect(responseCache.has('test')).toBe(true);
+      done();
+    });
+  });
+});
+
+describe('responseCache.delete', () => {
+  test('behaves as expected', done => {
+    expect(responseCache.delete('test')).toBe(false);
+    bestfetch('/test/succeeds/json', {
+      requestKey: 'test',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      expect(responseCache.delete('test')).toBe(true);
+      expect(responseCache.has('test')).toBe(false);
       done();
     });
   });
