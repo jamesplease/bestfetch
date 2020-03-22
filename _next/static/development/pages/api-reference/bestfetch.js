@@ -7776,7 +7776,7 @@ function bestfetch() {
 
 /***/ }),
 
-/***/ 11:
+/***/ 6:
 /*!**********************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fapi-reference%2Fbestfetch&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fapi-reference%2Fbestfetch.js ***!
   \**********************************************************************************************************************************************************************/
@@ -7799,5 +7799,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[11,"static/runtime/webpack.js"]]]);
+},[[6,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=bestfetch.js.map
