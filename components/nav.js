@@ -91,15 +91,15 @@ export default function Nav() {
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/api-reference/active-requests">
-                <a className={styles.navLink}>activeRequests</a>
+                href="/api-reference/cache-miss-error">
+                <a className={styles.navLink}>CacheMissError</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/api-reference/cache-miss-error">
-                <a className={styles.navLink}>CacheMissError</a>
+                href="/api-reference/active-requests">
+                <a className={styles.navLink}>activeRequests</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>

@@ -19,7 +19,7 @@ export default () => {
         inline={false}
         value={`import { getRequestKey } from 'bestfetch';`}
       />
-      <h2>Arguments</h2>
+      <h3>Arguments</h3>
       <ol>
         <li>
           <b>
@@ -56,11 +56,11 @@ export default () => {
           </ul>
         </li>
       </ol>
-      <h2>Returns</h2>
+      <h3>Returns</h3>
       <p>
         A <code>string</code> that is the request key.
       </p>
-      <h2>Example Usage</h2>
+      <h3>Example Usage</h3>
       <div className="advanced">
         <span className="emoji">💁‍♀️</span> <b>Heads up!</b> You can copy and
         paste the following code snippet into your browser's developer tools to

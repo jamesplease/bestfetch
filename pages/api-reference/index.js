@@ -24,13 +24,13 @@ export default function API() {
           </Link>
         </li>
         <li>
-          <Link href="/api-reference/active-requests">
-            <a>activeRequests</a>
+          <Link href="/api-reference/cache-miss-error">
+            <a>CacheMissError</a>
           </Link>
         </li>
         <li>
-          <Link href="/api-reference/cache-miss-error">
-            <a>CacheMissError</a>
+          <Link href="/api-reference/active-requests">
+            <a>activeRequests</a>
           </Link>
         </li>
         <li>

@@ -34,7 +34,7 @@ export default () => {
         The error that is passed to the <code>.catch()</code> callback will be
         an instance of <code>CacheMissError</code>.
       </p>
-      <h2>Example Usage</h2>
+      <h3>Example Usage</h3>
       <p>
         You can use the <code>CacheMissError</code> to determine if a cache miss
         is the cause of the Promise's rejection.

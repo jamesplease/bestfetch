@@ -13,7 +13,7 @@ export default function bestfetch() {
         inline={false}
         value={`import { bestfetch } from 'bestfetch';`}
       />
-      <h2>Arguments</h2>
+      <h3>Arguments</h3>
       <ol>
         <li>
           <code>url</code>. The URL of the request.
@@ -148,7 +148,7 @@ export default function bestfetch() {
         </a>
         .
       </p>
-      <h2>Returns</h2>
+      <h3>Returns</h3>
       <p>
         A{' '}
         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">
@@ -157,7 +157,7 @@ export default function bestfetch() {
         that resolves once the response is received from the server or cache. It
         rejects otherwise.
       </p>
-      <h2>Example Usage</h2>
+      <h3>Example Usage</h3>
       <Lowlight
         language="js"
         inline={false}
