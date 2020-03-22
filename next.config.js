@@ -34,8 +34,8 @@ module.exports = {
       '/api-reference/response-cache': {
         page: '/api-reference/response-cache',
       },
-      '/api-reference/active-requests': {
-        page: '/api-reference/active-requests',
+      '/api-reference/duplicate-requests': {
+        page: '/api-reference/duplicate-requests',
       },
       '/api-reference/cache-miss-error': {
         page: '/api-reference/cache-miss-error',

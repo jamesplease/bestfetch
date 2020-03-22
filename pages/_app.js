@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
   window.bestfetch = bestfetch;
   window.CacheMissError = CacheMissError;
   window.responseCache = responseCache;
-  window.activeRequests = activeRequests;
+  window.duplicateRequests = activeRequests;
   window.getRequestKey = getRequestKey;
 }
 // This default export is required in a new `pages/_app.js` file.

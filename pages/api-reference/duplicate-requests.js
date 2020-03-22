@@ -4,20 +4,20 @@ export default () => {
   return (
     <div className="page">
       <h1>
-        <code>activeRequests</code>
+        <code>duplicateRequests</code>
       </h1>
       <div className="advanced">
         <span className="emoji">💁‍♀️</span> <b>Heads up!</b> Most apps never need
         to use this object.
       </div>
-      <p>An object for managing the active requests.</p>
+      <p>An object for managing deduplicated requests.</p>
       <Lowlight
         language="js"
         inline={false}
-        value={`import { activeRequests } from 'bestfetch';`}
+        value={`import { duplicateRequests } from 'bestfetch';`}
       />
       <p>
-        <code>activeRequests</code> has two methods:
+        <code>duplicateRequests</code> has two methods:
       </p>
       <ul>
         <li>
@@ -60,16 +60,24 @@ export default () => {
       <Lowlight
         language="js"
         inline={false}
-        value={`activeRequests.isRequestInFlight('my-request-key');`}
+        value={`duplicateRequests.isRequestInFlight('my-request-key');`}
       />
 
       <h2 id="clear">
         <code>clear</code>
       </h2>
+      <div className="advanced advanced-danger">
+        <span className="emoji">💁‍♀️</span> <b>Warning!</b> This method is not
+        intended to be used in apps.
+      </div>
       <p>
-        Removes tracking on all in-flight requests. In-flight requests are{' '}
-        <b>not</b> cancelled: calling this method only ensures that subsequent
-        identical requests are not deduped.
+        Removes tracking on all in-flight requests. Be warned: all in-flight
+        requests with <code>dedupe: true</code> will never resolve if this
+        method is called.
+      </p>
+      <p>
+        We <b>strongly</b> recommend against using this method in your app. You
+        have been warned!
       </p>
       <h3>Arguments</h3>
       <p>This method does not accept any arguments.</p>
@@ -79,7 +87,7 @@ export default () => {
       <Lowlight
         language="js"
         inline={false}
-        value={`activeRequests.clear();`}
+        value={`duplicateRequests.clear();`}
       />
     </div>
   );

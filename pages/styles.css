@@ -122,6 +122,11 @@ a code {
   background: #e2eeff;
 }
 
+.advanced-danger {
+  color: #58323e;
+  background: #ffe2e7;
+}
+
 .emoji {
   font-size: 1rem;
 }

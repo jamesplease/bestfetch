@@ -29,8 +29,8 @@ export default function API() {
           </Link>
         </li>
         <li>
-          <Link href="/api-reference/active-requests">
-            <a>activeRequests</a>
+          <Link href="/api-reference/duplicate-requests">
+            <a>duplicateRequests</a>
           </Link>
         </li>
         <li>
