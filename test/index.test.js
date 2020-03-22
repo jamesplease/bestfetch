@@ -4,6 +4,7 @@ import {
   getRequestKey,
   activeRequests,
   responseCache,
+  CacheMissError,
 } from '../src';
 import {
   successfulResponse,
@@ -564,6 +565,7 @@ describe('cachePolicy', () => {
     bestfetch('/test/succeeds/json', { cachePolicy: 'cache-only' }).then(
       () => done.fail(),
       err => {
+        expect(err instanceof CacheMissError).toBe(true);
         expect(err).toEqual(
           expect.objectContaining({
             message: 'Response for fetch request not found in cache.',
