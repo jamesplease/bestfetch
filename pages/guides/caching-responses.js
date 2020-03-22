@@ -127,6 +127,18 @@ export default function CachingResponses() {
         </Link>
         .
       </p>
+      <h2>Directly Accessing the Cache</h2>
+      <p>
+        There may come a time when you need to directly read or write to the
+        response cache. You can use the <code>responseCache</code> export from
+        this library to do this. Learn more in the{' '}
+        <Link href="/api-reference/response-cache">
+          <a>
+            API documentation for <code>responseCache</code>
+          </a>
+        </Link>
+        .
+      </p>
       <h2>Learn More</h2>
       <p>
         To learn more about how this algorithm works, and also how you can
