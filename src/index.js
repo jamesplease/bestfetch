@@ -7,7 +7,7 @@ import generateResponse from './generate-response';
 
 export { responseCache, CacheMissError };
 
-let activeRequestsStore = {};
+let duplicateRequestsStore = {};
 
 export function getRequestKey({
   url = '',
@@ -18,11 +18,11 @@ export function getRequestKey({
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
-const activeRequests = {
+const duplicateRequests = {
   // Returns `true` if a request with `requestKey` is in flight,
   // and `false` otherwise.
   isRequestInFlight(requestKey) {
-    const handlers = activeRequestsStore[requestKey];
+    const handlers = duplicateRequestsStore[requestKey];
     if (handlers && handlers.length) {
       return Boolean(handlers.length);
     } else {
@@ -31,16 +31,16 @@ const activeRequests = {
   },
 
   clear() {
-    activeRequestsStore = {};
+    duplicateRequestsStore = {};
   },
 };
 
-export { activeRequests };
+export { duplicateRequests };
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }) {
-  const handlers = activeRequestsStore[requestKey] || [];
+  const handlers = duplicateRequestsStore[requestKey] || [];
 
   handlers.forEach(handler => {
     if (res) {
@@ -52,7 +52,7 @@ function resolveRequest({ requestKey, res, err }) {
 
   // This list of handlers has been, well, handled. So we
   // clear the handlers for the next request.
-  activeRequestsStore[requestKey] = null;
+  duplicateRequestsStore[requestKey] = null;
 }
 
 export function bestfetch(input, options) {
@@ -113,11 +113,11 @@ export function bestfetch(input, options) {
 
   let proxyReq;
   if (dedupe) {
-    if (!activeRequestsStore[requestKeyToUse]) {
-      activeRequestsStore[requestKeyToUse] = [];
+    if (!duplicateRequestsStore[requestKeyToUse]) {
+      duplicateRequestsStore[requestKeyToUse] = [];
     }
 
-    const handlers = activeRequestsStore[requestKeyToUse];
+    const handlers = duplicateRequestsStore[requestKeyToUse];
     const requestInFlight = Boolean(handlers.length);
     const requestHandler = {};
     proxyReq = new Promise((resolve, reject) => {

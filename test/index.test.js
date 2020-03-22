@@ -2,7 +2,7 @@ import fetchMock from 'fetch-mock';
 import {
   bestfetch,
   getRequestKey,
-  activeRequests,
+  duplicateRequests,
   responseCache,
   CacheMissError,
 } from '../src';
@@ -15,7 +15,7 @@ import {
 } from './responses';
 
 beforeEach(() => {
-  activeRequests.clear();
+  duplicateRequests.clear();
   responseCache.clear();
 
   responseCache.configureCacheReadPolicy(defaultReadPolicy);
@@ -68,14 +68,14 @@ fetchMock.get(
     })
 );
 
-describe('activeRequests.isRequestInFlight', () => {
+describe('duplicateRequests.isRequestInFlight', () => {
   test('renders false when it is not in flight', () => {
-    expect(activeRequests.isRequestInFlight('pasta')).toBe(false);
+    expect(duplicateRequests.isRequestInFlight('pasta')).toBe(false);
   });
 
   test('renders true when it is not in flight', () => {
     bestfetch('/test/hangs', { requestKey: 'pasta' });
-    expect(activeRequests.isRequestInFlight('pasta')).toBe(true);
+    expect(duplicateRequests.isRequestInFlight('pasta')).toBe(true);
   });
 });
 
@@ -415,6 +415,19 @@ describe('bestfetch', () => {
     });
   });
 
+  // Note: clearing `duplicateRequests` will prevent any deduped request from ever resolving. This is
+  // because we always return the proxy request from a deduped request, rather than the actual request.
+  // test('deduped requests that wipe the duplicateRequests store mid-flight do not error', done => {
+  //   bestfetch('/test/succeeds/json', {
+  //     requestKey: 'pasta',
+  //     responseType: 'text',
+  //   }).then(() => {
+  //     expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+  //     done();
+  //   });
+  //   duplicateRequests.clear();
+  // });
+
   test('deduped requests that succeed to behave as expected', done => {
     fetchMock.get(
       '/test/fails/dedupe',
@@ -485,6 +498,54 @@ describe('cacheReadPolicy', () => {
         );
         expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
         done();
+      });
+    });
+  });
+
+  test('Overriding it to ignore cached responses after 1 read should work', done => {
+    responseCache.configureCacheReadPolicy(cacheObject => {
+      return cacheObject.accessCount < 1;
+    });
+
+    bestfetch('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      bestfetch('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+
+        bestfetch('/test/succeeds/json').then(resThree => {
+          expect(resThree).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              ok: true,
+            })
+          );
+          expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+          done();
+        });
       });
     });
   });
