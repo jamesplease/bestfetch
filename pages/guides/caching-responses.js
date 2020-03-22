@@ -75,6 +75,12 @@ export default function CachingResponses() {
           <code>"network-only"</code>
         </div>
         <div>
+          <code>PATCH</code>
+        </div>
+        <div>
+          <code>"network-only"</code>
+        </div>
+        <div>
           <code>DELETE</code>
         </div>
         <div>
