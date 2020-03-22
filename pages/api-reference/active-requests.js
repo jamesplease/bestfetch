@@ -21,17 +21,21 @@ export default () => {
       </p>
       <ul>
         <li>
-          <b>
-            <code>isRequestInFlight</code>
-          </b>
+          <a href="#isrequestinflight">
+            <b>
+              <code>isRequestInFlight</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>clear</code>
-          </b>
+          <a href="#clear">
+            <b>
+              <code>clear</code>
+            </b>
+          </a>
         </li>
       </ul>
-      <h2>
+      <h2 id="isrequestinflight">
         <code>isRequestInFlight</code>
       </h2>
       <p>
@@ -59,7 +63,7 @@ export default () => {
         value={`activeRequests.isRequestInFlight('my-request-key');`}
       />
 
-      <h2>
+      <h2 id="clear">
         <code>clear</code>
       </h2>
       <p>

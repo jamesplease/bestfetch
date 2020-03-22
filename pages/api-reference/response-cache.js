@@ -21,37 +21,49 @@ export default () => {
       </p>
       <ul>
         <li>
-          <b>
-            <code>get</code>
-          </b>
+          <a href="#get">
+            <b>
+              <code>get</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>set</code>
-          </b>
+          <a href="#set">
+            <b>
+              <code>set</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>has</code>
-          </b>
+          <a href="#has">
+            <b>
+              <code>has</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>delete</code>
-          </b>
+          <a href="#delete">
+            <b>
+              <code>delete</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>clear</code>
-          </b>
+          <a href="#clear">
+            <b>
+              <code>clear</code>
+            </b>
+          </a>
         </li>
         <li>
-          <b>
-            <code>useCachedResponse</code>
-          </b>
+          <a href="#usecachedresponse">
+            <b>
+              <code>useCachedResponse</code>
+            </b>
+          </a>
         </li>
       </ul>
-      <h2>
+      <h2 id="get">
         <code>get</code>
       </h2>
       <p>
@@ -78,7 +90,7 @@ export default () => {
         inline={false}
         value={`responseCache.get('my-request-key');`}
       />
-      <h2>
+      <h2 id="set">
         <code>set</code>
       </h2>
       <p>
@@ -110,7 +122,7 @@ export default () => {
         inline={false}
         value={`responseCache.set('my-request-key', response);`}
       />
-      <h2>
+      <h2 id="has">
         <code>has</code>
       </h2>
       <p>
@@ -137,7 +149,7 @@ export default () => {
         inline={false}
         value={`responseCache.has('my-request-key');`}
       />
-      <h2>
+      <h2 id="delete">
         <code>delete</code>
       </h2>
       <p>
@@ -164,7 +176,7 @@ export default () => {
         inline={false}
         value={`responseCache.delete('my-request-key');`}
       />
-      <h2>
+      <h2 id="clear">
         <code>clear</code>
       </h2>
       <p>Removes all responses from the cache.</p>
@@ -174,7 +186,7 @@ export default () => {
       <p>This method does not return anything.</p>
       <h3>Example Usage</h3>
       <Lowlight language="js" inline={false} value={`responseCache.clear();`} />
-      <h2>
+      <h2 id="usecachedresponse">
         <code>useCachedResponse</code>
       </h2>
       <p>
