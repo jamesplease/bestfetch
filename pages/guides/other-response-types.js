@@ -1,5 +1,4 @@
 import Lowlight from 'react-lowlight';
-import Link from 'next/link';
 
 export default () => {
   return (

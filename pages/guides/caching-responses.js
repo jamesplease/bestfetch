@@ -1,6 +1,6 @@
 import Lowlight from 'react-lowlight';
-import Link from 'next/link';
 import styles from './caching-responses.module.css';
+import Link from '../../components/link';
 
 export default function CachingResponses() {
   return (
