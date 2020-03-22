@@ -40,8 +40,8 @@ export default function Index() {
             <div className="heroEmoji">🏎</div>
             <div className="heroProp">Fast</div>
             <div className="heroDescription">
-              Speed up your app <i>considerably</i> by caching responses. Only
-              make network requests when you need to.
+              Speed up your app <i>considerably</i> by caching responses. Use
+              bestfetch to only make network requests when you need to.
             </div>
           </div>
           <div className="heroPropContainer">

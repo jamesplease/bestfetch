@@ -19,6 +19,16 @@ export default function GettingStarted() {
         or <a href="https://yarnpkg.com">yarn</a>:
       </p>
       <code className="codeBlock">yarn add bestfetch</code>
+      <h2>Prerequisites</h2>
+      <p>
+        A global{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch">
+          fetch
+        </a>{' '}
+        method is required to use bestfetch. If you need to run bestfetch in a
+        browser without <code>fetch</code>, then we recommend using GitHub's{' '}
+        <a href="https://github.com/github/fetch">fetch polyfill</a>.
+      </p>
       <h2>Basic Usage</h2>
       <p>
         Get started by importing the <code>bestfetch</code> function. The
