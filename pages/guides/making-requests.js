@@ -279,8 +279,8 @@ bestfetch(\`/api/books?\${qs}\`)
   cachePolicy: 'cache-only'
 })
   .catch(err => {
-    if (typeof err === CacheMissError) {
-      console.log('This request did not having a response in the cache.');
+    if (err instanceof CacheMissError) {
+      console.log('This request did not have a response in the cache.');
     }
   });`}
       />

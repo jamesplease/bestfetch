@@ -61,6 +61,11 @@ export default () => {
         A <code>string</code> that is the request key..
       </p>
       <h2>Example Usage</h2>
+      <div className="advanced">
+        <span className="emoji">💁‍♀️</span> <b>Heads up!</b> You can copy and
+        paste the following code snippet into your browser's developer tools to
+        try it out!
+      </div>
       <Lowlight
         language="js"
         inline={false}
@@ -73,8 +78,11 @@ export default () => {
 
 console.log('The request key is:', requestKey);`}
       />
-      <h2>When Would I Use This?</h2>
-      <p>You probably do not need to.</p>
+      <p>
+        Keep in mind that bestfetch automatically generates request keys for
+        you, so it's very unlikely that you will ever need to call this function
+        directly.
+      </p>
     </div>
   );
 };

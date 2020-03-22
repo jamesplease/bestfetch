@@ -7,13 +7,18 @@ export default () => {
       <h1>
         <code>CacheMissError</code>
       </h1>
-      <p>An Error that represents a cache miss.</p>
+      <p>
+        An{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">
+          Error
+        </a>{' '}
+        that represents a cache miss.
+      </p>
       <Lowlight
         language="js"
         inline={false}
         value={`import { CacheMissError } from 'bestfetch';`}
       />
-      <h2>Usage</h2>
       <p>
         One of the options that you can pass to{' '}
         <Link href="/api-reference/bestfetch">
@@ -27,9 +32,18 @@ export default () => {
       </p>
       <p>
         The error that you are passed will be an instance of{' '}
-        <code>CacheMissError</code>. You can use this export to determine if
-        this is the cause of the rejection.
+        <code>CacheMissError</code>.
       </p>
+      <h2>Example Usage</h2>
+      <p>
+        You can use the <code>CacheMissError</code> to determine if a cache miss
+        is the cause of the Promise's rejection.
+      </p>
+      <div className="advanced">
+        <span className="emoji">💁‍♀️</span> <b>Heads up!</b> You can copy and
+        paste the following code snippet into your browser's developer tools to
+        try it out!
+      </div>
       <Lowlight
         language="js"
         inline={false}
@@ -37,8 +51,8 @@ export default () => {
   cachePolicy: 'cache-only'
 })
   .catch(err => {
-    if (typeof err === CacheMissError) {
-      console.log('This request did not having a response in the cache.');
+    if (err instanceof CacheMissError) {
+      console.log('This request did not have a response in the cache.');
     }
   });`}
       />
