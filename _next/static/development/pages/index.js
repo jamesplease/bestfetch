@@ -4702,6 +4702,9 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 function Index() {
   return __jsx("div", {
     className: "page",
+    style: {
+      '--maxAppWidth': '1150px'
+    },
     __self: this,
     __source: {
       fileName: _jsxFileName,
@@ -4713,7 +4716,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 6,
+      lineNumber: 10,
       columnNumber: 7
     }
   }, __jsx("h1", {
@@ -4721,7 +4724,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 7,
+      lineNumber: 11,
       columnNumber: 9
     }
   }, "bestfetch"), __jsx("div", {
@@ -4729,7 +4732,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 8,
+      lineNumber: 12,
       columnNumber: 9
     }
   }, __jsx("a", {
@@ -4737,7 +4740,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 9,
+      lineNumber: 13,
       columnNumber: 11
     }
   }, __jsx("img", {
@@ -4746,7 +4749,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 10,
+      lineNumber: 14,
       columnNumber: 13
     }
   })), __jsx("a", {
@@ -4754,7 +4757,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 15,
+      lineNumber: 19,
       columnNumber: 11
     }
   }, __jsx("img", {
@@ -4763,7 +4766,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 16,
+      lineNumber: 20,
       columnNumber: 13
     }
   })), __jsx("a", {
@@ -4771,7 +4774,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 21,
+      lineNumber: 25,
       columnNumber: 11
     }
   }, __jsx("img", {
@@ -4780,7 +4783,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 22,
+      lineNumber: 26,
       columnNumber: 13
     }
   })), __jsx("a", {
@@ -4788,7 +4791,7 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 27,
+      lineNumber: 31,
       columnNumber: 11
     }
   }, __jsx("img", {
@@ -4797,15 +4800,189 @@ function Index() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 28,
+      lineNumber: 32,
       columnNumber: 13
     }
-  })))));
+  }))), __jsx("div", {
+    className: "heroProps",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 38,
+      columnNumber: 9
+    }
+  }, __jsx("div", {
+    className: "heroPropContainer",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 39,
+      columnNumber: 11
+    }
+  }, __jsx("div", {
+    className: "heroEmoji",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 40,
+      columnNumber: 13
+    }
+  }, "\uD83C\uDFCE"), __jsx("div", {
+    className: "heroProp",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 41,
+      columnNumber: 13
+    }
+  }, "Fast"), __jsx("div", {
+    className: "heroDescription",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 42,
+      columnNumber: 13
+    }
+  }, "Speed up your app ", __jsx("i", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 43,
+      columnNumber: 33
+    }
+  }, "considerably"), " by caching responses. Only make network requests when you need to.")), __jsx("div", {
+    className: "heroPropContainer",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 47,
+      columnNumber: 11
+    }
+  }, __jsx("div", {
+    className: "heroEmoji",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 48,
+      columnNumber: 13
+    }
+  }, "\uD83D\uDC2D"), __jsx("div", {
+    className: "heroProp",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 49,
+      columnNumber: 13
+    }
+  }, "Small"), __jsx("div", {
+    className: "heroDescription",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 50,
+      columnNumber: 13
+    }
+  }, "bestfetch is tiny but mighty. With its reasonable file size (", __jsx("code", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 52,
+      columnNumber: 15
+    }
+  }, "<3kb"), " gzipped) you can feel responsible adding it to an existing codebase."))), __jsx("div", {
+    className: "heroProps",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 57,
+      columnNumber: 9
+    }
+  }, __jsx("div", {
+    className: "heroPropContainer",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 58,
+      columnNumber: 11
+    }
+  }, __jsx("div", {
+    className: "heroEmoji",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 59,
+      columnNumber: 13
+    }
+  }, "\u2699\uFE0F"), __jsx("div", {
+    className: "heroProp",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 60,
+      columnNumber: 13
+    }
+  }, "Flexible"), __jsx("div", {
+    className: "heroDescription",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 61,
+      columnNumber: 13
+    }
+  }, "bestfetch has great defaults that work for many apps. If something doesn't work for your use case, change it: bestfetch's flexible API keeps you in control.")), __jsx("div", {
+    className: "heroPropContainer",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 67,
+      columnNumber: 11
+    }
+  }, __jsx("div", {
+    className: "heroEmoji",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 68,
+      columnNumber: 13
+    }
+  }, "\u26A1\uFE0F"), __jsx("div", {
+    className: "heroProp",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 69,
+      columnNumber: 13
+    }
+  }, "Efficient"), __jsx("div", {
+    className: "heroDescription",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 70,
+      columnNumber: 13
+    }
+  }, "bestfetch is great for your users, too: many people worldwide browse the web on mobile phones with limited data plans. Use less of their data by leveraging bestfetch."))), __jsx(_components_link__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    href: "/getting-started",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 77,
+      columnNumber: 9
+    }
+  }, __jsx("a", {
+    className: "getStartedLink",
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 78,
+      columnNumber: 11
+    }
+  }, "Get Started"))));
 }
 
 /***/ }),
 
-/***/ 3:
+/***/ 2:
 /*!*************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2F&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Findex.js ***!
   \*************************************************************************************************************************/
@@ -4828,5 +5005,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[3,"static/runtime/webpack.js"]]]);
+},[[2,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=index.js.map
