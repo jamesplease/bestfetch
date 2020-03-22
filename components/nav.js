@@ -63,7 +63,7 @@ export default function Nav() {
           </ul>
         </li>
         <li className={styles.navListItem}>
-          <Link activeClassName="activeNavLink" href="/docs">
+          <Link activeClassName="activeNavLink" href="/api-reference">
             <a className={styles.navSectionLink}>API</a>
           </Link>
           <ul className={`${styles.navSubList} ${styles.navApiSubList}`}>
