@@ -2,7 +2,17 @@ import generateResponse from './generate-response';
 
 let responseCacheStore = {};
 
-let accessFn = () => true;
+// By default we always read from the cache when a value exists.
+let readPolicyFn = () => true;
+
+// By default server errors are not cached, but every other successful response is.
+let writePolicyFn = res => {
+  if (res.code >= 500) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 const responseCache = {
   get(requestKey) {
@@ -49,10 +59,20 @@ const responseCache = {
 
   configureCacheReadPolicy(fn) {
     if (typeof fn === 'function') {
-      accssFn = fn;
+      readPolicyFn = fn;
     } else {
       throw new TypeError(
         'The first argument to `responseCache.configureCacheReadPolicy()` must be a function.'
+      );
+    }
+  },
+
+  configureCacheWritePolicy(fn) {
+    if (typeof fn === 'function') {
+      writePolicyFn = fn;
+    } else {
+      throw new TypeError(
+        'The first argument to `responseCache.configureCacheWritePolicy()` must be a function.'
       );
     }
   },
@@ -63,7 +83,7 @@ export default responseCache;
 export function shouldUseCachedValue(requestKey) {
   if (responseCache.has(requestKey)) {
     let cacheObject = responseCache.get(requestKey);
-    const shouldAccess = accessFn(cacheObject);
+    const shouldAccess = readPolicyFn(cacheObject);
 
     if (!shouldAccess) {
       responseCache.delete(requestKey);
@@ -73,4 +93,8 @@ export function shouldUseCachedValue(requestKey) {
   } else {
     return false;
   }
+}
+
+export function shouldWriteCachedValue(res) {
+  return writePolicyFn(res);
 }
