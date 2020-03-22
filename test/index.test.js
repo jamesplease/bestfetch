@@ -2,7 +2,7 @@ import fetchMock from 'fetch-mock';
 import {
   bestfetch,
   getRequestKey,
-  activeRequests,
+  duplicateRequests,
   responseCache,
   CacheMissError,
 } from '../src';
@@ -15,7 +15,7 @@ import {
 } from './responses';
 
 beforeEach(() => {
-  activeRequests.clear();
+  duplicateRequests.clear();
   responseCache.clear();
 
   responseCache.configureCacheReadPolicy(defaultReadPolicy);
@@ -68,14 +68,14 @@ fetchMock.get(
     })
 );
 
-describe('activeRequests.isRequestInFlight', () => {
+describe('duplicateRequests.isRequestInFlight', () => {
   test('renders false when it is not in flight', () => {
-    expect(activeRequests.isRequestInFlight('pasta')).toBe(false);
+    expect(duplicateRequests.isRequestInFlight('pasta')).toBe(false);
   });
 
   test('renders true when it is not in flight', () => {
     bestfetch('/test/hangs', { requestKey: 'pasta' });
-    expect(activeRequests.isRequestInFlight('pasta')).toBe(true);
+    expect(duplicateRequests.isRequestInFlight('pasta')).toBe(true);
   });
 });
 
@@ -415,9 +415,9 @@ describe('bestfetch', () => {
     });
   });
 
-  // Note: clearing `activeRequests` will prevent any deduped request from ever resolving. This is
+  // Note: clearing `duplicateRequests` will prevent any deduped request from ever resolving. This is
   // because we always return the proxy request from a deduped request, rather than the actual request.
-  // test('deduped requests that wipe the activeRequests store mid-flight do not error', done => {
+  // test('deduped requests that wipe the duplicateRequests store mid-flight do not error', done => {
   //   bestfetch('/test/succeeds/json', {
   //     requestKey: 'pasta',
   //     responseType: 'text',
@@ -425,7 +425,7 @@ describe('bestfetch', () => {
   //     expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
   //     done();
   //   });
-  //   activeRequests.clear();
+  //   duplicateRequests.clear();
   // });
 
   test('deduped requests that succeed to behave as expected', done => {
