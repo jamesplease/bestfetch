@@ -51,6 +51,13 @@ export default function Nav() {
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
+                href="/guides/identical-requests">
+                <a className={styles.navLink}>Identical Requests</a>
+              </Link>
+            </li>
+            <li className={styles.navSubListItem}>
+              <Link
+                activeClassName="activeNavLink"
                 href="/guides/other-response-types">
                 <a className={styles.navLink}>Other Response Types</a>
               </Link>

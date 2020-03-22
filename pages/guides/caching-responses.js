@@ -127,6 +127,15 @@ export default function CachingResponses() {
         </Link>
         .
       </p>
+      <h2>Learn More</h2>
+      <p>
+        To learn more about how this algorithm works, and also how you can
+        change its behavior, check out the{' '}
+        <Link href="/guides/identical-requests">
+          <a>Identical Requests</a>
+        </Link>{' '}
+        guide.
+      </p>
     </div>
   );
 }

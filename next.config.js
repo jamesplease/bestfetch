@@ -21,6 +21,9 @@ module.exports = {
       '/guides/deduplicating-requests': {
         page: '/guides/deduplicating-requests',
       },
+      '/guides/identical-requests': {
+        page: '/guides/identical-requests',
+      },
       '/guides/faq': {
         page: '/guides/faq',
       },

@@ -29,6 +29,11 @@ export default function Guides() {
           </Link>
         </li>
         <li>
+          <Link href="/guides/identical-requests">
+            <a>Identical Requests</a>
+          </Link>
+        </li>
+        <li>
           <Link href="/guides/other-response-types">
             <a>Other Response Types</a>
           </Link>
