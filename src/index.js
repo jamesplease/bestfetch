@@ -70,6 +70,7 @@ export function bestfetch(input, options) {
     requestKey,
     responseType = '',
     dedupe = true,
+    saveToCache,
     cachePolicy,
     ...init
   } = opts;
@@ -148,8 +149,15 @@ export function bestfetch(input, options) {
       // the fetch.
       return res[responseTypeToUse]().then(
         data => {
+          let willWriteToCache;
+          if (typeof saveToCache === 'boolean') {
+            willWriteToCache = saveToCache;
+          } else {
+            willWriteToCache = shouldWriteCachedValue(res);
+          }
+
           res.data = data;
-          if (shouldWriteCachedValue(res)) {
+          if (willWriteToCache) {
             responseCache.set(requestKeyToUse, res);
           }
 
