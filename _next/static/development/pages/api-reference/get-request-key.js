@@ -3467,7 +3467,14 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
       lineNumber: 26,
       columnNumber: 13
     }
-  }, "options")), ": An object that contains information about a request.", __jsx("br", {
+  }, "options")), ' ', __jsx("i", {
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 28,
+      columnNumber: 11
+    }
+  }, "(object)"), ": An object that contains information about a request.", __jsx("br", {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
@@ -3600,7 +3607,7 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
       lineNumber: 61,
       columnNumber: 11
     }
-  }, "string"), " that is the request key.."), __jsx("h2", {
+  }, "string"), " that is the request key."), __jsx("h2", {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
@@ -3652,7 +3659,7 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 /***/ }),
 
-/***/ 4:
+/***/ 3:
 /*!**********************************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fapi-reference%2Fget-request-key&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fapi-reference%2Fget-request-key.js ***!
   \**********************************************************************************************************************************************************************************/
@@ -3675,5 +3682,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[4,"static/runtime/webpack.js"]]]);
+},[[3,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=get-request-key.js.map
