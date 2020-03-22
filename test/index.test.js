@@ -6,6 +6,7 @@ import {
   responseCache,
   CacheMissError,
 } from '../src';
+import { defaultReadPolicy, defaultWritePolicy } from '../src/response-cache';
 import {
   successfulResponse,
   jsonResponse,
@@ -16,6 +17,9 @@ import {
 beforeEach(() => {
   activeRequests.clear();
   responseCache.clear();
+
+  responseCache.configureCacheReadPolicy(defaultReadPolicy);
+  responseCache.configureCacheWritePolicy(defaultWritePolicy);
 });
 
 function hangingPromise() {
@@ -429,7 +433,53 @@ describe('bestfetch', () => {
   });
 });
 
+describe('cacheReadPolicy', () => {
+  test('It errors if you pass an invalid function', () => {
+    expect(() => {
+      responseCache.configureCacheReadPolicy({});
+    }).toThrow();
+  });
+
+  test('Overriding it to ignore the entire cache should work', done => {
+    responseCache.configureCacheReadPolicy(() => false);
+
+    bestfetch('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      bestfetch('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
+    });
+  });
+});
+
 describe('cacheWritePolicy', () => {
+  test('It errors if you pass an invalid function', () => {
+    expect(() => {
+      responseCache.configureCacheWritePolicy({});
+    }).toThrow();
+  });
+
   test('default does not cache 500 server errors', done => {
     bestfetch('/test/fails/internal-server-error', {
       requestKey: 'will-error',
@@ -506,36 +556,6 @@ describe('cacheWritePolicy', () => {
 });
 
 describe('cachePolicy', () => {
-  test('Defaults with a GET should be cache-first', done => {
-    bestfetch('/test/succeeds/json').then(res => {
-      expect(res).toEqual(
-        expect.objectContaining({
-          data: {
-            a: true,
-          },
-          status: 200,
-          statusText: 'OK',
-          ok: true,
-        })
-      );
-
-      bestfetch('/test/succeeds/json').then(resTwo => {
-        expect(resTwo).toEqual(
-          expect.objectContaining({
-            data: {
-              a: true,
-            },
-            status: 200,
-            statusText: 'OK',
-            ok: true,
-          })
-        );
-        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
-        done();
-      });
-    });
-  });
-
   test('Defaults with a GET should be cache-first', done => {
     bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
