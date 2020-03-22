@@ -31,8 +31,8 @@ export default () => {
         Promise will reject.
       </p>
       <p>
-        The error that you are passed will be an instance of{' '}
-        <code>CacheMissError</code>.
+        The error that is passed to the <code>.catch()</code> callback will be
+        an instance of <code>CacheMissError</code>.
       </p>
       <h2>Example Usage</h2>
       <p>

@@ -24,8 +24,8 @@ export default () => {
         <li>
           <b>
             <code>options</code>
-          </b>
-          : An object that contains information about a request.
+          </b>{' '}
+          <i>(object)</i>: An object that contains information about a request.
           <br />
           The options are:
           <ul>
@@ -58,7 +58,7 @@ export default () => {
       </ol>
       <h2>Returns</h2>
       <p>
-        A <code>string</code> that is the request key..
+        A <code>string</code> that is the request key.
       </p>
       <h2>Example Usage</h2>
       <div className="advanced">

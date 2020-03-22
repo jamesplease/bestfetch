@@ -144,9 +144,7 @@ bestfetch(\`/api/books?\${qs}\`)
         </li>
         <li>
           <code>cache</code>{' '}
-          <i>
-            (note: this is not unrelated to the caching system of bestfetch)
-          </i>
+          <i>(note: this is unrelated to the caching system of bestfetch)</i>
         </li>
         <li>
           <code>redirect</code>
