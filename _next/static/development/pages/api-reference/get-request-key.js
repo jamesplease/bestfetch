@@ -3607,36 +3607,52 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
       lineNumber: 63,
       columnNumber: 7
     }
-  }, "Example Usage"), __jsx(react_lowlight__WEBPACK_IMPORTED_MODULE_1___default.a, {
-    language: "js",
-    inline: false,
-    value: "const requestKey = getRequestKey({\n  url: '/api/books/2',\n  method: 'POST',\n  body: '{}',\n  responseType: 'json'\n});\n\nconsole.log('The request key is:', requestKey);",
+  }, "Example Usage"), __jsx("div", {
+    className: "advanced",
     __self: _this,
     __source: {
       fileName: _jsxFileName,
       lineNumber: 64,
       columnNumber: 7
     }
-  }), __jsx("h2", {
+  }, __jsx("span", {
+    className: "emoji",
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 76,
-      columnNumber: 7
+      lineNumber: 65,
+      columnNumber: 9
     }
-  }, "When Would I Use This?"), __jsx("p", {
+  }, "\uD83D\uDC81\u200D\u2640\uFE0F"), " ", __jsx("b", {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 77,
+      lineNumber: 65,
+      columnNumber: 46
+    }
+  }, "Heads up!"), " You can copy and paste the following code snippet into your browser's developer tools to try it out!"), __jsx(react_lowlight__WEBPACK_IMPORTED_MODULE_1___default.a, {
+    language: "js",
+    inline: false,
+    value: "const requestKey = getRequestKey({\n  url: '/api/books/2',\n  method: 'POST',\n  body: '{}',\n  responseType: 'json'\n});\n\nconsole.log('The request key is:', requestKey);",
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 69,
       columnNumber: 7
     }
-  }, "You probably do not need to."));
+  }), __jsx("p", {
+    __self: _this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 81,
+      columnNumber: 7
+    }
+  }, "Keep in mind that bestfetch automatically generates request keys for you, so it's very unlikely that you will ever need to call this function directly."));
 });
 
 /***/ }),
 
-/***/ 15:
+/***/ 4:
 /*!**********************************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fapi-reference%2Fget-request-key&absolutePagePath=%2FUsers%2Fjames%2Fwebdev%2Fbestfetch%2Fpages%2Fapi-reference%2Fget-request-key.js ***!
   \**********************************************************************************************************************************************************************************/
@@ -3659,5 +3675,5 @@ module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 
-},[[15,"static/runtime/webpack.js"]]]);
+},[[4,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=get-request-key.js.map
