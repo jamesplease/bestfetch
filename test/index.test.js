@@ -501,6 +501,54 @@ describe('cacheReadPolicy', () => {
       });
     });
   });
+
+  test('Overriding it to ignore cached responses after 1 read should work', done => {
+    responseCache.configureCacheReadPolicy(cacheObject => {
+      return cacheObject.accessCount < 1;
+    });
+
+    bestfetch('/test/succeeds/json').then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      bestfetch('/test/succeeds/json').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
+
+        bestfetch('/test/succeeds/json').then(resThree => {
+          expect(resThree).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              ok: true,
+            })
+          );
+          expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+          done();
+        });
+      });
+    });
+  });
 });
 
 describe('cacheWritePolicy', () => {

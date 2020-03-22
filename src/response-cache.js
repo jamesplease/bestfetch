@@ -85,7 +85,7 @@ export default responseCache;
 
 export function shouldUseCachedValue(requestKey) {
   if (responseCache.has(requestKey)) {
-    let cacheObject = responseCache.get(requestKey);
+    let cacheObject = responseCacheStore[requestKey];
     const shouldAccess = readPolicyFn(cacheObject);
 
     if (!shouldAccess) {
