@@ -457,6 +457,37 @@ describe('cacheWritePolicy', () => {
       });
     });
   });
+
+  test('can be overridden on a per-request basis using `saveToCache`', done => {
+    bestfetch('/test/fails/internal-server-error', {
+      saveToCache: true,
+      responseType: 'text',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: 'Server error message',
+          status: 500,
+          statusText: 'Internal Server Error',
+          ok: false,
+        })
+      );
+
+      bestfetch('/test/fails/internal-server-error').then(resTwo => {
+        expect(resTwo).toEqual(
+          expect.objectContaining({
+            data: 'Server error message',
+            status: 500,
+            statusText: 'Internal Server Error',
+            ok: false,
+          })
+        );
+        expect(
+          fetchMock.calls('/test/fails/internal-server-error').length
+        ).toBe(1);
+        done();
+      });
+    });
+  });
 });
 
 describe('cachePolicy', () => {
