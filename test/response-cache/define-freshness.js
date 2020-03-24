@@ -1,15 +1,15 @@
 import fetchMock from 'fetch-mock';
 import { bestfetch, responseCache } from '../../src';
 
-describe('responseCache.cacheReadPolicy', () => {
+describe('responseCache.defineFreshness', () => {
   test('It errors if you pass an invalid function', () => {
     expect(() => {
-      responseCache.configureCacheReadPolicy({});
+      responseCache.defineFreshness({});
     }).toThrow();
   });
 
   test('Overriding it to ignore the entire cache should work', done => {
-    responseCache.configureCacheReadPolicy(() => false);
+    responseCache.defineFreshness(() => false);
 
     bestfetch('/test/succeeds/json').then(res => {
       expect(res).toEqual(
@@ -41,7 +41,7 @@ describe('responseCache.cacheReadPolicy', () => {
   });
 
   test('Overriding it to ignore cached responses after 1 read should work', done => {
-    responseCache.configureCacheReadPolicy(cacheObject => {
+    responseCache.defineFreshness(cacheObject => {
       return cacheObject.accessCount < 1;
     });
 

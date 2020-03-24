@@ -15,7 +15,7 @@ beforeEach(() => {
   duplicateRequests.clear();
   responseCache.clear();
 
-  responseCache.configureCacheReadPolicy(defaultReadPolicy);
+  responseCache.defineFreshness(defaultReadPolicy);
   responseCache.configureCacheWritePolicy(defaultWritePolicy);
 });
 

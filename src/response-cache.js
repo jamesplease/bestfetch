@@ -12,7 +12,7 @@ export const defaultWritePolicy = res => {
 };
 
 // By default we always read from the cache when a value exists.
-let readPolicyFn = defaultReadPolicy;
+let freshnessPolicyFn = defaultReadPolicy;
 
 // By default server errors are not cached, but every other successful response is.
 let writePolicyFn = defaultWritePolicy;
@@ -60,12 +60,12 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  configureCacheReadPolicy(fn) {
+  defineFreshness(fn) {
     if (typeof fn === 'function') {
-      readPolicyFn = fn;
+      freshnessPolicyFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.configureCacheReadPolicy()` must be a function.'
+        'The first argument to `responseCache.defineFreshness()` must be a function.'
       );
     }
   },
@@ -83,10 +83,10 @@ const responseCache = {
 
 export default responseCache;
 
-export function shouldUseCachedValue(requestKey) {
+export function checkFreshness(requestKey) {
   if (responseCache.has(requestKey)) {
     let cacheObject = responseCacheStore[requestKey];
-    const shouldAccess = readPolicyFn(cacheObject);
+    const shouldAccess = freshnessPolicyFn(cacheObject);
 
     if (!shouldAccess) {
       responseCache.delete(requestKey);
