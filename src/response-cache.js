@@ -21,7 +21,7 @@ const responseCache = {
   get(requestKey, { includeStale = false } = {}) {
     let shouldPull;
     if (includeStale) {
-      shouldPull = responseCache.has(requestKey);
+      shouldPull = responseCache.has(requestKey, { includeStale: true });
     } else {
       shouldPull = responseCache.isFresh(requestKey);
     }
@@ -48,14 +48,18 @@ const responseCache = {
     return responseCache;
   },
 
-  has(requestKey) {
-    // `undefined` is not a valid JSON key, so we can reliably use
-    // it to determine if the value exists or not.dfs
-    return typeof responseCacheStore[requestKey] !== 'undefined';
+  has(requestKey, { includeStale = false } = {}) {
+    if (includeStale) {
+      // `undefined` is not a valid JSON key, so we can reliably use
+      // it to determine if the value exists or not.
+      return typeof responseCacheStore[requestKey] !== 'undefined';
+    } else {
+      return responseCache.isFresh(requestKey);
+    }
   },
 
   delete(requestKey) {
-    if (!responseCache.has(requestKey)) {
+    if (!responseCache.has(requestKey, { includeStale: true })) {
       return false;
     } else {
       delete responseCacheStore[requestKey];
@@ -103,15 +107,15 @@ const responseCache = {
 export default responseCache;
 
 export function checkFreshness(requestKey, purge = false) {
-  if (responseCache.has(requestKey)) {
+  if (responseCache.has(requestKey, { includeStale: true })) {
     let cacheObject = responseCacheStore[requestKey];
-    const shouldAccess = freshnessDefinitionFn(cacheObject);
+    const isFresh = freshnessDefinitionFn(cacheObject);
 
-    if (!shouldAccess && purge) {
+    if (!isFresh && purge) {
       responseCache.delete(requestKey);
     }
 
-    return shouldAccess;
+    return isFresh;
   } else {
     return false;
   }

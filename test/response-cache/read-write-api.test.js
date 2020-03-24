@@ -2,7 +2,7 @@ import { bestfetch, responseCache } from '../../src';
 
 describe('responseCache: read/write API', () => {
   describe('has', () => {
-    test('returns true for cached values', done => {
+    test('returns true for fresh cached values', done => {
       expect(responseCache.has('test')).toBe(false);
       bestfetch('/test/succeeds/json', {
         requestKey: 'test',
@@ -18,6 +18,28 @@ describe('responseCache: read/write API', () => {
           })
         );
         expect(responseCache.has('test')).toBe(true);
+        done();
+      });
+    });
+
+    test('returns false for stale cached values unless you specify to include them', done => {
+      responseCache.defineFreshness(() => false);
+      expect(responseCache.has('test')).toBe(false);
+      bestfetch('/test/succeeds/json', {
+        requestKey: 'test',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(responseCache.has('test')).toBe(false);
+        expect(responseCache.has('test', { includeStale: true })).toBe(true);
         done();
       });
     });
@@ -40,7 +62,7 @@ describe('responseCache: read/write API', () => {
           })
         );
         expect(responseCache.delete('test')).toBe(true);
-        expect(responseCache.has('test')).toBe(false);
+        expect(responseCache.has('test', { includeStale: true })).toBe(false);
         done();
       });
     });
@@ -73,9 +95,13 @@ describe('responseCache: read/write API', () => {
             })
           );
 
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           expect(responseCache.get('my-request')).toBe(undefined);
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           done();
         }
       );
@@ -97,11 +123,15 @@ describe('responseCache: read/write API', () => {
             })
           );
 
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           expect(
             responseCache.get('my-request', { includeStale: true }).data
           ).toEqual({ a: true });
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           done();
         }
       );
@@ -150,13 +180,13 @@ describe('responseCache: read/write API', () => {
       });
 
       Promise.all([one, two, three]).then(() => {
-        expect(responseCache.has('1')).toBe(true);
-        expect(responseCache.has('2')).toBe(true);
-        expect(responseCache.has('3')).toBe(true);
+        expect(responseCache.has('1', { includeStale: true })).toBe(true);
+        expect(responseCache.has('2', { includeStale: true })).toBe(true);
+        expect(responseCache.has('3', { includeStale: true })).toBe(true);
         responseCache.purge();
-        expect(responseCache.has('1')).toBe(true);
-        expect(responseCache.has('2')).toBe(true);
-        expect(responseCache.has('3')).toBe(true);
+        expect(responseCache.has('1', { includeStale: true })).toBe(true);
+        expect(responseCache.has('2', { includeStale: true })).toBe(true);
+        expect(responseCache.has('3', { includeStale: true })).toBe(true);
         done();
       });
     });
@@ -179,18 +209,18 @@ describe('responseCache: read/write API', () => {
       });
 
       Promise.all([one, two, three]).then(() => {
-        expect(responseCache.has('1')).toBe(true);
-        expect(responseCache.has('2')).toBe(true);
-        expect(responseCache.has('3')).toBe(true);
+        expect(responseCache.has('1', { includeStale: true })).toBe(true);
+        expect(responseCache.has('2', { includeStale: true })).toBe(true);
+        expect(responseCache.has('3', { includeStale: true })).toBe(true);
 
         bestfetch('/test/succeeds/json', {
           requestKey: '1',
         }).then(() => {
-          expect(responseCache.has('1')).toBe(true);
+          expect(responseCache.has('1', { includeStale: true })).toBe(true);
           responseCache.purge();
-          expect(responseCache.has('1')).toBe(false);
-          expect(responseCache.has('2')).toBe(true);
-          expect(responseCache.has('3')).toBe(true);
+          expect(responseCache.has('1', { includeStale: true })).toBe(false);
+          expect(responseCache.has('2', { includeStale: true })).toBe(true);
+          expect(responseCache.has('3', { includeStale: true })).toBe(true);
           done();
         });
       });

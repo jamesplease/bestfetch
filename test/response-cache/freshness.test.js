@@ -10,7 +10,9 @@ describe('responseCache: freshness', () => {
 
   describe('responseCache.isFresh', () => {
     test('returns false when a value is not in the cache', () => {
-      expect(responseCache.has('my-request')).toBe(false);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        false
+      );
       expect(responseCache.isFresh('my-request')).toBe(false);
     });
 
@@ -28,7 +30,9 @@ describe('responseCache: freshness', () => {
             })
           );
 
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           expect(responseCache.isFresh('my-request')).toBe(true);
           done();
         }
@@ -51,9 +55,13 @@ describe('responseCache: freshness', () => {
             })
           );
 
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           expect(responseCache.isFresh('my-request')).toBe(false);
-          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.has('my-request', { includeStale: true })).toBe(
+            true
+          );
           done();
         }
       );

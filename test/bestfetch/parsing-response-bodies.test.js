@@ -98,7 +98,7 @@ describe('bestfetch: parsing response bodies', () => {
             ok: true,
           })
         );
-        expect(responseCache.has('pasta')).toBe(true);
+        expect(responseCache.has('pasta', { includeStale: true })).toBe(true);
         done();
       });
     });
@@ -116,7 +116,7 @@ describe('bestfetch: parsing response bodies', () => {
             ok: true,
           })
         );
-        expect(responseCache.has('pasta')).toBe(false);
+        expect(responseCache.has('pasta', { includeStale: true })).toBe(false);
         done();
       });
     });
