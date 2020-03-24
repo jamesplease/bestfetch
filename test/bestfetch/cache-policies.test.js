@@ -15,7 +15,9 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
-      expect(responseCache.has('my-request')).toBe(true);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        true
+      );
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
         resTwo => {
@@ -49,7 +51,9 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
-      expect(responseCache.has('my-request')).toBe(true);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        true
+      );
 
       bestfetch('/test/succeeds/json', {
         requestKey: 'my-request',
@@ -87,7 +91,9 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
-      expect(responseCache.has('my-request')).toBe(false);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        false
+      );
       done();
     });
   });
@@ -104,7 +110,9 @@ describe('bestfetch: cachePolicy', () => {
           ok: true,
         })
       );
-      expect(responseCache.has('my-request')).toBe(true);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        true
+      );
 
       bestfetch('/test/succeeds/json', {
         requestKey: 'my-request',
@@ -120,7 +128,9 @@ describe('bestfetch: cachePolicy', () => {
             ok: true,
           })
         );
-        expect(responseCache.has('my-request')).toBe(true);
+        expect(responseCache.has('my-request', { includeStale: true })).toBe(
+          true
+        );
         expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
         done();
       });
@@ -143,7 +153,9 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
-      expect(responseCache.has('my-request')).toBe(true);
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        true
+      );
 
       bestfetch('/test/succeeds/json', {
         requestKey: 'my-request',

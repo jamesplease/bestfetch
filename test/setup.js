@@ -1,7 +1,10 @@
 import 'isomorphic-fetch';
 import fetchMock from 'fetch-mock';
 import { duplicateRequests, responseCache } from '../src';
-import { defaultReadPolicy, defaultWritePolicy } from '../src/response-cache';
+import {
+  defaultFreshnessDefinition,
+  defaultWritePolicy,
+} from '../src/response-cache';
 import {
   successfulResponse,
   jsonResponse,
@@ -15,8 +18,8 @@ beforeEach(() => {
   duplicateRequests.clear();
   responseCache.clear();
 
-  responseCache.configureCacheReadPolicy(defaultReadPolicy);
-  responseCache.configureCacheWritePolicy(defaultWritePolicy);
+  responseCache.defineFreshness(defaultFreshnessDefinition);
+  responseCache.defineCacheableResponse(defaultWritePolicy);
 });
 
 function hangingPromise() {

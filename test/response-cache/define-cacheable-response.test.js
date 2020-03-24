@@ -1,10 +1,10 @@
 import fetchMock from 'fetch-mock';
 import { bestfetch, responseCache } from '../../src';
 
-describe('responseCache.cacheWritePolicy', () => {
+describe('responseCache.defineCacheableResponse', () => {
   test('It errors if you pass an invalid function', () => {
     expect(() => {
-      responseCache.configureCacheWritePolicy({});
+      responseCache.defineCacheableResponse({});
     }).toThrow();
   });
 

@@ -2,7 +2,7 @@ import generateResponse from './generate-response';
 
 let responseCacheStore = {};
 
-export const defaultReadPolicy = () => true;
+export const defaultFreshnessDefinition = () => true;
 export const defaultWritePolicy = res => {
   if (res.status >= 500) {
     return false;
@@ -12,14 +12,21 @@ export const defaultWritePolicy = res => {
 };
 
 // By default we always read from the cache when a value exists.
-let readPolicyFn = defaultReadPolicy;
+let freshnessDefinitionFn = defaultFreshnessDefinition;
 
 // By default server errors are not cached, but every other successful response is.
 let writePolicyFn = defaultWritePolicy;
 
 const responseCache = {
-  get(requestKey) {
-    if (responseCache.has(requestKey)) {
+  get(requestKey, { includeStale = false } = {}) {
+    let shouldPull;
+    if (includeStale) {
+      shouldPull = responseCache.has(requestKey, { includeStale: true });
+    } else {
+      shouldPull = responseCache.isFresh(requestKey);
+    }
+
+    if (shouldPull) {
       const cacheObject = responseCacheStore[requestKey];
       cacheObject.accessCount += 1;
       cacheObject.lastAccessedAt = Date.now();
@@ -41,14 +48,18 @@ const responseCache = {
     return responseCache;
   },
 
-  has(requestKey) {
-    // `undefined` is not a valid JSON key, so we can reliably use
-    // it to determine if the value exists or not.dfs
-    return typeof responseCacheStore[requestKey] !== 'undefined';
+  has(requestKey, { includeStale = false } = {}) {
+    if (includeStale) {
+      // `undefined` is not a valid JSON key, so we can reliably use
+      // it to determine if the value exists or not.
+      return typeof responseCacheStore[requestKey] !== 'undefined';
+    } else {
+      return responseCache.isFresh(requestKey);
+    }
   },
 
   delete(requestKey) {
-    if (!responseCache.has(requestKey)) {
+    if (!responseCache.has(requestKey, { includeStale: true })) {
       return false;
     } else {
       delete responseCacheStore[requestKey];
@@ -60,22 +71,34 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  configureCacheReadPolicy(fn) {
+  isFresh(requestKey) {
+    return checkFreshness(requestKey);
+  },
+
+  purge() {
+    for (var requestKey in responseCacheStore) {
+      if (!responseCache.isFresh(requestKey)) {
+        delete responseCacheStore[requestKey];
+      }
+    }
+  },
+
+  defineFreshness(fn) {
     if (typeof fn === 'function') {
-      readPolicyFn = fn;
+      freshnessDefinitionFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.configureCacheReadPolicy()` must be a function.'
+        'The first argument to `responseCache.defineFreshness()` must be a function.'
       );
     }
   },
 
-  configureCacheWritePolicy(fn) {
+  defineCacheableResponse(fn) {
     if (typeof fn === 'function') {
       writePolicyFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.configureCacheWritePolicy()` must be a function.'
+        'The first argument to `responseCache.defineCacheableResponse()` must be a function.'
       );
     }
   },
@@ -83,16 +106,16 @@ const responseCache = {
 
 export default responseCache;
 
-export function shouldUseCachedValue(requestKey) {
-  if (responseCache.has(requestKey)) {
+export function checkFreshness(requestKey, purge = false) {
+  if (responseCache.has(requestKey, { includeStale: true })) {
     let cacheObject = responseCacheStore[requestKey];
-    const shouldAccess = readPolicyFn(cacheObject);
+    const isFresh = freshnessDefinitionFn(cacheObject);
 
-    if (!shouldAccess) {
+    if (!isFresh && purge) {
       responseCache.delete(requestKey);
     }
 
-    return shouldAccess;
+    return isFresh;
   } else {
     return false;
   }
