@@ -18,8 +18,15 @@ let freshnessDefinitionFn = defaultFreshnessDefinition;
 let writePolicyFn = defaultWritePolicy;
 
 const responseCache = {
-  get(requestKey) {
-    if (responseCache.has(requestKey)) {
+  get(requestKey, { includeStale = false } = {}) {
+    let shouldPull;
+    if (includeStale) {
+      shouldPull = responseCache.has(requestKey);
+    } else {
+      shouldPull = responseCache.isFresh(requestKey);
+    }
+
+    if (shouldPull) {
       const cacheObject = responseCacheStore[requestKey];
       cacheObject.accessCount += 1;
       cacheObject.lastAccessedAt = Date.now();

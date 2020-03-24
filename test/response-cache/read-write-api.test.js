@@ -2,7 +2,7 @@ import { bestfetch, responseCache } from '../../src';
 
 describe('responseCache: read/write API', () => {
   describe('has', () => {
-    test('behaves as expected', done => {
+    test('returns true for cached values', done => {
       expect(responseCache.has('test')).toBe(false);
       bestfetch('/test/succeeds/json', {
         requestKey: 'test',
@@ -47,7 +47,7 @@ describe('responseCache: read/write API', () => {
   });
 
   describe('get', () => {
-    test('behaves as expected', done => {
+    test('returns cached results when fresh', done => {
       expect(responseCache.get('test')).toBeUndefined();
       bestfetch('/test/succeeds/json', {
         requestKey: 'test',
@@ -55,6 +55,56 @@ describe('responseCache: read/write API', () => {
         expect(responseCache.get('test').data).toEqual({ a: true });
         done();
       });
+    });
+
+    test('ignores stale values by default', done => {
+      responseCache.defineFreshness(() => false);
+
+      bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
+        res => {
+          expect(res).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              ok: true,
+            })
+          );
+
+          expect(responseCache.has('my-request')).toBe(true);
+          expect(responseCache.get('my-request')).toBe(undefined);
+          expect(responseCache.has('my-request')).toBe(true);
+          done();
+        }
+      );
+    });
+
+    test('can be configured to return stale values', done => {
+      responseCache.defineFreshness(() => false);
+
+      bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
+        res => {
+          expect(res).toEqual(
+            expect.objectContaining({
+              data: {
+                a: true,
+              },
+              status: 200,
+              statusText: 'OK',
+              ok: true,
+            })
+          );
+
+          expect(responseCache.has('my-request')).toBe(true);
+          expect(
+            responseCache.get('my-request', { includeStale: true }).data
+          ).toEqual({ a: true });
+          expect(responseCache.has('my-request')).toBe(true);
+          done();
+        }
+      );
     });
   });
 

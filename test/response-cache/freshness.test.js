@@ -35,7 +35,7 @@ describe('responseCache: freshness', () => {
       );
     });
 
-    test('returns false when a value is in the cache, but is not fresh', () => {
+    test('returns false when a value is in the cache, but is not fresh', done => {
       responseCache.defineFreshness(() => false);
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
@@ -59,7 +59,7 @@ describe('responseCache: freshness', () => {
       );
     });
 
-    test('can be used to remove stale values', () => {
+    test('can be used to remove stale values', done => {
       responseCache.defineFreshness(() => false);
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
@@ -85,7 +85,7 @@ describe('responseCache: freshness', () => {
       );
     });
 
-    test('does not remove fresh values when purgeIfStale is false', () => {
+    test('does not remove fresh values when purgeIfStale is false', done => {
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
         res => {
           expect(res).toEqual(
