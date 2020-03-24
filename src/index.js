@@ -170,6 +170,12 @@ export function bestfetch(input, options) {
         () => {
           res.data = null;
 
+          if (!ignoreCacheOnResponse) {
+            if (shouldWriteCachedValue(res)) {
+              responseCache.set(requestKeyToUse, res);
+            }
+          }
+
           if (dedupe) {
             resolveRequest({ requestKey: requestKeyToUse, res });
           } else {
