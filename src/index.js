@@ -70,7 +70,6 @@ export function bestfetch(input, options) {
     requestKey,
     responseType = '',
     dedupe = true,
-    saveToCache,
     cachePolicy,
     ...init
   } = opts;
@@ -90,6 +89,9 @@ export function bestfetch(input, options) {
 
     appliedCachePolicy = isReadRequest ? 'cache-first' : 'network-only';
   }
+
+  const ignoreCacheOnResponse = appliedCachePolicy === 'no-cache';
+
   // Build the default request key if one is not passed
   let requestKeyToUse =
     requestKey ||
@@ -100,7 +102,10 @@ export function bestfetch(input, options) {
       body: init.body || '',
     });
 
-  if (appliedCachePolicy !== 'network-only') {
+  if (
+    appliedCachePolicy !== 'network-only' &&
+    appliedCachePolicy !== 'no-cache'
+  ) {
     if (shouldUseCachedValue(requestKeyToUse)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
@@ -149,16 +154,11 @@ export function bestfetch(input, options) {
       // the fetch.
       return res[responseTypeToUse]().then(
         data => {
-          let willWriteToCache;
-          if (typeof saveToCache === 'boolean') {
-            willWriteToCache = saveToCache;
-          } else {
-            willWriteToCache = shouldWriteCachedValue(res);
-          }
-
           res.data = data;
-          if (willWriteToCache) {
-            responseCache.set(requestKeyToUse, res);
+          if (!ignoreCacheOnResponse) {
+            if (shouldWriteCachedValue(res)) {
+              responseCache.set(requestKeyToUse, res);
+            }
           }
 
           if (dedupe) {
