@@ -60,8 +60,8 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  isFresh(requestKey, { purge = false } = {}) {
-    return checkFreshness(requestKey, purge);
+  isFresh(requestKey, { purgeIfStale = false } = {}) {
+    return checkFreshness(requestKey, purgeIfStale);
   },
 
   defineFreshness(fn) {
