@@ -3,19 +3,23 @@ import Lowlight from 'react-lowlight';
 export default function CachingResponses() {
   return (
     <div className="page">
-      <h1>Invalidating the Cache</h1>
+      <h1>Cache Freshness</h1>
       <p>
-        Out of the box, bestfech will never invalidate your cached responses.
-        What this means is that a particular request will only ever hit the
-        server <b>once</b>, unless you configure bestfetch to behave
-        differently.
+        Only cached responses that are <b>fresh</b> will be returned from the
+        cache. By default, values that are added to the cache stay fresh
+        indefinitely.
       </p>
       <p>
-        The reason this library works this way is because cache invalidation is
-        a difficult problem, and each application has its own particular needs.
-        It would be impossible for this library to include a default
-        invalidation strategy and expect it to work for every use case in every
-        app.
+        You can, and often should, define when you would a value should no
+        longer be fresh. Values that are no longer fresh are called <b>stale</b>
+        .
+      </p>
+      <h2>Why Isn't There a Smarter Default?</h2>
+      <p>
+        Cache freshness is a difficult problem, and each application has its own
+        particular needs. It would be impossible for this library to include a
+        default invalidation strategy and expect it to work for every use case
+        in every app.
       </p>
       <h2>Defining Your Invalidation Strategy</h2>
       <p>

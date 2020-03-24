@@ -38,7 +38,7 @@ export default function Nav() {
               <Link
                 activeClassName="activeNavLink"
                 href="/guides/invalidating-the-cache">
-                <a className={styles.navLink}>Invalidating the Cache</a>
+                <a className={styles.navLink}>Cache Freshness</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
