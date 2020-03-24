@@ -2,14 +2,14 @@ import fetchMock from 'fetch-mock';
 import { bestfetch } from '../../src';
 
 describe('bestfetch', () => {
-  test('allows for optional init', () => {
+  test('supports specifying just bestfetch options', () => {
     bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     bestfetch('/test/hangs', { requestKey: 'pasta', responseType: 'json' });
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
   });
 
-  test('allows for optional dedupeOptions', () => {
+  test('supports fetch options, too', () => {
     bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
     bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
     bestfetch('/test/hangs', { headers: { Authorization: 'Bearer abc123' } });
@@ -19,7 +19,7 @@ describe('bestfetch', () => {
     });
   });
 
-  test('allows for optional request key', () => {
+  test('supports optional request key', () => {
     bestfetch('/test/hangs', { responseType: 'json' });
     bestfetch('/test/hangs', { responseType: 'json' });
     bestfetch('/test/hangs', { responseType: 'json' });
@@ -27,15 +27,15 @@ describe('bestfetch', () => {
   });
 
   test('allows for optional request key, still producing a unique key', () => {
-    // First request to /test/hangs/2
+    // First unique request to /test/hangs
     bestfetch('/test/hangs', { responseType: 'json' });
     bestfetch('/test/hangs', { responseType: 'json' });
 
-    // First request to /test/hangs
+    // First unique request to /test/hangs/2
     bestfetch('/test/hangs/2', { responseType: 'json' });
     bestfetch('/test/hangs/2', { responseType: 'json' });
 
-    // Second request to /test/hangs/2
+    // Second unique request to /test/hangs/2
     bestfetch('/test/hangs/2', { body: 'hello', responseType: 'json' });
 
     expect(fetchMock.calls('/test/hangs').length).toBe(1);
