@@ -75,6 +75,7 @@ describe('responseCache: read/write API', () => {
         done();
       });
     });
+
     test('behaves as expected when response has not been cached', () => {
       const response = responseCache.get('test');
       expect(response).toBeUndefined();

@@ -3,7 +3,7 @@ import { bestfetch, responseCache, CacheMissError } from '../../src';
 
 describe('bestfetch: cachePolicy', () => {
   test('Defaults with a GET should be cache-first', done => {
-    bestfetch('/test/succeeds/json').then(res => {
+    bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -15,39 +15,11 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
-      bestfetch('/test/succeeds/json').then(resTwo => {
-        expect(resTwo).toEqual(
-          expect.objectContaining({
-            data: {
-              a: true,
-            },
-            status: 200,
-            statusText: 'OK',
-            ok: true,
-          })
-        );
-        expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
-        done();
-      });
-    });
-  });
+      expect(responseCache.has('my-request')).toBe(true);
 
-  test('network-only ignores the cache', done => {
-    bestfetch('/test/succeeds/json').then(res => {
-      expect(res).toEqual(
-        expect.objectContaining({
-          data: {
-            a: true,
-          },
-          status: 200,
-          statusText: 'OK',
-          ok: true,
-        })
-      );
-
-      bestfetch('/test/succeeds/json', { cachePolicy: 'network-only' }).then(
-        res => {
-          expect(res).toEqual(
+      bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
+        resTwo => {
+          expect(resTwo).toEqual(
             expect.objectContaining({
               data: {
                 a: true,
@@ -57,10 +29,45 @@ describe('bestfetch: cachePolicy', () => {
               ok: true,
             })
           );
-          expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+          expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
           done();
         }
       );
+    });
+  });
+
+  test('network-only ignores the cache', done => {
+    bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      expect(responseCache.has('my-request')).toBe(true);
+
+      bestfetch('/test/succeeds/json', {
+        requestKey: 'my-request',
+        cachePolicy: 'network-only',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
     });
   });
 
@@ -122,6 +129,7 @@ describe('bestfetch: cachePolicy', () => {
 
   test('default for "write" requests is network-only', done => {
     bestfetch('/test/succeeds/json', {
+      requestKey: 'my-request',
       method: 'POST',
     }).then(res => {
       expect(res).toEqual(
@@ -135,7 +143,10 @@ describe('bestfetch: cachePolicy', () => {
         })
       );
 
+      expect(responseCache.has('my-request')).toBe(true);
+
       bestfetch('/test/succeeds/json', {
+        requestKey: 'my-request',
         method: 'POST',
       }).then(res => {
         expect(res).toEqual(
