@@ -85,20 +85,40 @@ describe('bestfetch: parsing response bodies', () => {
     });
   });
 
-  test('requests that fail to parse the response body are still added to the cache (gh-65)', done => {
-    bestfetch('/test/succeeds', {
-      requestKey: 'pasta',
-    }).then(res => {
-      expect(res).toEqual(
-        expect.objectContaining({
-          data: null,
-          status: 200,
-          statusText: 'OK',
-          ok: true,
-        })
-      );
-      expect(responseCache.has('pasta')).toBe(true);
-      done();
+  describe('tests that fail to parse (gh-65)', () => {
+    test('are still added to the cache (gh-65)', done => {
+      bestfetch('/test/succeeds', {
+        requestKey: 'pasta',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: null,
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(responseCache.has('pasta')).toBe(true);
+        done();
+      });
+    });
+
+    test('respect options that ignore the cache (gh-65)', done => {
+      bestfetch('/test/succeeds', {
+        requestKey: 'pasta',
+        cachePolicy: 'no-cache',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: null,
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(responseCache.has('pasta')).toBe(false);
+        done();
+      });
     });
   });
 });
