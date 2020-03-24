@@ -56,9 +56,9 @@ export default () => {
           </a>
         </li>
         <li>
-          <a href="#usecachedresponse">
+          <a href="#configurecachereadpolicy">
             <b>
-              <code>useCachedResponse</code>
+              <code>configureCacheReadPolicy</code>
             </b>
           </a>
         </li>
@@ -186,12 +186,16 @@ export default () => {
       <p>This method does not return anything.</p>
       <h3>Example Usage</h3>
       <Lowlight language="js" inline={false} value={`responseCache.clear();`} />
-      <h2 id="usecachedresponse">
-        <code>useCachedResponse</code>
+      <h2 id="configurecachereadpolicy">
+        <code>configureCacheReadPolicy</code>
       </h2>
       <p>
-        Configure the invalidation strategy for your application. You should
-        only call this method one time, when your app first loads.
+        Use this method to specify when cached responses should be considered
+        invalid. By default, responses that are added to the response cache are
+        never removed; this method allows you to change that behavior.
+      </p>
+      <p>
+        You should only call this method one time, when your app first loads.
       </p>
       <h3>Arguments</h3>
       <ol>
@@ -199,10 +203,11 @@ export default () => {
           <b>
             <code>cacheInvalidationPolicy</code>
           </b>
-          : A function that defines your invalidation policy. Each time that the
-          cache would be hit, this function will be called. It is passed a
-          single argument: <code>cacheObject</code>. Return <code>true</code> to
-          use the cached object, or <code>false</code> to invalidate it.
+          : A function that defines your invalidation policy. Each time that a
+          response would be pulled from the cache, this function will be called.
+          It is passed a single argument: <code>cacheObject</code>. Return{' '}
+          <code>true</code> to use the cached response, or <code>false</code> to
+          invalidate it.
         </li>
       </ol>
       <p>
@@ -236,7 +241,7 @@ export default () => {
 // * 10 = 10 minutes
 const TEN_MINUTES = 1000 * 60 * 10;
 
-responseCache.useCachedResponse(cacheObject => {
+responseCache.configureCacheReadPolicy(cacheObject => {
   const currentTimestamp = Date.now();
   return currentTimestamp - cacheObject.createdAt <= TEN_MINUTES;
 });`}

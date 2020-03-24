@@ -52,6 +52,18 @@ export default function bestfetch() {
             </li>
             <li>
               <b>
+                <code>saveToCache</code>
+              </b>
+              : A <code>boolean</code> that determines whether or not the
+              response will be saved to the cache. Defaults to <code>true</code>
+              .{' '}
+              <Link href="/guides/caching-responses">
+                <a>Learn more here</a>
+              </Link>
+              .
+            </li>
+            <li>
+              <b>
                 <code>cachePolicy</code>
               </b>
               : Determines how the cache will be used, if at all. Defaults to{' '}

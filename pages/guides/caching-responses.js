@@ -9,9 +9,30 @@ export default function CachingResponses() {
       <p>bestfetch includes a sophisticated system for caching responses.</p>
       <h2>Configuring the Caching Behavior</h2>
       <p>
+        <code>bestfetch</code> supports two options that allow you to control
+        the behavior of the cache on a per-request basis:
+      </p>
+      <ul>
+        <li>
+          <b>
+            <code>cachePolicy</code>
+          </b>
+          : Allows you to control whether to look in the cache before making a
+          request. In other words, this controls <i>reading</i> from the cache.
+        </li>
+        <li>
+          <b>
+            <code>saveToCache</code>
+          </b>
+          : This option allows you to specify when responses received from the
+          server should be written to the cache or not. This controls{' '}
+          <i>writing</i> to the cache.
+        </li>
+      </ul>
+      <p>
         Use the <code>cachePolicy</code> option when calling{' '}
-        <code>bestfetch()</code> to control when the cache is used. Supported
-        values are:
+        <code>bestfetch()</code> to control when the cache is used to retrieve
+        responses. Supported values are:
       </p>
       <ul>
         <li>
@@ -132,6 +153,29 @@ export default function CachingResponses() {
           <a>invalidating cached responses</a>
         </Link>
         .
+      </p>
+      <h2>Completely Disabling the Cache</h2>
+      <p>
+        You can set <code>cachePolicy</code> to <code>"network-only"</code> and{' '}
+        <code>saveToCache</code> to <code>false</code> to disable all of the
+        features of bestfetch that are related to the cache.
+      </p>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+  cachePolicy: 'network-only',
+  saveToCache: false
+})
+  .then(handleResponse);`}
+      />
+      <p>
+        Keep in mind that if a particular request doesn't need the caching
+        features of <code>bestfetch</code>, then you might consider using{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch">
+          <code>fetch</code>
+        </a>{' '}
+        for that request instead.
       </p>
       <h2>Directly Accessing the Cache</h2>
       <p>

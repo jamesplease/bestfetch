@@ -20,8 +20,8 @@ export default function CachingResponses() {
       <h2>Defining Your Invalidation Strategy</h2>
       <p>
         You can configure an invalidation strategy that works for your
-        application using the <code>responseCache.useCachedResponse()</code>{' '}
-        method.
+        application using the{' '}
+        <code>responseCache.configureCacheReadPolicy()</code> method.
       </p>
       <p>
         You only need to call this method a single time; typically before you
@@ -36,7 +36,7 @@ export default function CachingResponses() {
         value={`import { responseCache } from 'bestfetch';`}
       />
       <p>
-        <code>responseCache.useCachedResponse()</code> accepts a single
+        <code>responseCache.configureCacheReadPolicy()</code> accepts a single
         argument: a function.
       </p>
       <p>
@@ -52,14 +52,20 @@ export default function CachingResponses() {
         value={`import { responseCache } from 'bestfetch';
 
 // Call this method a single time: before your app mounts.
-responseCache.useCachedResponse(() => /* return true or false */);`}
+responseCache.configureCacheReadPolicy(() => /* return true or false */);`}
       />
+      <p>The default cache read policy is:</p>
+      <Lowlight language="js" inline={false} value={`() => true;`} />
+      <p>
+        which can be intepreted as meaning that any response that is added to
+        the cache remains valid indefinitely.
+      </p>
       <h2>
         <code>cacheObject</code>
       </h2>
       <p>
-        The function that you pass to <code>useCachedResponse</code> will be
-        passed a single argument: <code>cacheObject</code>. You can use this
+        The function that you pass to <code>configureCacheReadPolicy</code> will
+        be passed a single argument: <code>cacheObject</code>. You can use this
         object to decide whether or not to use the cached reponse or not.
       </p>
       <p>
@@ -92,7 +98,7 @@ responseCache.useCachedResponse(() => /* return true or false */);`}
         inline={false}
         value={`import { responseCache } from 'bestfetch';
 
-responseCache.useCachedResponse(() => false);`}
+responseCache.configureCacheReadPolicy(() => false);`}
       />
       <p>
         With this invalidation strategy in place, it is as if this library
@@ -114,7 +120,7 @@ responseCache.useCachedResponse(() => false);`}
 // * 10 = 10 minutes
 const TEN_MINUTES = 1000 * 60 * 10;
 
-responseCache.useCachedResponse(cacheObject => {
+responseCache.configureCacheReadPolicy(cacheObject => {
   const currentTimestamp = Date.now();
   return currentTimestamp - cacheObject.createdAt <= TEN_MINUTES;
 });`}
@@ -129,7 +135,7 @@ responseCache.useCachedResponse(cacheObject => {
         inline={false}
         value={`import { responseCache } from 'bestfetch';
 
-responseCache.useCachedResponse(cacheObject => {
+responseCache.configureCacheReadPolicy(cacheObject => {
   return cacheObject.accessCount <= 10;
 });`}
       />
