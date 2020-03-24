@@ -594,43 +594,6 @@ describe('cacheWritePolicy', () => {
       });
     });
   });
-
-  test('can be overridden on a per-request basis using `saveToCache`', done => {
-    bestfetch('/test/fails/internal-server-error', {
-      requestKey: 'will-error',
-      saveToCache: true,
-      responseType: 'text',
-    }).then(res => {
-      expect(res).toEqual(
-        expect.objectContaining({
-          data: 'Server error message',
-          status: 500,
-          statusText: 'Internal Server Error',
-          ok: false,
-        })
-      );
-      expect(responseCache.has('will-error')).toBe(true);
-
-      bestfetch('/test/fails/internal-server-error', {
-        requestKey: 'will-error',
-        responseType: 'text',
-      }).then(resTwo => {
-        expect(resTwo).toEqual(
-          expect.objectContaining({
-            data: 'Server error message',
-            status: 500,
-            statusText: 'Internal Server Error',
-            ok: false,
-          })
-        );
-        expect(responseCache.has('will-error')).toBe(true);
-        expect(
-          fetchMock.calls('/test/fails/internal-server-error').length
-        ).toBe(1);
-        done();
-      });
-    });
-  });
 });
 
 describe('cachePolicy', () => {
@@ -693,6 +656,62 @@ describe('cachePolicy', () => {
           done();
         }
       );
+    });
+  });
+
+  test('no-cache does not write to the cache', done => {
+    bestfetch('/test/succeeds/json', {
+      requestKey: 'my-request',
+      cachePolicy: 'no-cache',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      expect(responseCache.has('my-request')).toBe(false);
+      done();
+    });
+  });
+
+  test('no-cache will not read from the cache', done => {
+    bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      expect(responseCache.has('my-request')).toBe(true);
+
+      bestfetch('/test/succeeds/json', {
+        requestKey: 'my-request',
+        cachePolicy: 'no-cache',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(responseCache.has('my-request')).toBe(true);
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
     });
   });
 
