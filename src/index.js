@@ -87,7 +87,7 @@ export function bestfetch(input, options) {
       upperCaseMethod === 'HEAD' ||
       upperCaseMethod === '';
 
-    appliedCachePolicy = isReadRequest ? 'cache-first' : 'network-only';
+    appliedCachePolicy = isReadRequest ? 'cache-first' : 'reload';
   }
 
   const ignoreCacheOnResponse = appliedCachePolicy === 'no-cache';
@@ -102,10 +102,7 @@ export function bestfetch(input, options) {
       body: init.body || '',
     });
 
-  if (
-    appliedCachePolicy !== 'network-only' &&
-    appliedCachePolicy !== 'no-cache'
-  ) {
+  if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
     if (shouldUseCachedValue(requestKeyToUse)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
