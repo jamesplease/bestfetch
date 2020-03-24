@@ -36,7 +36,7 @@ describe('bestfetch: cachePolicy', () => {
     });
   });
 
-  test('network-only ignores the cache', done => {
+  test('reload ignores the cache', done => {
     bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
@@ -53,7 +53,7 @@ describe('bestfetch: cachePolicy', () => {
 
       bestfetch('/test/succeeds/json', {
         requestKey: 'my-request',
-        cachePolicy: 'network-only',
+        cachePolicy: 'reload',
       }).then(res => {
         expect(res).toEqual(
           expect.objectContaining({
@@ -127,7 +127,7 @@ describe('bestfetch: cachePolicy', () => {
     });
   });
 
-  test('default for "write" requests is network-only', done => {
+  test('default for "write" requests is reload', done => {
     bestfetch('/test/succeeds/json', {
       requestKey: 'my-request',
       method: 'POST',
