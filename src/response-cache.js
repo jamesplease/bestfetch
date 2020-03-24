@@ -2,7 +2,7 @@ import generateResponse from './generate-response';
 
 let responseCacheStore = {};
 
-export const defaultReadPolicy = () => true;
+export const defaultFreshnessDefinition = () => true;
 export const defaultWritePolicy = res => {
   if (res.status >= 500) {
     return false;
@@ -12,7 +12,7 @@ export const defaultWritePolicy = res => {
 };
 
 // By default we always read from the cache when a value exists.
-let freshnessPolicyFn = defaultReadPolicy;
+let freshnessDefinitionFn = defaultFreshnessDefinition;
 
 // By default server errors are not cached, but every other successful response is.
 let writePolicyFn = defaultWritePolicy;
@@ -60,9 +60,13 @@ const responseCache = {
     responseCacheStore = {};
   },
 
+  isFresh(requestKey, { purge = false } = {}) {
+    return checkFreshness(requestKey, purge);
+  },
+
   defineFreshness(fn) {
     if (typeof fn === 'function') {
-      freshnessPolicyFn = fn;
+      freshnessDefinitionFn = fn;
     } else {
       throw new TypeError(
         'The first argument to `responseCache.defineFreshness()` must be a function.'
@@ -70,12 +74,12 @@ const responseCache = {
     }
   },
 
-  configureCacheWritePolicy(fn) {
+  defineCacheableResponse(fn) {
     if (typeof fn === 'function') {
       writePolicyFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.configureCacheWritePolicy()` must be a function.'
+        'The first argument to `responseCache.defineCacheableResponse()` must be a function.'
       );
     }
   },
@@ -83,12 +87,12 @@ const responseCache = {
 
 export default responseCache;
 
-export function checkFreshness(requestKey) {
+export function checkFreshness(requestKey, purge = false) {
   if (responseCache.has(requestKey)) {
     let cacheObject = responseCacheStore[requestKey];
-    const shouldAccess = freshnessPolicyFn(cacheObject);
+    const shouldAccess = freshnessDefinitionFn(cacheObject);
 
-    if (!shouldAccess) {
+    if (!shouldAccess && purge) {
       responseCache.delete(requestKey);
     }
 

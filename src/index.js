@@ -103,7 +103,7 @@ export function bestfetch(input, options) {
     });
 
   if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
-    if (checkFreshness(requestKeyToUse)) {
+    if (checkFreshness(requestKeyToUse, true)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
