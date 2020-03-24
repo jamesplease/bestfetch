@@ -6,21 +6,12 @@ import {
   responseCache,
   CacheMissError,
 } from '../src';
-import { defaultReadPolicy, defaultWritePolicy } from '../src/response-cache';
 import {
   successfulResponse,
   jsonResponse,
   emptyResponse,
   serverErrorResponse,
 } from './responses';
-
-beforeEach(() => {
-  duplicateRequests.clear();
-  responseCache.clear();
-
-  responseCache.configureCacheReadPolicy(defaultReadPolicy);
-  responseCache.configureCacheWritePolicy(defaultWritePolicy);
-});
 
 function hangingPromise() {
   return new Promise(() => {});
