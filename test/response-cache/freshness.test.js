@@ -58,56 +58,6 @@ describe('responseCache: freshness', () => {
         }
       );
     });
-
-    test('can be used to remove stale values', done => {
-      responseCache.defineFreshness(() => false);
-
-      bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
-        res => {
-          expect(res).toEqual(
-            expect.objectContaining({
-              data: {
-                a: true,
-              },
-              status: 200,
-              statusText: 'OK',
-              ok: true,
-            })
-          );
-
-          expect(responseCache.has('my-request')).toBe(true);
-          expect(
-            responseCache.isFresh('my-request', { purgeIfStale: true })
-          ).toBe(false);
-          expect(responseCache.has('my-request')).toBe(false);
-          done();
-        }
-      );
-    });
-
-    test('does not remove fresh values when purgeIfStale is false', done => {
-      bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
-        res => {
-          expect(res).toEqual(
-            expect.objectContaining({
-              data: {
-                a: true,
-              },
-              status: 200,
-              statusText: 'OK',
-              ok: true,
-            })
-          );
-
-          expect(responseCache.has('my-request')).toBe(true);
-          expect(
-            responseCache.isFresh('my-request', { purgeIfStale: true })
-          ).toBe(true);
-          expect(responseCache.has('my-request')).toBe(true);
-          done();
-        }
-      );
-    });
   });
 
   test('Overriding the default freshness definition to ignore the entire cache should work', done => {

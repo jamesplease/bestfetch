@@ -134,4 +134,66 @@ describe('responseCache: read/write API', () => {
       expect(newResponse).toEqual({ data: { a: false } });
     });
   });
+
+  describe('purge', () => {
+    test('does not purge values if they are all fresh', done => {
+      const one = bestfetch('/test/succeeds/json', {
+        requestKey: '1',
+      });
+
+      const two = bestfetch('/test/succeeds/json', {
+        requestKey: '2',
+      });
+
+      const three = bestfetch('/test/succeeds/json', {
+        requestKey: '3',
+      });
+
+      Promise.all([one, two, three]).then(() => {
+        expect(responseCache.has('1')).toBe(true);
+        expect(responseCache.has('2')).toBe(true);
+        expect(responseCache.has('3')).toBe(true);
+        responseCache.purge();
+        expect(responseCache.has('1')).toBe(true);
+        expect(responseCache.has('2')).toBe(true);
+        expect(responseCache.has('3')).toBe(true);
+        done();
+      });
+    });
+
+    test('purges only stale values', done => {
+      responseCache.defineFreshness(cacheObject => {
+        return cacheObject.accessCount < 1;
+      });
+
+      const one = bestfetch('/test/succeeds/json', {
+        requestKey: '1',
+      });
+
+      const two = bestfetch('/test/succeeds/json', {
+        requestKey: '2',
+      });
+
+      const three = bestfetch('/test/succeeds/json', {
+        requestKey: '3',
+      });
+
+      Promise.all([one, two, three]).then(() => {
+        expect(responseCache.has('1')).toBe(true);
+        expect(responseCache.has('2')).toBe(true);
+        expect(responseCache.has('3')).toBe(true);
+
+        bestfetch('/test/succeeds/json', {
+          requestKey: '1',
+        }).then(() => {
+          expect(responseCache.has('1')).toBe(true);
+          responseCache.purge();
+          expect(responseCache.has('1')).toBe(false);
+          expect(responseCache.has('2')).toBe(true);
+          expect(responseCache.has('3')).toBe(true);
+          done();
+        });
+      });
+    });
+  });
 });

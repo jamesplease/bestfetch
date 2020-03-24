@@ -67,8 +67,16 @@ const responseCache = {
     responseCacheStore = {};
   },
 
-  isFresh(requestKey, { purgeIfStale = false } = {}) {
-    return checkFreshness(requestKey, purgeIfStale);
+  isFresh(requestKey) {
+    return checkFreshness(requestKey);
+  },
+
+  purge() {
+    for (var requestKey in responseCacheStore) {
+      if (!responseCache.isFresh(requestKey)) {
+        delete responseCacheStore[requestKey];
+      }
+    }
   },
 
   defineFreshness(fn) {
