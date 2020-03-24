@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { bestfetch } from '../../src';
+import { bestfetch, responseCache } from '../../src';
 
 describe('bestfetch: parsing response bodies', () => {
   test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
@@ -81,6 +81,23 @@ describe('bestfetch: parsing response bodies', () => {
           ok: false,
         })
       );
+      done();
+    });
+  });
+
+  test('requests that fail to parse the response body are still added to the cache (gh-65)', done => {
+    bestfetch('/test/succeeds', {
+      requestKey: 'pasta',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: null,
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+      expect(responseCache.has('pasta')).toBe(true);
       done();
     });
   });
