@@ -1,3 +1,5 @@
+import Link from '../components/link';
+
 export default function FAQ() {
   return (
     <div className="page">
@@ -23,9 +25,13 @@ export default function FAQ() {
         </li>
       </ul>
       <p>
-        To resolve this, you can use the <code>responseType</code> option to
-        have greater control over the parsing of the response body from the
-        server.
+        To resolve this, you can{' '}
+        <Link href="/advanced-guides/other-response-types">
+          <a>
+            use the <code>responseType</code> option
+          </a>
+        </Link>{' '}
+        to have greater control over parsing the response body.
       </p>
 
       <h3>
@@ -64,6 +70,14 @@ export default function FAQ() {
         particular needs. It would be impossible for this library to include a
         default definition of staleness and expect it to work for every use case
         in every app.
+      </p>
+      <p>
+        You're able to change this behavior so that responses do go stale. Learn
+        more in the{' '}
+        <Link href="/guides/cache-freshness">
+          <a>Cache Freshness</a>
+        </Link>{' '}
+        guide.
       </p>
     </div>
   );

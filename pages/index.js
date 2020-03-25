@@ -45,12 +45,12 @@ export default function Index() {
             </div>
           </div>
           <div className="heroPropContainer">
-            <div className="heroEmoji">🐭</div>
-            <div className="heroProp">Small</div>
+            <div className="heroEmoji">⚡️</div>
+            <div className="heroProp">Efficient</div>
             <div className="heroDescription">
-              bestfetch is tiny but mighty. With its reasonable file size (
-              <code>&lt;3kb</code> gzipped) you can feel responsible adding it
-              to an existing codebase.
+              bestfetch is great for your users: many people worldwide browse
+              the web on mobile phones with limited data plans. Use less of
+              their data by leveraging bestfetch.
             </div>
           </div>
         </div>
@@ -65,12 +65,12 @@ export default function Index() {
             </div>
           </div>
           <div className="heroPropContainer">
-            <div className="heroEmoji">⚡️</div>
-            <div className="heroProp">Efficient</div>
+            <div className="heroEmoji">🐭</div>
+            <div className="heroProp">Small</div>
             <div className="heroDescription">
-              bestfetch is great for your users: many people worldwide browse
-              the web on mobile phones with limited data plans. Use less of
-              their data by leveraging bestfetch.
+              bestfetch is tiny but mighty. With its reasonable file size (
+              <code>&lt;3kb</code> gzipped) you can feel responsible adding it
+              to an existing codebase.
             </div>
           </div>
         </div>

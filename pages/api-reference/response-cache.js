@@ -378,13 +378,13 @@ responseCache.defineStaleness((cacheObject) => {
   return !response.data?.serverError;
 });`}
       />
-      {/* <p>
-        For more on how to use this method, refer to the{' '}
-        <Link href="/guides/cache-freshness">
-          <a>Cash Freshness</a>
+      <p>
+        Refer to the{' '}
+        <Link href="/advanced-guides/managing-server-errors">
+          <a>Managing Server Errors</a>
         </Link>{' '}
-        guide.
-      </p> */}
+        guide to learn more about this method.
+      </p>
     </div>
   );
 };

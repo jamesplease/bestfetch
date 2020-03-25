@@ -34,8 +34,9 @@ export default () => {
       <h3>Specifying the URL</h3>
       <p>
         You can pass a URL as the first argument, or you can pass an{' '}
-        <code>options</code> object and specify the URL there. URLs can be both
-        absolute or relative.
+        <code>options</code> object and specify the URL there. URLs can be
+        either absolute or relative, although most of the time you'll want to
+        use absolute URLs.
       </p>
       <Lowlight
         language="js"
@@ -120,6 +121,15 @@ bestfetch(\`/api/books?\${qs}\`)
           <a>Caching Responses</a>
         </Link>{' '}
         to learn how to configure this behavior.
+      </p>
+      <h3>Deduplicating Requests</h3>
+      <p>
+        <code>bestfetch</code> automatically ensures that your application never
+        makes two identical network requests at the same time. Learn more in the{' '}
+        <Link href="/guides/deduplicating-requests">
+          <a>Deduplicating Requests</a>
+        </Link>{' '}
+        guide.
       </p>
       <h3>Other Options</h3>
       <p>
@@ -213,6 +223,37 @@ bestfetch(\`/api/books?\${qs}\`)
           guide.
         </li>
       </ul>
+      <h3>Canceling Requests</h3>
+      <p>
+        Use{' '}
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController">
+          <code>AbortController</code>
+        </a>{' '}
+        to cancel requests.
+      </p>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`const abortController = new AbortController();
+        
+bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
+  signal: abortController.signal
+})
+  .then(res => {
+    console.log('Got the data', res.data);
+  });
+  
+// Sometime later, call abort() to cancel the request...
+abortController.abort();`}
+      />
+      <p>
+        If you're using bestfetch in an environment without{' '}
+        <code>AbortController</code>, then we recommend{' '}
+        <a href="https://github.com/mo/abortcontroller-polyfill">
+          this polyfill
+        </a>
+        .
+      </p>
       <h2>Receiving Responses</h2>
       <p>
         <code>bestfetch</code> returns a Promise. This Promise resolves if a

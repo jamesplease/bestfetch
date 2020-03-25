@@ -19,9 +19,17 @@ export default () => {
         server may be up by the time the request is made again.
       </p>
       <p>
+        <i>
+          Note: for apps with many concurrent users, you may want to slow down
+          how often you make requests to a server that is having issues to avoid
+          worsening the situation. This library's opinion is that this limiting
+          requests to the server should be handled independently from the cache.
+        </i>
+      </p>
+      <p>
         For this reason, <code>bestfetch</code> will not cache responses that
-        have an HTTP status code <code>>=500</code>. They will not be cached no
-        matter what you specify your <code>cachePolicy</code> to be.
+        have an HTTP status code <code>>=500</code>. This will <i>override</i>{' '}
+        whatever your <code>cachePolicy</code> is set as.
       </p>
       <p>
         A response that <i>will</i> be added to the cache is called a{' '}
@@ -89,22 +97,23 @@ responseCache.defineCacheableResponse((response) => /* return true or false */);
 responseCache.defineCacheableResponse((response) => true);`}
       />
       <p>
-        Every server can have problems, though, so just be mindful of how this
-        library will behave when you specify the definition to be like this.
+        Every server can have problems, though, so be mindful of how this
+        library will behave when you use this definition.
       </p>
       <h2>
         Example: Using <code>response.data</code>
       </h2>
       <p>
-        Not every API uses HTTP status codes. For instance, some GraphQL
-        implementations return <code>200 OK</code> no matter what happens. In
-        situations like these, you may wish to look at{' '}
+        Not every API uses HTTP status codes. For instance, some enterprise APIs
+        will not return correct response status codes, and their endpoints may
+        return <code>200 OK</code> even when the server has an internal error.
+        In situations like these, you may wish to look at{' '}
         <code>response.data</code> to see what's in the <code>body</code> of the
         response.
       </p>
       <p>
-        In the following example, we won't cache responses if the value of{' '}
-        <code>response.data.error</code> is the string{' '}
+        In the following example, bestfetch won't cache responses if the value
+        of <code>response.data.error</code> is the string{' '}
         <code>"Server error"</code>.
       </p>
       <Lowlight

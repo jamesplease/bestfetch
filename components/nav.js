@@ -44,13 +44,6 @@ export default function Nav() {
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/guides/managing-server-errors">
-                <a className={styles.navLink}>Managing Server Errors</a>
-              </Link>
-            </li>
-            <li className={styles.navSubListItem}>
-              <Link
-                activeClassName="activeNavLink"
                 href="/guides/deduplicating-requests">
                 <a className={styles.navLink}>Deduplicating Requests</a>
               </Link>
@@ -62,6 +55,13 @@ export default function Nav() {
             <a className={styles.navSectionLink}>Advanced Guides</a>
           </Link>
           <ul className={styles.navSubList}>
+            <li className={styles.navSubListItem}>
+              <Link
+                activeClassName="activeNavLink"
+                href="/advanced-guides/managing-server-errors">
+                <a className={styles.navLink}>Managing Server Errors</a>
+              </Link>
+            </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"

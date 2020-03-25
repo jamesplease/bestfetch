@@ -146,6 +146,36 @@ responseCache.defineStaleness((cacheObject) => {
         request is made, and its cached response is determined to be stale, that
         response is immediately evicted from the cache.
       </p>
+      <p>
+        Because staleness is determined lazily, the size of your cache will grow
+        over time. You can manually evict all stale responses from the cache by
+        calling <code>responseCache.purge()</code>.
+      </p>
+      <p>
+        Not every application needs to worry about the cache growing so large
+        that it causes problems. But if your application runs for a long time,
+        and a typical user makes a lot of different kinds of requests, then you
+        may need to call this method periodically.
+      </p>
+      <p>The following example demonstrates purging the cache every hour:</p>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`import { responseCache } from 'bestfetch';
+
+// 1000 = 1 second in milliseconds
+// * 60 = 1 minute
+// * 60 = 60 minutes, or 1 hour
+const ONE_HOUR = 1000 * 60 * 60;
+
+setInterval(responseCache.purge, ONE_HOUR);
+`}
+      />
+      <p>
+        You don't have to purge the cache at a set interval. For example, you
+        could configure your app to purge the cache if the user is idle for more
+        than 15 minutes.
+      </p>
     </div>
   );
 };
