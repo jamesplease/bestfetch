@@ -135,6 +135,20 @@ export function bestfetch(input, options) {
     }
   }
 
+  function onSuccess(res) {
+    if (!ignoreCacheOnResponse) {
+      if (shouldWriteCachedValue(res)) {
+        responseCache.set(requestKeyToUse, res);
+      }
+    }
+
+    if (dedupe) {
+      resolveRequest({ requestKey: requestKeyToUse, res });
+    } else {
+      return generateResponse(res);
+    }
+  }
+
   const request = fetch(url, init).then(
     res => {
       let responseTypeToUse;
@@ -151,34 +165,16 @@ export function bestfetch(input, options) {
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
       return res[responseTypeToUse]().then(
+        // This handles when the body is parsed successfully.
         data => {
           res.data = data;
-          if (!ignoreCacheOnResponse) {
-            if (shouldWriteCachedValue(res)) {
-              responseCache.set(requestKeyToUse, res);
-            }
-          }
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return generateResponse(res);
-          }
+          return onSuccess(res);
         },
+        // This handles when there is an error parsing the body. We set the
+        // `data` to be `null`, but otherwise treat it as a success.
         () => {
           res.data = null;
-
-          if (!ignoreCacheOnResponse) {
-            if (shouldWriteCachedValue(res)) {
-              responseCache.set(requestKeyToUse, res);
-            }
-          }
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return generateResponse(res);
-          }
+          return onSuccess(res);
         }
       );
     },
