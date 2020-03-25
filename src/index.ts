@@ -8,21 +8,31 @@ import generateResponse from './generate-response';
 
 export { responseCache, CacheMissError };
 
-let duplicateRequestsStore = {};
+interface promiseProxy {
+  resolve: (res: any) => void;
+  reject: (err: any) => void;
+}
+
+interface duplicateRequestStoreInterface {
+  [Key: string]: Array<promiseProxy> | null;
+  [Key: number]: Array<promiseProxy> | null;
+}
+
+let duplicateRequestsStore: duplicateRequestStoreInterface = {};
 
 export function getRequestKey({
   url = '',
   method = '',
   responseType = '',
   body = '',
-} = {}) {
+} = {}): string {
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
 const duplicateRequests = {
   // Returns `true` if a request with `requestKey` is in flight,
   // and `false` otherwise.
-  isRequestInFlight(requestKey) {
+  isRequestInFlight(requestKey: string) {
     const handlers = duplicateRequestsStore[requestKey];
     if (handlers && handlers.length) {
       return Boolean(handlers.length);
@@ -38,12 +48,18 @@ const duplicateRequests = {
 
 export { duplicateRequests };
 
+interface resolveRequestOpts {
+  requestKey: string;
+  res: any;
+  err: any;
+}
+
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
-function resolveRequest({ requestKey, res, err }) {
+function resolveRequest({ requestKey, res, err }: resolveRequestOpts) {
   const handlers = duplicateRequestsStore[requestKey] || [];
 
-  handlers.forEach(handler => {
+  handlers.forEach((handler: promiseProxy) => {
     if (res) {
       handler.resolve(generateResponse(res));
     } else {
@@ -124,7 +140,7 @@ export function bestfetch(input, options) {
       duplicateRequestsStore[requestKeyToUse] = [];
     }
 
-    const handlers = duplicateRequestsStore[requestKeyToUse];
+    const handlers = duplicateRequestsStore[requestKeyToUse] || [];
     const requestInFlight = Boolean(handlers.length);
     const requestHandler = {};
     proxyReq = new Promise((resolve, reject) => {

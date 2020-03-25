@@ -1,14 +1,15 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import babel from 'rollup-plugin-babel';
+import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+// import babel from 'rollup-plugin-babel';
 import { uglify } from 'rollup-plugin-uglify';
 import pkg from './package.json';
 
 export default [
   // browser-friendly UMD build
   {
-    input: 'src/index.js',
+    input: 'src/index.ts',
     output: {
       name: 'bestfetch',
       file: pkg.browser,
@@ -17,9 +18,7 @@ export default [
     plugins: [
       resolve(), // so Rollup can find any npm deps
       commonjs(), // so Rollup can convert npm deps to an ES module
-      babel({
-        exclude: ['node_modules/**'],
-      }),
+      typescript(),
       replace({ 'process.env.NODE_ENV': '"production"' }),
       uglify(),
     ],
@@ -32,15 +31,11 @@ export default [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: 'src/index.js',
+    input: 'src/index.ts',
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
     ],
-    plugins: [
-      babel({
-        exclude: ['node_modules/**'],
-      }),
-    ],
+    plugins: [typescript()],
   },
 ];
