@@ -97,16 +97,20 @@ export function bestfetch(input, options) {
   let requestKeyToUse =
     requestKey ||
     getRequestKey({
-      // If `input` is a request, then we use that URL
+      // If `input` is a Request, then use its URL
       url,
       method: init.method || '',
       body: init.body || '',
     });
 
+  // This is when we check the cache to see if there a response to return
   if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
+    // If we have a fresh response then we return it
     if (!checkStaleness(requestKeyToUse, true)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
-    } else if (cachePolicy === 'cache-only') {
+    }
+    // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
+    else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
         `Response for fetch request not found in cache.`
       );
@@ -150,6 +154,8 @@ export function bestfetch(input, options) {
   }
 
   const request = fetch(url, init).then(
+    // This handles receiving a response. This happens when there are successful responses (i.e.; 200 OK),
+    // as well as for errors returned by the server (i.e.; 4xx and 5xx errors).
     res => {
       let responseTypeToUse;
       if (responseType instanceof Function) {
@@ -178,6 +184,9 @@ export function bestfetch(input, options) {
         }
       );
     },
+    // This handles when there are network errors. i.e.; the user's device disconnects
+    // from the network.
+    // Note: this does *not* handle responses from the server, even if that response is an error!
     err => {
       if (dedupe) {
         resolveRequest({ requestKey: requestKeyToUse, err });
