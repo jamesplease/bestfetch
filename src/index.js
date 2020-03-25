@@ -1,5 +1,6 @@
 import CacheMissError from './cache-miss-error';
-import responseCache, {
+import {
+  responseCache,
   checkStaleness,
   shouldWriteCachedValue,
 } from './response-cache';

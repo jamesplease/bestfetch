@@ -11,8 +11,9 @@ const keysToCopy = [
   'data',
 ];
 
-// `res` is a Response object.
-// This "clones" it into the response type returned from this lib.
+// This is used to "clone" response objects so that different requests
+// receive different responses. Note that they are shallowly-cloned, so `data`
+// is the same across all requests.
 export default function generateResponse(res) {
   const response = {};
 
