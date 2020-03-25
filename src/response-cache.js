@@ -2,8 +2,10 @@ import generateResponse from './generate-response';
 
 let responseCacheStore = {};
 
-export const defaultFreshnessDefinition = () => true;
-export const defaultWritePolicy = res => {
+// By default we always read from the cache when a value exists.
+export const defaultStalenessDefinition = () => false;
+// By default server errors are not cached, but every other successful response is.
+export const defaultCacheableResponse = res => {
   if (res.status >= 500) {
     return false;
   } else {
@@ -11,11 +13,8 @@ export const defaultWritePolicy = res => {
   }
 };
 
-// By default we always read from the cache when a value exists.
-let freshnessDefinitionFn = defaultFreshnessDefinition;
-
-// By default server errors are not cached, but every other successful response is.
-let writePolicyFn = defaultWritePolicy;
+let stalenessDefinitionFn = defaultStalenessDefinition;
+let cacheableResponseFn = defaultCacheableResponse;
 
 const responseCache = {
   get(requestKey, { includeStale = false } = {}) {
@@ -72,7 +71,7 @@ const responseCache = {
   },
 
   isFresh(requestKey) {
-    return checkFreshness(requestKey);
+    return !checkStaleness(requestKey);
   },
 
   purge() {
@@ -83,19 +82,19 @@ const responseCache = {
     }
   },
 
-  defineFreshness(fn) {
+  defineStaleness(fn) {
     if (typeof fn === 'function') {
-      freshnessDefinitionFn = fn;
+      stalenessDefinitionFn = fn;
     } else {
       throw new TypeError(
-        'The first argument to `responseCache.defineFreshness()` must be a function.'
+        'The first argument to `responseCache.defineStaleness()` must be a function.'
       );
     }
   },
 
   defineCacheableResponse(fn) {
     if (typeof fn === 'function') {
-      writePolicyFn = fn;
+      cacheableResponseFn = fn;
     } else {
       throw new TypeError(
         'The first argument to `responseCache.defineCacheableResponse()` must be a function.'
@@ -106,21 +105,21 @@ const responseCache = {
 
 export default responseCache;
 
-export function checkFreshness(requestKey, purge = false) {
+export function checkStaleness(requestKey, purge = false) {
   if (responseCache.has(requestKey, { includeStale: true })) {
     let cacheObject = responseCacheStore[requestKey];
-    const isFresh = freshnessDefinitionFn(cacheObject);
+    const isStale = stalenessDefinitionFn(cacheObject);
 
-    if (!isFresh && purge) {
+    if (isStale && purge) {
       responseCache.delete(requestKey);
     }
 
-    return isFresh;
+    return isStale;
   } else {
-    return false;
+    return true;
   }
 }
 
 export function shouldWriteCachedValue(res) {
-  return writePolicyFn(res);
+  return cacheableResponseFn(res);
 }

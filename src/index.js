@@ -1,6 +1,6 @@
 import CacheMissError from './cache-miss-error';
 import responseCache, {
-  checkFreshness,
+  checkStaleness,
   shouldWriteCachedValue,
 } from './response-cache';
 import generateResponse from './generate-response';
@@ -103,7 +103,7 @@ export function bestfetch(input, options) {
     });
 
   if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
-    if (checkFreshness(requestKeyToUse, true)) {
+    if (!checkStaleness(requestKeyToUse, true)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     } else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(

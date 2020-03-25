@@ -23,7 +23,7 @@ describe('responseCache: read/write API', () => {
     });
 
     test('returns false for stale cached values unless you specify to include them', done => {
-      responseCache.defineFreshness(() => false);
+      responseCache.defineStaleness(() => true);
       expect(responseCache.has('test')).toBe(false);
       bestfetch('/test/succeeds/json', {
         requestKey: 'test',
@@ -80,7 +80,7 @@ describe('responseCache: read/write API', () => {
     });
 
     test('ignores stale values by default', done => {
-      responseCache.defineFreshness(() => false);
+      responseCache.defineStaleness(() => true);
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
         res => {
@@ -108,7 +108,7 @@ describe('responseCache: read/write API', () => {
     });
 
     test('can be configured to return stale values', done => {
-      responseCache.defineFreshness(() => false);
+      responseCache.defineStaleness(() => true);
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
         res => {
@@ -192,8 +192,8 @@ describe('responseCache: read/write API', () => {
     });
 
     test('purges only stale values', done => {
-      responseCache.defineFreshness(cacheObject => {
-        return cacheObject.accessCount < 1;
+      responseCache.defineStaleness(cacheObject => {
+        return cacheObject.accessCount >= 1;
       });
 
       const one = bestfetch('/test/succeeds/json', {
