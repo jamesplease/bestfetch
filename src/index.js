@@ -87,7 +87,7 @@ export function bestfetch(input, options) {
       upperCaseMethod === 'HEAD' ||
       upperCaseMethod === '';
 
-    appliedCachePolicy = isReadRequest ? 'cache-first' : 'reload';
+    appliedCachePolicy = isReadRequest ? 'cache-first' : 'no-cache';
   }
 
   const ignoreCacheOnResponse = appliedCachePolicy === 'no-cache';
