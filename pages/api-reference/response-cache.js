@@ -294,8 +294,8 @@ responseCache.has('my-request-key', { includeStale: true });`}
           : A function that determines whether or not a cached response is
           stale. Each time that a response would be pulled from the cache, this
           function will be called. It is passed a single argument:{' '}
-          <code>cacheObject</code>. Return <code>true</code> to use the cached
-          response, or <code>false</code> to invalidate it.
+          <code>cacheObject</code>. Return <code>true</code> to mark the
+          response as stale, or <code>false</code> to mark it fresh.
         </li>
       </ol>
       <p>
@@ -334,11 +334,57 @@ responseCache.defineStaleness((cacheObject) => {
   return currentTimestamp - cacheObject.createdAt > TEN_MINUTES;
 });`}
       />
-      For more on how to use this method, refer to the{' '}
-      <Link href="/guides/cache-freshness">
-        <a>Cash Freshness</a>
-      </Link>{' '}
-      guide.
+      <p>
+        For more on how to use this method, refer to the{' '}
+        <Link href="/guides/cache-freshness">
+          <a>Cash Freshness</a>
+        </Link>{' '}
+        guide.
+      </p>
+
+      <h2 id="definecacheableresponse">
+        <code>defineCacheableResponse</code>
+      </h2>
+      <p>
+        Not every response goes into the cache, even if you specify a{' '}
+        <code>"cache-policy"</code> that indicates that it would. A response
+        that is allowed to be cached is called "cacheable." By default, every
+        response is cacheable unless it responds with an HTTP status code that's{' '}
+        <code>>= 500</code>.
+      </p>
+      <p>
+        Use this method to write your own definition of a cacheable response.
+      </p>
+      <h3>Arguments</h3>
+      <ol>
+        <li>
+          <b>
+            <code>cacheableDefinition</code>
+          </b>
+          : A function that determines whether or not a response is cacheable.
+          Each time that a response would be added to the cache, this function
+          will be called. It is passed a single argument: <code>response</code>.
+          Return <code>true</code> to save the cached response, or{' '}
+          <code>false</code> to discard it.
+        </li>
+      </ol>
+      <h3>Returns</h3>
+      <p>This method does not return anything.</p>
+      <h3>Example Usage</h3>
+      <Lowlight
+        language="js"
+        inline={false}
+        value={`responseCache.defineCacheableResponse((response) => {
+  return !response.data?.serverError;
+});`}
+      />
+      {/* <p>
+        For more on how to use this method, refer to the{' '}
+        <Link href="/guides/cache-freshness">
+          <a>Cash Freshness</a>
+        </Link>{' '}
+        guide.
+      </p> */}
     </div>
   );
 };
