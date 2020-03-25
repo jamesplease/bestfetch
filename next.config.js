@@ -18,13 +18,17 @@ module.exports = {
         page: '/guides/cache-freshness',
       },
       '/guides/caching-responses': { page: '/guides/caching-responses' },
+      '/guides/managing-server-errors': {
+        page: '/guides/managing-server-errors',
+      },
       '/guides/deduplicating-requests': {
         page: '/guides/deduplicating-requests',
       },
+
+      '/advanced-guides': { page: '/advanced-guides/index' },
       '/advanced-guides/identical-requests': {
         page: '/advanced-guides/identical-requests',
       },
-
       '/advanced-guides/other-response-types': {
         page: '/advanced-guides/other-response-types',
       },

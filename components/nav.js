@@ -44,6 +44,13 @@ export default function Nav() {
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
+                href="/guides/managing-server-errors">
+                <a className={styles.navLink}>Managing Server Errors</a>
+              </Link>
+            </li>
+            <li className={styles.navSubListItem}>
+              <Link
+                activeClassName="activeNavLink"
                 href="/guides/deduplicating-requests">
                 <a className={styles.navLink}>Deduplicating Requests</a>
               </Link>
