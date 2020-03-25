@@ -21,13 +21,17 @@ module.exports = {
       '/guides/deduplicating-requests': {
         page: '/guides/deduplicating-requests',
       },
-      '/guides/identical-requests': {
-        page: '/guides/identical-requests',
+      '/advanced-guides/identical-requests': {
+        page: '/advanced-guides/identical-requests',
       },
-      '/guides/faq': {
-        page: '/guides/faq',
+
+      '/advanced-guides/other-response-types': {
+        page: '/advanced-guides/other-response-types',
       },
-      '/guides/other-response-types': { page: '/guides/other-response-types' },
+
+      '/faq': {
+        page: '/faq',
+      },
 
       '/api-reference': { page: '/api-reference/index' },
       '/api-reference/bestfetch': { page: '/api-reference/bestfetch' },

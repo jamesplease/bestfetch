@@ -48,26 +48,33 @@ export default function Nav() {
                 <a className={styles.navLink}>Deduplicating Requests</a>
               </Link>
             </li>
+          </ul>
+        </li>
+        <li className={styles.navListItem}>
+          <Link activeClassName="activeNavLink" href="/advanced-guides">
+            <a className={styles.navSectionLink}>Advanced Guides</a>
+          </Link>
+          <ul className={styles.navSubList}>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/guides/identical-requests">
+                href="/advanced-guides/identical-requests">
                 <a className={styles.navLink}>Identical Requests</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/guides/other-response-types">
+                href="/advanced-guides/other-response-types">
                 <a className={styles.navLink}>Other Response Types</a>
               </Link>
             </li>
-            <li className={styles.navSubListItem}>
-              <Link activeClassName="activeNavLink" href="/guides/faq">
-                <a className={styles.navLink}>FAQ</a>
-              </Link>
-            </li>
           </ul>
+        </li>
+        <li className={styles.navListItem}>
+          <Link activeClassName="activeNavLink" href="/faq">
+            <a className={styles.navSectionLink}>FAQ</a>
+          </Link>
         </li>
         <li className={styles.navListItem}>
           <Link activeClassName="activeNavLink" href="/api-reference">

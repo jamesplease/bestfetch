@@ -198,7 +198,7 @@ bestfetch(\`/api/books?\${qs}\`)
         <li>
           <code>responseType</code>. Use this option when making requests to
           endpoints that do not return JSON. Learn more{' '}
-          <Link href="/guides/other-response-types">
+          <Link href="/advanced-guides/other-response-types">
             <a>here</a>
           </Link>
           .
@@ -207,7 +207,7 @@ bestfetch(\`/api/books?\${qs}\`)
           <code>requestKey</code>. An advanced option that is used to determine
           which requests are identical. You probably won't need this. Learn more
           in the{' '}
-          <Link href="/guides/identical-requests">
+          <Link href="/advanced-guides/identical-requests">
             <a>Identical Requests</a>
           </Link>{' '}
           guide.

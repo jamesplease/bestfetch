@@ -84,7 +84,7 @@ export default function GettingStarted() {
         When you call <code>.json()</code> you're reading the response body from
         the server and parsing it as JSON. When you use bestfetch, the request
         body is read and parsed as JSON automatically for you (although this{' '}
-        <Link href="/guides/other-response-types">
+        <Link href="/advanced-guides/other-response-types">
           <a>can be configured</a>
         </Link>
         ).

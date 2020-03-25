@@ -2,9 +2,9 @@ export default function FAQ() {
   return (
     <div className="page">
       <h1>FAQ</h1>
-      <h2>
+      <h3>
         Sometimes <code>res.data</code> set to <code>null</code>, why is that?
-      </h2>
+      </h3>
       <p>
         If the response cannot be parsed as the <code>responseType</code>, then{' '}
         <code>res.data</code> will be <code>null</code>.
@@ -28,9 +28,9 @@ export default function FAQ() {
         server.
       </p>
 
-      <h2>
+      <h3>
         Why is <code>responseType</code> even an option?
-      </h2>
+      </h3>
       <p>
         This option exists because of the inner workings of the{' '}
         <code>fetch</code> API.
@@ -57,6 +57,13 @@ export default function FAQ() {
         If more than one "consumer" tried to read the body, then an error would
         be thrown. To get around this problem, bestfetch reads the body for you
         – one time – and passes that result to each consumer.
+      </p>
+      <h3>Why do cached responses remain fresh indefinitely by default?</h3>
+      <p>
+        Cache freshness is a difficult problem, and each application has its own
+        particular needs. It would be impossible for this library to include a
+        default definition of staleness and expect it to work for every use case
+        in every app.
       </p>
     </div>
   );

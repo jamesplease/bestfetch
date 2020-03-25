@@ -28,21 +28,6 @@ export default function Guides() {
             <a>Deduplicating Requests</a>
           </Link>
         </li>
-        <li>
-          <Link href="/guides/identical-requests">
-            <a>Identical Requests</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/guides/other-response-types">
-            <a>Other Response Types</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/guides/faq">
-            <a>FAQ</a>
-          </Link>
-        </li>
       </ul>
     </div>
   );

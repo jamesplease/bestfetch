@@ -83,7 +83,7 @@ export default function bestfetch() {
               <code>"json"</code>. Valid values are <code>"json"</code>,{' '}
               <code>"text"</code>, <code>"formData"</code>, <code>"blob"</code>,
               and <code>"arrayBuffer"</code>.{' '}
-              <Link href="/guides/other-response-types">
+              <Link href="/advanced-guides/other-response-types">
                 <a>Learn more here</a>
               </Link>
               .

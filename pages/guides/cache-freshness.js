@@ -13,7 +13,7 @@ export default () => {
       <p>
         For example, you may wish to specify that responses should only remain
         fresh for a certain period of time, such as 10 minutes. This guide will
-        cover how you can configure when responses go stale for your app.
+        explain how you can configure when responses go stale for your app.
       </p>
 
       <h2>Defining Staleness</h2>
@@ -145,13 +145,6 @@ responseCache.defineStaleness((cacheObject) => {
         Deleting a stale value from the cache is called <i>eviction</i>. When a
         request is made, and its cached response is determined to be stale, that
         response is immediately evicted from the cache.
-      </p>
-      <h2>Why Isn't There a Smarter Default?</h2>
-      <p>
-        Cache freshness is a difficult problem, and each application has its own
-        particular needs. It would be impossible for this library to include a
-        default freshness definition and expect it to work for every use case in
-        every app.
       </p>
     </div>
   );
