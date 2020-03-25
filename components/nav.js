@@ -105,8 +105,8 @@ export default function Nav() {
             <li className={styles.navSubListItem}>
               <Link
                 activeClassName="activeNavLink"
-                href="/api-reference/active-requests">
-                <a className={styles.navLink}>activeRequests</a>
+                href="/api-reference/duplicate-requests">
+                <a className={styles.navLink}>duplicateRequests</a>
               </Link>
             </li>
             <li className={styles.navSubListItem}>
