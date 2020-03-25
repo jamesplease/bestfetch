@@ -17,6 +17,6 @@ module.exports = api => {
   const configKey = isTest ? 'test' : 'build';
 
   return {
-    presets: [['@babel/preset-env', config[configKey]]],
+    presets: [['@babel/preset-env', config[configKey]], '@babel/typescript'],
   };
 };

@@ -4,28 +4,71 @@ import {
   checkStaleness,
   shouldWriteCachedValue,
 } from './response-cache';
-import generateResponse from './generate-response';
+import generateResponse, { BestFetchResponse } from './generate-response';
+import { ExtendedResponse } from './interfaces';
 
 export { responseCache, CacheMissError };
 
-interface promiseProxy {
+enum CachePolicy {
+  'cache-first' = 'cache-first',
+  'reload' = 'reload',
+  'cache-only' = 'cache-only',
+  'no-cache' = 'no-cache',
+}
+
+enum ResponseType {
+  arrayBuffer = 'arrayBuffer',
+  blob = 'blob',
+  formData = 'formData',
+  json = 'json',
+  text = 'text',
+}
+
+enum Method {
+  get = 'get',
+  post = 'post',
+  put = 'put',
+  patch = 'patch',
+  delete = 'delete',
+  head = 'head',
+  options = 'options',
+
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+  HEAD = 'HEAD',
+  OPTIONS = 'OPTIONS',
+}
+
+interface PromiseProxy {
   resolve: (res: any) => void;
   reject: (err: any) => void;
 }
 
 interface duplicateRequestStoreInterface {
-  [Key: string]: Array<promiseProxy> | null;
-  [Key: number]: Array<promiseProxy> | null;
+  [Key: string]: Array<PromiseProxy> | null;
+  [Key: number]: Array<PromiseProxy> | null;
 }
 
 let duplicateRequestsStore: duplicateRequestStoreInterface = {};
+
+type responseTypeFn = (res: ExtendedResponse) => ResponseType;
+interface GetRequestKeyOptions {
+  sandwich?: responseTypeFn;
+  responseType?: ResponseType | '' | responseTypeFn;
+  method?: Method | '';
+  url?: string;
+  body?: string;
+}
 
 export function getRequestKey({
   url = '',
   method = '',
   responseType = '',
   body = '',
-} = {}): string {
+}: GetRequestKeyOptions): string {
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
@@ -48,18 +91,18 @@ const duplicateRequests = {
 
 export { duplicateRequests };
 
-interface resolveRequestOpts {
+interface ResolveRequestOptions {
   requestKey: string;
-  res: any;
-  err: any;
+  res?: ExtendedResponse;
+  err?: any;
 }
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
-function resolveRequest({ requestKey, res, err }: resolveRequestOpts) {
+function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
   const handlers = duplicateRequestsStore[requestKey] || [];
 
-  handlers.forEach((handler: promiseProxy) => {
+  handlers.forEach((handler: PromiseProxy) => {
     if (res) {
       handler.resolve(generateResponse(res));
     } else {
@@ -72,24 +115,24 @@ function resolveRequest({ requestKey, res, err }: resolveRequestOpts) {
   duplicateRequestsStore[requestKey] = null;
 }
 
-export function bestfetch(input, options) {
-  let url;
-  let opts;
-  if (typeof input === 'string') {
-    url = input;
-    opts = options || {};
-  } else if (typeof input === 'object') {
-    opts = input || {};
-    url = opts.url;
-  }
+interface Options {
+  requestKey?: string;
+  dedupe?: boolean;
+  cachePolicy: CachePolicy;
+  // TODO: support a function here. How can I specify it?
+  responseType?: ResponseType;
+  method: Method;
+  body: any;
+}
 
+export function bestfetch(url: string, options: Options) {
   const {
     requestKey,
-    responseType = '',
+    responseType = ResponseType.json,
     dedupe = true,
     cachePolicy,
     ...init
-  } = opts;
+  } = options;
 
   const method = init.method || '';
   const upperCaseMethod = method.toUpperCase();
@@ -126,7 +169,7 @@ export function bestfetch(input, options) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     }
     // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
-    else if (cachePolicy === 'cache-only') {
+    else if (cachePolicy === CachePolicy['cache-only']) {
       const cacheError = new CacheMissError(
         `Response for fetch request not found in cache.`
       );
@@ -142,23 +185,26 @@ export function bestfetch(input, options) {
 
     const handlers = duplicateRequestsStore[requestKeyToUse] || [];
     const requestInFlight = Boolean(handlers.length);
-    const requestHandler = {};
+    const requestHandler: any = {};
     proxyReq = new Promise((resolve, reject) => {
       requestHandler.resolve = resolve;
       requestHandler.reject = reject;
     });
 
-    handlers.push(requestHandler);
+    handlers.push(requestHandler as PromiseProxy);
 
     if (requestInFlight) {
       return proxyReq;
     }
   }
 
-  function onSuccess(res) {
+  function onSuccess(res: ExtendedResponse) {
     if (!ignoreCacheOnResponse) {
       if (shouldWriteCachedValue(res)) {
-        responseCache.set(requestKeyToUse, res);
+        responseCache.set(
+          requestKeyToUse,
+          (res as unknown) as BestFetchResponse
+        );
       }
     }
 
@@ -172,23 +218,23 @@ export function bestfetch(input, options) {
   const request = fetch(url, init).then(
     // This handles receiving a response. This happens when there are successful responses (i.e.; 200 OK),
     // as well as for errors returned by the server (i.e.; 4xx and 5xx errors).
-    res => {
+    (res: ExtendedResponse) => {
       let responseTypeToUse;
-      if (responseType instanceof Function) {
-        responseTypeToUse = responseType(res);
+      if (typeof responseType === 'function') {
+        responseTypeToUse = (responseType as responseTypeFn)(res);
       } else if (responseType) {
         responseTypeToUse = responseType;
       } else if (res.status === 204) {
-        responseTypeToUse = 'text';
+        responseTypeToUse = ResponseType.text;
       } else {
-        responseTypeToUse = 'json';
+        responseTypeToUse = ResponseType.json;
       }
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
       return res[responseTypeToUse]().then(
         // This handles when the body is parsed successfully.
-        data => {
+        (data: any) => {
           res.data = data;
           return onSuccess(res);
         },
