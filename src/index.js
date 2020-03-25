@@ -1,5 +1,6 @@
 import CacheMissError from './cache-miss-error';
-import responseCache, {
+import {
+  responseCache,
   checkStaleness,
   shouldWriteCachedValue,
 } from './response-cache';
@@ -96,16 +97,20 @@ export function bestfetch(input, options) {
   let requestKeyToUse =
     requestKey ||
     getRequestKey({
-      // If `input` is a request, then we use that URL
+      // If `input` is a Request, then use its URL
       url,
       method: init.method || '',
       body: init.body || '',
     });
 
+  // This is when we check the cache to see if there a response to return
   if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
+    // If we have a fresh response then we return it
     if (!checkStaleness(requestKeyToUse, true)) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
-    } else if (cachePolicy === 'cache-only') {
+    }
+    // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
+    else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
         `Response for fetch request not found in cache.`
       );
@@ -134,7 +139,23 @@ export function bestfetch(input, options) {
     }
   }
 
+  function onSuccess(res) {
+    if (!ignoreCacheOnResponse) {
+      if (shouldWriteCachedValue(res)) {
+        responseCache.set(requestKeyToUse, res);
+      }
+    }
+
+    if (dedupe) {
+      resolveRequest({ requestKey: requestKeyToUse, res });
+    } else {
+      return generateResponse(res);
+    }
+  }
+
   const request = fetch(url, init).then(
+    // This handles receiving a response. This happens when there are successful responses (i.e.; 200 OK),
+    // as well as for errors returned by the server (i.e.; 4xx and 5xx errors).
     res => {
       let responseTypeToUse;
       if (responseType instanceof Function) {
@@ -150,37 +171,22 @@ export function bestfetch(input, options) {
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
       return res[responseTypeToUse]().then(
+        // This handles when the body is parsed successfully.
         data => {
           res.data = data;
-          if (!ignoreCacheOnResponse) {
-            if (shouldWriteCachedValue(res)) {
-              responseCache.set(requestKeyToUse, res);
-            }
-          }
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return generateResponse(res);
-          }
+          return onSuccess(res);
         },
+        // This handles when there is an error parsing the body. We set the
+        // `data` to be `null`, but otherwise treat it as a success.
         () => {
           res.data = null;
-
-          if (!ignoreCacheOnResponse) {
-            if (shouldWriteCachedValue(res)) {
-              responseCache.set(requestKeyToUse, res);
-            }
-          }
-
-          if (dedupe) {
-            resolveRequest({ requestKey: requestKeyToUse, res });
-          } else {
-            return generateResponse(res);
-          }
+          return onSuccess(res);
         }
       );
     },
+    // This handles when there are network errors. i.e.; the user's device disconnects
+    // from the network.
+    // Note: this does *not* handle responses from the server, even if that response is an error!
     err => {
       if (dedupe) {
         resolveRequest({ requestKey: requestKeyToUse, err });

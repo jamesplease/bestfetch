@@ -103,14 +103,14 @@ const responseCache = {
   },
 };
 
-export default responseCache;
+export { responseCache };
 
-export function checkStaleness(requestKey, purge = false) {
+export function checkStaleness(requestKey, evictStaleResponses = false) {
   if (responseCache.has(requestKey, { includeStale: true })) {
     let cacheObject = responseCacheStore[requestKey];
     const isStale = stalenessDefinitionFn(cacheObject);
 
-    if (isStale && purge) {
+    if (isStale && evictStaleResponses) {
       responseCache.delete(requestKey);
     }
 
