@@ -19,8 +19,8 @@ export default function Guides() {
           </Link>
         </li>
         <li>
-          <Link href="/guides/invalidating-the-cache">
-            <a>Invalidating the Cache</a>
+          <Link href="/guides/cache-freshness">
+            <a>Cache Freshness</a>
           </Link>
         </li>
         <li>

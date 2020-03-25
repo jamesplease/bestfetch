@@ -201,7 +201,7 @@ export default () => {
       <ol>
         <li>
           <b>
-            <code>cacheInvalidationPolicy</code>
+            <code>defineStaleness</code>
           </b>
           : A function that defines your invalidation policy. Each time that a
           response would be pulled from the cache, this function will be called.
@@ -247,8 +247,8 @@ responseCache.configureCacheReadPolicy(cacheObject => {
 });`}
       />
       For more on how to use this method, refer to the{' '}
-      <Link href="/guides/invalidating-the-cache">
-        <a>Invalidating the Cache</a>
+      <Link href="/guides/cache-freshness">
+        <a>Cash Freshness</a>
       </Link>{' '}
       guide.
     </div>

@@ -9,41 +9,21 @@ export default function CachingResponses() {
       <p>bestfetch includes a sophisticated system for caching responses.</p>
       <h2>Configuring the Caching Behavior</h2>
       <p>
-        <code>bestfetch</code> supports two options that allow you to control
-        the behavior of the cache on a per-request basis:
-      </p>
-      <ul>
-        <li>
-          <b>
-            <code>cachePolicy</code>
-          </b>
-          : Allows you to control whether to look in the cache before making a
-          request. In other words, this controls <i>reading</i> from the cache.
-        </li>
-        <li>
-          <b>
-            <code>saveToCache</code>
-          </b>
-          : This option allows you to specify when responses received from the
-          server should be written to the cache or not. This controls{' '}
-          <i>writing</i> to the cache.
-        </li>
-      </ul>
-      <p>
         Use the <code>cachePolicy</code> option when calling{' '}
-        <code>bestfetch()</code> to control when the cache is used to retrieve
-        responses. Supported values are:
+        <code>bestfetch()</code> to configure the behavior of the cache.
+        Supported values are:
       </p>
       <ul>
         <li>
           <code>"cache-first"</code>: The cache is checked to see if a response
           already exists for the request. If a response is found, then it will
           be returned, and no network request will be made. If no response
-          exists in the cache, then a network request will be made.
+          exists in the cache, then a network request will be made and the
+          response will be saved to the cache.
         </li>
         <li>
-          <code>"network-only"</code>: The cache is ignored, and a network
-          request is always made.
+          <code>"reload"</code>: A network request is always made (even if there
+          is a response in the cache). The response is saved to the cache.
         </li>
         <li>
           <code>"cache-only"</code>: If a response exists in the cache, then it
@@ -52,17 +32,21 @@ export default function CachingResponses() {
           <Link href="/api-reference/cache-miss-error">
             <a>CacheMissError</a>
           </Link>
-          .
+          . A network request is <i>never</i> made when using this option.
+        </li>
+        <li>
+          <code>"no-cache"</code>: The cache is ignored completely. A network
+          request is always made, and the response is not saved to the cache.
         </li>
       </ul>
       <p>
-        The following example shows how to specify the{' '}
-        <code>"network-only"</code> option:
+        The following example shows making a request with a{' '}
+        <code>cachePolicy</code> set to <code>"reload"</code>:
       </p>
       <Lowlight
         language="js"
         inline={false}
-        value={`bestfetch('/api/books/2', { cachePolicy: 'network-only' })
+        value={`bestfetch('/api/books/2', { cachePolicy: 'reload' })
   .then(res => {
     console.log('Got the book', res.data);
   });`}
@@ -87,25 +71,25 @@ export default function CachingResponses() {
           <code>POST</code>
         </div>
         <div>
-          <code>"network-only"</code>
+          <code>"no-cache"</code>
         </div>
         <div>
           <code>PUT</code>
         </div>
         <div>
-          <code>"network-only"</code>
+          <code>"no-cache"</code>
         </div>
         <div>
           <code>PATCH</code>
         </div>
         <div>
-          <code>"network-only"</code>
+          <code>"no-cache"</code>
         </div>
         <div>
           <code>DELETE</code>
         </div>
         <div>
-          <code>"network-only"</code>
+          <code>"no-cache"</code>
         </div>
       </div>
       <p>The default value for less commonly used methods is:</p>
@@ -144,38 +128,18 @@ export default function CachingResponses() {
           retrieving data instead of <code>GET</code>.
         </li>
       </ul>
-      <h2>Cache Invalidation</h2>
+      <h2>Cache Freshness</h2>
       <p>
-        Responses that are added to the cache are <b>never</b> invalidated
-        unless you configure how you would like for them to be invalidated. For
-        more, refer to the guide on{' '}
-        <Link href="/guides/invalidating-the-cache">
-          <a>invalidating cached responses</a>
-        </Link>
-        .
+        The cache only returns responses that are <b>fresh</b>. By default,
+        every request that is added to the cache remains fresh indefinitely, but
+        you can configure this.
       </p>
-      <h2>Completely Disabling the Cache</h2>
       <p>
-        You can set <code>cachePolicy</code> to <code>"network-only"</code> and{' '}
-        <code>saveToCache</code> to <code>false</code> to disable all of the
-        features of bestfetch that are related to the cache.
-      </p>
-      <Lowlight
-        language="js"
-        inline={false}
-        value={`bestfetch('https://jsonplaceholder.typicode.com/todos/1', {
-  cachePolicy: 'network-only',
-  saveToCache: false
-})
-  .then(handleResponse);`}
-      />
-      <p>
-        Keep in mind that if a particular request doesn't need the caching
-        features of <code>bestfetch</code>, then you might consider using{' '}
-        <a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch">
-          <code>fetch</code>
-        </a>{' '}
-        for that request instead.
+        Refer to the{' '}
+        <Link href="/guides/cache-freshness">
+          <a>Cache Freshness</a>
+        </Link>{' '}
+        guide to learn how.
       </p>
       <h2>Directly Accessing the Cache</h2>
       <p>
@@ -189,10 +153,15 @@ export default function CachingResponses() {
         </Link>
         .
       </p>
-      <h2>Learn More</h2>
+      <h2>Advanced: Understanding Identical Requests</h2>
       <p>
-        To learn more about how this algorithm works, and also how you can
-        change its behavior, check out the{' '}
+        This system of caching is able to work because this library has an
+        algorithm to determine when two requests are considered <i>identical</i>
+        . For nearly all apps, this algorithm works fine, and you do not need to
+        understand how it works.
+      </p>
+      <p>
+        However, if you are interested in understanding it, check out the{' '}
         <Link href="/guides/identical-requests">
           <a>Identical Requests</a>
         </Link>{' '}

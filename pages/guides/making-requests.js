@@ -207,10 +207,10 @@ bestfetch(\`/api/books?\${qs}\`)
           <code>requestKey</code>. An advanced option that is used to determine
           which requests are identical. You probably won't need this. Learn more
           in the{' '}
-          <Link href="/guides/deduplicating-requests">
-            <a>deduplication guide</a>
-          </Link>
-          .
+          <Link href="/guides/identical-requests">
+            <a>Identical Requests</a>
+          </Link>{' '}
+          guide.
         </li>
       </ul>
       <h2>Receiving Responses</h2>

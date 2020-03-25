@@ -68,8 +68,8 @@ export default function bestfetch() {
               </b>
               : Determines how the cache will be used, if at all. Defaults to{' '}
               <code>"cache-first"</code>. Valid values are{' '}
-              <code>"cache-first"</code>, <code>"network-only"</code>, and{' '}
-              <code>"cache-only"</code>.{' '}
+              <code>"cache-first"</code>, <code>"reload"</code>,{' '}
+              <code>"cache-only"</code> and <code>"no-cache"</code>.{' '}
               <Link href="/guides/caching-responses">
                 <a>Learn more here</a>
               </Link>

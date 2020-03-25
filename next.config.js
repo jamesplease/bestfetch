@@ -14,8 +14,8 @@ module.exports = {
       '/guides/making-requests': {
         page: '/guides/making-requests',
       },
-      '/guides/invalidating-the-cache': {
-        page: '/guides/invalidating-the-cache',
+      '/guides/cache-freshness': {
+        page: '/guides/cache-freshness',
       },
       '/guides/caching-responses': { page: '/guides/caching-responses' },
       '/guides/deduplicating-requests': {
