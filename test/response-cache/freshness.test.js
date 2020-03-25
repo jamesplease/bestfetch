@@ -2,9 +2,9 @@ import fetchMock from 'fetch-mock';
 import { bestfetch, responseCache } from '../../src';
 
 describe('responseCache: freshness', () => {
-  test('It errors if you pass an invalid function to defineFreshness', () => {
+  test('It errors if you pass an invalid function to defineStaleness', () => {
     expect(() => {
-      responseCache.defineFreshness({});
+      responseCache.defineStaleness({});
     }).toThrow();
   });
 
@@ -40,7 +40,7 @@ describe('responseCache: freshness', () => {
     });
 
     test('returns false when a value is in the cache, but is not fresh', done => {
-      responseCache.defineFreshness(() => false);
+      responseCache.defineStaleness(() => true);
 
       bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(
         res => {
@@ -69,7 +69,7 @@ describe('responseCache: freshness', () => {
   });
 
   test('Overriding the default freshness definition to ignore the entire cache should work', done => {
-    responseCache.defineFreshness(() => false);
+    responseCache.defineStaleness(() => true);
 
     bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {
       expect(res).toEqual(
@@ -106,8 +106,8 @@ describe('responseCache: freshness', () => {
   });
 
   test('Overriding it to ignore cached responses after 1 read should work', done => {
-    responseCache.defineFreshness(cacheObject => {
-      return cacheObject.accessCount < 1;
+    responseCache.defineStaleness(cacheObject => {
+      return cacheObject.accessCount >= 1;
     });
 
     bestfetch('/test/succeeds/json', { requestKey: 'my-request' }).then(res => {

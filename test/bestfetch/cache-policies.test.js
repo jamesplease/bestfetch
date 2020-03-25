@@ -137,10 +137,54 @@ describe('bestfetch: cachePolicy', () => {
     });
   });
 
-  test('default for "write" requests is reload', done => {
+  test('default for "write" requests is no-cache', done => {
     bestfetch('/test/succeeds/json', {
       requestKey: 'my-request',
       method: 'POST',
+    }).then(res => {
+      expect(res).toEqual(
+        expect.objectContaining({
+          data: {
+            a: true,
+          },
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+        })
+      );
+
+      expect(responseCache.has('my-request', { includeStale: true })).toBe(
+        false
+      );
+
+      bestfetch('/test/succeeds/json', {
+        requestKey: 'my-request',
+        method: 'POST',
+      }).then(res => {
+        expect(res).toEqual(
+          expect.objectContaining({
+            data: {
+              a: true,
+            },
+            status: 200,
+            statusText: 'OK',
+            ok: true,
+          })
+        );
+        expect(responseCache.has('my-request', { includeStale: true })).toBe(
+          false
+        );
+        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
+        done();
+      });
+    });
+  });
+
+  test('cache options work for "write" requests, too, when specified', done => {
+    bestfetch('/test/succeeds/json', {
+      method: 'POST',
+      cachePolicy: 'reload',
+      requestKey: 'my-request',
     }).then(res => {
       expect(res).toEqual(
         expect.objectContaining({
@@ -158,43 +202,9 @@ describe('bestfetch: cachePolicy', () => {
       );
 
       bestfetch('/test/succeeds/json', {
-        requestKey: 'my-request',
-        method: 'POST',
-      }).then(res => {
-        expect(res).toEqual(
-          expect.objectContaining({
-            data: {
-              a: true,
-            },
-            status: 200,
-            statusText: 'OK',
-            ok: true,
-          })
-        );
-        expect(fetchMock.calls('/test/succeeds/json').length).toBe(2);
-        done();
-      });
-    });
-  });
-
-  test('cache options work for "write" requests, too', done => {
-    bestfetch('/test/succeeds/json', {
-      method: 'POST',
-    }).then(res => {
-      expect(res).toEqual(
-        expect.objectContaining({
-          data: {
-            a: true,
-          },
-          status: 200,
-          statusText: 'OK',
-          ok: true,
-        })
-      );
-
-      bestfetch('/test/succeeds/json', {
         method: 'POST',
         cachePolicy: 'cache-first',
+        requestKey: 'my-request',
       }).then(resTwo => {
         expect(resTwo).toEqual(
           expect.objectContaining({
@@ -205,6 +215,9 @@ describe('bestfetch: cachePolicy', () => {
             statusText: 'OK',
             ok: true,
           })
+        );
+        expect(responseCache.has('my-request', { includeStale: true })).toBe(
+          true
         );
         expect(fetchMock.calls('/test/succeeds/json').length).toBe(1);
         done();
