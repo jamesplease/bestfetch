@@ -55,20 +55,20 @@ interface duplicateRequestStoreInterface {
 let duplicateRequestsStore: duplicateRequestStoreInterface = {};
 
 type responseTypeFn = (res: ExtendedResponse) => ResponseType;
-interface GetRequestKeyOptions {
-  sandwich?: responseTypeFn;
-  responseType?: ResponseType | '' | responseTypeFn;
-  method?: Method | '';
-  url?: string;
-  body?: string;
-}
+// interface GetRequestKeyOptions {
+//   sandwich?: responseTypeFn;
+//   responseType?: ResponseType | '' | responseTypeFn;
+//   method?: Method | '';
+//   url?: string;
+//   body?: string;
+// }
 
 export function getRequestKey({
   url = '',
   method = '',
   responseType = '',
   body = '',
-}: GetRequestKeyOptions): string {
+} = {}): string {
   return [url, method.toUpperCase(), responseType, body].join('||');
 }
 
@@ -120,19 +120,14 @@ interface Options {
   dedupe?: boolean;
   cachePolicy: CachePolicy;
   // TODO: support a function here. How can I specify it?
-  responseType?: ResponseType;
+  responseType?: ResponseType | responseTypeFn;
   method: Method;
   body: any;
 }
 
 export function bestfetch(url: string, options: Options) {
-  const {
-    requestKey,
-    responseType = ResponseType.json,
-    dedupe = true,
-    cachePolicy,
-    ...init
-  } = options;
+  const { requestKey, responseType = '', dedupe = true, cachePolicy, ...init } =
+    options || {};
 
   const method = init.method || '';
   const upperCaseMethod = method.toUpperCase();
@@ -221,7 +216,7 @@ export function bestfetch(url: string, options: Options) {
     (res: ExtendedResponse) => {
       let responseTypeToUse;
       if (typeof responseType === 'function') {
-        responseTypeToUse = (responseType as responseTypeFn)(res);
+        responseTypeToUse = responseType(res);
       } else if (responseType) {
         responseTypeToUse = responseType;
       } else if (res.status === 204) {
