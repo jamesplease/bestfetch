@@ -111,7 +111,6 @@ interface Options {
   requestKey?: string;
   dedupe?: boolean;
   cachePolicy: CachePolicy;
-  // TODO: support a function here. How can I specify it?
   responseType?: ResponseType | responseTypeFn;
   method: Method;
   body: any;
