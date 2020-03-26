@@ -9,38 +9,8 @@ import { ExtendedResponse } from './interfaces';
 
 export { responseCache, CacheMissError };
 
-enum CachePolicy {
-  'cache-first' = 'cache-first',
-  'reload' = 'reload',
-  'cache-only' = 'cache-only',
-  'no-cache' = 'no-cache',
-}
-
-enum ResponseType {
-  arrayBuffer = 'arrayBuffer',
-  blob = 'blob',
-  formData = 'formData',
-  json = 'json',
-  text = 'text',
-}
-
-enum Method {
-  get = 'get',
-  post = 'post',
-  put = 'put',
-  patch = 'patch',
-  delete = 'delete',
-  head = 'head',
-  options = 'options',
-
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-  HEAD = 'HEAD',
-  OPTIONS = 'OPTIONS',
-}
+type CachePolicy = 'cache-first' | 'reload' | 'cache-only' | 'no-cache';
+type ResponseTypeString = 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text';
 
 interface PromiseProxy {
   resolve: (res: any) => void;
@@ -52,9 +22,22 @@ interface duplicateRequestStoreInterface {
   [Key: number]: Array<PromiseProxy> | null;
 }
 
-let duplicateRequestsStore: duplicateRequestStoreInterface = {};
+type responseTypeFn = (res: ExtendedResponse) => ResponseTypeString;
 
-type responseTypeFn = (res: ExtendedResponse) => ResponseType;
+interface ResolveRequestOptions {
+  requestKey: string;
+  res?: ExtendedResponse;
+  err?: any;
+}
+
+interface BestFetchOptions extends RequestInit {
+  requestKey?: string;
+  dedupe?: boolean;
+  cachePolicy: CachePolicy;
+  responseType?: ResponseTypeString | responseTypeFn;
+}
+
+let duplicateRequestsStore: duplicateRequestStoreInterface = {};
 
 export function getRequestKey({
   url = '',
@@ -83,12 +66,6 @@ const duplicateRequests = {
 
 export { duplicateRequests };
 
-interface ResolveRequestOptions {
-  requestKey: string;
-  res?: ExtendedResponse;
-  err?: any;
-}
-
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
 function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
@@ -107,16 +84,7 @@ function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
   duplicateRequestsStore[requestKey] = null;
 }
 
-interface Options {
-  requestKey?: string;
-  dedupe?: boolean;
-  cachePolicy: CachePolicy;
-  responseType?: ResponseType | responseTypeFn;
-  method: Method;
-  body: any;
-}
-
-export function bestfetch(url: string, options: Options) {
+export function bestfetch(url: string, options: BestFetchOptions) {
   const { requestKey, responseType = '', dedupe = true, cachePolicy, ...init } =
     options || {};
 
@@ -144,7 +112,7 @@ export function bestfetch(url: string, options: Options) {
     getRequestKey({
       url,
       method: init.method || '',
-      body: init.body || '',
+      body: String(init.body) || '',
     });
 
   // This is when we check the cache to see if there a response to return
@@ -154,7 +122,7 @@ export function bestfetch(url: string, options: Options) {
       return Promise.resolve(responseCache.get(requestKeyToUse));
     }
     // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
-    else if (cachePolicy === CachePolicy['cache-only']) {
+    else if (cachePolicy === 'cache-only') {
       const cacheError = new CacheMissError(
         `Response for fetch request not found in cache.`
       );
@@ -210,14 +178,15 @@ export function bestfetch(url: string, options: Options) {
       } else if (responseType) {
         responseTypeToUse = responseType;
       } else if (res.status === 204) {
-        responseTypeToUse = ResponseType.text;
+        responseTypeToUse = 'text';
       } else {
-        responseTypeToUse = ResponseType.json;
+        responseTypeToUse = 'json';
       }
+
       // The response body is a ReadableStream. ReadableStreams can only be read a single
       // time, so we must handle that in a central location, here, before resolving
       // the fetch.
-      return res[responseTypeToUse]().then(
+      return res[responseTypeToUse as ResponseTypeString]().then(
         // This handles when the body is parsed successfully.
         (data: any) => {
           res.data = data;

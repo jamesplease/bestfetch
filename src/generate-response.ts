@@ -9,21 +9,13 @@ const keysToCopy = [
   'data',
 ];
 
-enum responseType {
-  basic = 'basic',
-  cors = 'cors',
-  error = 'error',
-  opaque = 'opaque',
-  opaqueredirect = 'opaqueredirect',
-}
-
 export interface BestFetchResponse {
-  headers: any;
+  headers: Headers;
   ok: boolean;
   redirected: boolean;
   status: number;
   statusText: string;
-  type: responseType;
+  type: ResponseType;
   url: string;
   data: any;
 }
