@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.{js,jsx}', '!**/node_modules/**'],
+  collectCoverageFrom: ['src/**/*.{ts}', '!**/node_modules/**'],
   coverageDirectory: 'coverage',
   setupFilesAfterEnv: ['./test/setup.js'],
   testURL: 'http://localhost/',

@@ -12,6 +12,8 @@ export { responseCache, CacheMissError };
 type CachePolicy = 'cache-first' | 'reload' | 'cache-only' | 'no-cache';
 type ResponseTypeString = 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text';
 
+type BestFetchPromise = Promise<BestFetchResponse>;
+
 interface PromiseProxy {
   resolve: (res: any) => void;
   reject: (err: any) => void;
@@ -84,9 +86,12 @@ function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
   duplicateRequestsStore[requestKey] = null;
 }
 
-export function bestfetch(url: string, options: BestFetchOptions) {
+export function bestfetch(
+  url: string,
+  options?: BestFetchOptions
+): BestFetchPromise {
   const { requestKey, responseType = '', dedupe = true, cachePolicy, ...init } =
-    options || {};
+    options || ({} as Partial<BestFetchOptions>);
 
   const method = init.method || '';
   const upperCaseMethod = method.toUpperCase();
@@ -119,7 +124,9 @@ export function bestfetch(url: string, options: BestFetchOptions) {
   if (appliedCachePolicy !== 'reload' && appliedCachePolicy !== 'no-cache') {
     // If we have a fresh response then we return it
     if (!checkStaleness(requestKeyToUse, true)) {
-      return Promise.resolve(responseCache.get(requestKeyToUse));
+      return Promise.resolve(
+        responseCache.get(requestKeyToUse)
+      ) as BestFetchPromise;
     }
     // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
     else if (cachePolicy === 'cache-only') {
@@ -147,7 +154,7 @@ export function bestfetch(url: string, options: BestFetchOptions) {
     handlers.push(requestHandler as PromiseProxy);
 
     if (requestInFlight) {
-      return proxyReq;
+      return proxyReq as BestFetchPromise;
     }
   }
 
@@ -205,16 +212,21 @@ export function bestfetch(url: string, options: BestFetchOptions) {
     // Note: this does *not* handle responses from the server, even if that response is an error!
     err => {
       if (dedupe) {
-        resolveRequest({ requestKey: requestKeyToUse, err });
+        resolveRequest({
+          requestKey: requestKeyToUse,
+          err,
+        });
       } else {
         return Promise.reject(err);
       }
     }
   );
 
+  // The typings here are hacky, but the conditional statements make it difficult to ensure
+  // that they carry through.
   if (dedupe) {
-    return proxyReq;
+    return proxyReq as BestFetchPromise;
   } else {
-    return request;
+    return request as BestFetchPromise;
   }
 }
