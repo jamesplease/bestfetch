@@ -4,7 +4,7 @@ import babel from 'rollup-plugin-babel';
 import { uglify } from 'rollup-plugin-uglify';
 import pkg from './package.json';
 
-const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+const extensions = ['.ts'];
 
 export default [
   // browser-friendly UMD build

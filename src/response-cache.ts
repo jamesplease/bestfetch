@@ -16,7 +16,7 @@ interface ResponseCacheStore {
 let responseCacheStore: ResponseCacheStore = {};
 
 // By default we always read from the cache when a value exists.
-export const defaultStalenessDefinition = (cacheObject: CacheObject) => false;
+export const defaultStalenessDefinition = (_cacheObject: CacheObject) => false;
 // By default server errors are not cached, but every other successful response is.
 export const defaultCacheableResponse = (res: ExtendedResponse) => {
   if (res.status >= 500) {

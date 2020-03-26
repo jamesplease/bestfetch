@@ -10,11 +10,11 @@ const keysToCopy = [
 ];
 
 enum responseType {
-  basic,
-  cors,
-  error,
-  opaque,
-  opaqueredirect,
+  basic = 'basic',
+  cors = 'cors',
+  error = 'error',
+  opaque = 'opaque',
+  opaqueredirect = 'opaqueredirect',
 }
 
 export interface BestFetchResponse {
