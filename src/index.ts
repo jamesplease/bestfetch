@@ -37,7 +37,7 @@ interface ResolveRequestOptions<FetchData> {
 interface BestFetchOptions<FetchData> extends RequestInit {
   requestKey?: string;
   dedupe?: boolean;
-  cachePolicy: CachePolicy;
+  cachePolicy?: CachePolicy;
   responseType?: ResponseTypeString | responseTypeFn<FetchData>;
 }
 
