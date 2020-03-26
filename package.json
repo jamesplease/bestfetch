@@ -4,6 +4,7 @@
   "description": "A thin wrapper around fetch that prevents duplicate requests.",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "browser": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist es tmp lib",
     "test": "NODE_ENV=test jest",

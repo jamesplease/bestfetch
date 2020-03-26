@@ -1,30 +1,31 @@
-// import typescript from '@rollup/plugin-typescript';
-// import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-// import { uglify } from 'rollup-plugin-uglify';
+import { uglify } from 'rollup-plugin-uglify';
 import pkg from './package.json';
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 export default [
   // browser-friendly UMD build
-  // {
-  //   input: 'src/index.ts',
-  //   output: {
-  //     name: 'bestfetch',
-  //     file: pkg.browser,
-  //     format: 'umd',
-  //   },
-  //   plugins: [
-  //     // typescript(),
-  //     // resolve(), // so Rollup can find any npm deps
-  //     // commonjs(), // so Rollup can convert npm deps to an ES module
-  //     // replace({ 'process.env.NODE_ENV': '"production"' }),
-  //     uglify(),
-  //   ],
-  // },
+  {
+    input: 'src/index.ts',
+    output: {
+      name: 'bestfetch',
+      file: pkg.browser,
+      format: 'umd',
+    },
+    plugins: [
+      resolve({ extensions }), // so Rollup can find any npm deps
+      commonjs(), // so Rollup can convert npm deps to an ES module
+      babel({
+        extensions,
+        include: ['src/**/*'],
+        exclude: ['node_modules/**'],
+      }),
+      uglify(),
+    ],
+  },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   // (We could have three entries in the configuration array
