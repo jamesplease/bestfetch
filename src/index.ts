@@ -12,7 +12,7 @@ export { responseCache, CacheMissError };
 type CachePolicy = 'cache-first' | 'reload' | 'cache-only' | 'no-cache';
 type ResponseTypeString = 'arrayBuffer' | 'blob' | 'formData' | 'json' | 'text';
 
-type BestFetchPromise = Promise<BestFetchResponse>;
+type BestFetchPromise<FetchData> = Promise<BestFetchResponse<FetchData>>;
 
 interface PromiseProxy {
   resolve: (res: any) => void;
@@ -24,19 +24,21 @@ interface duplicateRequestStoreInterface {
   [Key: number]: Array<PromiseProxy> | null;
 }
 
-type responseTypeFn = (res: ResponseWithData) => ResponseTypeString;
+type responseTypeFn<FetchData> = (
+  res: ResponseWithData<FetchData>
+) => ResponseTypeString;
 
-interface ResolveRequestOptions {
+interface ResolveRequestOptions<FetchData> {
   requestKey: string;
-  res?: ResponseWithData;
+  res?: ResponseWithData<FetchData>;
   err?: any;
 }
 
-interface BestFetchOptions extends RequestInit {
+interface BestFetchOptions<FetchData> extends RequestInit {
   requestKey?: string;
   dedupe?: boolean;
   cachePolicy: CachePolicy;
-  responseType?: ResponseTypeString | responseTypeFn;
+  responseType?: ResponseTypeString | responseTypeFn<FetchData>;
 }
 
 let duplicateRequestsStore: duplicateRequestStoreInterface = {};
@@ -70,12 +72,16 @@ export { duplicateRequests };
 
 // This loops through all of the handlers for the request and either
 // resolves or rejects them.
-function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
+function resolveRequest<FetchData>({
+  requestKey,
+  res,
+  err,
+}: ResolveRequestOptions<FetchData>) {
   const handlers = duplicateRequestsStore[requestKey] || [];
 
   handlers.forEach((handler: PromiseProxy) => {
     if (res) {
-      handler.resolve(generateResponse(res));
+      handler.resolve(generateResponse<FetchData>(res));
     } else {
       handler.reject(err);
     }
@@ -86,12 +92,12 @@ function resolveRequest({ requestKey, res, err }: ResolveRequestOptions) {
   duplicateRequestsStore[requestKey] = null;
 }
 
-export function bestfetch(
+export function bestfetch<FetchData>(
   url: string,
-  options?: BestFetchOptions
-): BestFetchPromise {
+  options?: BestFetchOptions<FetchData>
+): BestFetchPromise<FetchData> {
   const { requestKey, responseType = '', dedupe = true, cachePolicy, ...init } =
-    options || ({} as Partial<BestFetchOptions>);
+    options || ({} as Partial<BestFetchOptions<FetchData>>);
 
   const method = init.method || '';
   const upperCaseMethod = method.toUpperCase();
@@ -126,7 +132,7 @@ export function bestfetch(
     if (!checkStaleness(requestKeyToUse, true)) {
       return Promise.resolve(
         responseCache.get(requestKeyToUse)
-      ) as BestFetchPromise;
+      ) as BestFetchPromise<FetchData>;
     }
     // If there's no cached response, and the cachePolicy is "cache-only", then the Promise rejects
     else if (cachePolicy === 'cache-only') {
@@ -154,31 +160,31 @@ export function bestfetch(
     handlers.push(requestHandler as PromiseProxy);
 
     if (requestInFlight) {
-      return proxyReq as BestFetchPromise;
+      return proxyReq as BestFetchPromise<FetchData>;
     }
   }
 
-  function onSuccess(res: ResponseWithData) {
+  function onSuccess(res: ResponseWithData<FetchData>) {
     if (!ignoreCacheOnResponse) {
       if (shouldWriteCachedValue(res)) {
         responseCache.set(
           requestKeyToUse,
-          (res as unknown) as BestFetchResponse
+          (res as unknown) as BestFetchResponse<FetchData>
         );
       }
     }
 
     if (dedupe) {
-      resolveRequest({ requestKey: requestKeyToUse, res });
+      resolveRequest<FetchData>({ requestKey: requestKeyToUse, res });
     } else {
-      return generateResponse(res);
+      return generateResponse<FetchData>(res);
     }
   }
 
   const request = fetch(url, init).then(
     // This handles receiving a response. This happens when there are successful responses (i.e.; 200 OK),
     // as well as for errors returned by the server (i.e.; 4xx and 5xx errors).
-    (res: ResponseWithData) => {
+    (res: ResponseWithData<FetchData>) => {
       let responseTypeToUse;
       if (typeof responseType === 'function') {
         responseTypeToUse = responseType(res);
@@ -225,8 +231,8 @@ export function bestfetch(
   // The typings here are hacky, but the conditional statements make it difficult to ensure
   // that they carry through.
   if (dedupe) {
-    return proxyReq as BestFetchPromise;
+    return proxyReq as BestFetchPromise<FetchData>;
   } else {
-    return request as BestFetchPromise;
+    return request as BestFetchPromise<FetchData>;
   }
 }

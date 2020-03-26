@@ -1,3 +1,3 @@
-export interface ResponseWithData extends Response {
-  data?: any;
+export interface ResponseWithData<FetchData> extends Response {
+  data?: FetchData | null;
 }
