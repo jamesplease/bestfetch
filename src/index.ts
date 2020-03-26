@@ -55,21 +55,13 @@ interface duplicateRequestStoreInterface {
 let duplicateRequestsStore: duplicateRequestStoreInterface = {};
 
 type responseTypeFn = (res: ExtendedResponse) => ResponseType;
-// interface GetRequestKeyOptions {
-//   sandwich?: responseTypeFn;
-//   responseType?: ResponseType | '' | responseTypeFn;
-//   method?: Method | '';
-//   url?: string;
-//   body?: string;
-// }
 
 export function getRequestKey({
   url = '',
   method = '',
-  responseType = '',
   body = '',
 } = {}): string {
-  return [url, method.toUpperCase(), responseType, body].join('||');
+  return [url, method.toUpperCase(), body].join('||');
 }
 
 const duplicateRequests = {
@@ -151,7 +143,6 @@ export function bestfetch(url: string, options: Options) {
   let requestKeyToUse =
     requestKey ||
     getRequestKey({
-      // If `input` is a Request, then use its URL
       url,
       method: init.method || '',
       body: init.body || '',
