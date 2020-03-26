@@ -9,14 +9,11 @@ const keysToCopy = [
   'data',
 ];
 
-export interface BestFetchResponse {
-  headers: Headers;
-  ok: boolean;
-  redirected: boolean;
-  status: number;
-  statusText: string;
-  type: ResponseType;
-  url: string;
+export interface BestFetchResponse
+  extends Pick<
+    Response,
+    'headers' | 'ok' | 'redirected' | 'status' | 'statusText' | 'type' | 'url'
+  > {
   data: any;
 }
 

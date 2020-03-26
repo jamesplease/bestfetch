@@ -1,3 +1,3 @@
-export interface ExtendedResponse extends Response {
+export interface ResponseWithData extends Response {
   data?: any;
 }

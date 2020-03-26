@@ -5,7 +5,7 @@ import {
   shouldWriteCachedValue,
 } from './response-cache';
 import generateResponse, { BestFetchResponse } from './generate-response';
-import { ExtendedResponse } from './interfaces';
+import { ResponseWithData } from './interfaces';
 
 export { responseCache, CacheMissError };
 
@@ -22,11 +22,11 @@ interface duplicateRequestStoreInterface {
   [Key: number]: Array<PromiseProxy> | null;
 }
 
-type responseTypeFn = (res: ExtendedResponse) => ResponseTypeString;
+type responseTypeFn = (res: ResponseWithData) => ResponseTypeString;
 
 interface ResolveRequestOptions {
   requestKey: string;
-  res?: ExtendedResponse;
+  res?: ResponseWithData;
   err?: any;
 }
 
@@ -151,7 +151,7 @@ export function bestfetch(url: string, options: BestFetchOptions) {
     }
   }
 
-  function onSuccess(res: ExtendedResponse) {
+  function onSuccess(res: ResponseWithData) {
     if (!ignoreCacheOnResponse) {
       if (shouldWriteCachedValue(res)) {
         responseCache.set(
@@ -171,7 +171,7 @@ export function bestfetch(url: string, options: BestFetchOptions) {
   const request = fetch(url, init).then(
     // This handles receiving a response. This happens when there are successful responses (i.e.; 200 OK),
     // as well as for errors returned by the server (i.e.; 4xx and 5xx errors).
-    (res: ExtendedResponse) => {
+    (res: ResponseWithData) => {
       let responseTypeToUse;
       if (typeof responseType === 'function') {
         responseTypeToUse = responseType(res);

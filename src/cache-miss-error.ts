@@ -2,8 +2,8 @@
 // will reject to this if you specify `cachePolicy: "cache-only"` and there is nothing
 // found in the cache.
 
-interface CacheMissErr {
-  new (msg: string): CacheMissErr;
+interface CacheMissError {
+  new (msg: string): CacheMissError;
   value: typeof CacheMissError;
   writable: boolean;
   configurable: boolean;
@@ -11,19 +11,19 @@ interface CacheMissErr {
   message: string;
 }
 
-interface FooConstructor {
-  new (message: string): CacheMissErr;
-  prototype: CacheMissErr;
+interface CacheMissErrorConstructor {
+  new (message: string): CacheMissError;
+  prototype: CacheMissError;
 }
 
 const CacheMissError = (function CacheMissError(
-  this: CacheMissErr,
+  this: CacheMissError,
   message: string
 ) {
   var err = Error.call(this, message);
   err.name = this.name = 'CacheMissError';
   this.message = err.message;
-} as Function) as FooConstructor;
+} as Function) as CacheMissErrorConstructor;
 
 CacheMissError.prototype = Object.create(Error.prototype, {
   constructor: {

@@ -1,5 +1,5 @@
 import generateResponse, { BestFetchResponse } from './generate-response';
-import { ExtendedResponse } from './interfaces';
+import { ResponseWithData } from './interfaces';
 
 interface CacheObject {
   accessCount: number;
@@ -18,7 +18,7 @@ let responseCacheStore: ResponseCacheStore = {};
 // By default we always read from the cache when a value exists.
 export const defaultStalenessDefinition = (_cacheObject: CacheObject) => false;
 // By default server errors are not cached, but every other successful response is.
-export const defaultCacheableResponse = (res: ExtendedResponse) => {
+export const defaultCacheableResponse = (res: ResponseWithData) => {
   if (res.status >= 500) {
     return false;
   } else {
@@ -105,7 +105,7 @@ const responseCache = {
     }
   },
 
-  defineCacheableResponse(fn: (res: ExtendedResponse) => boolean) {
+  defineCacheableResponse(fn: (res: ResponseWithData) => boolean) {
     if (typeof fn === 'function') {
       cacheableResponseFn = fn;
     } else {
@@ -136,6 +136,6 @@ export function checkStaleness(
   }
 }
 
-export function shouldWriteCachedValue(res: ExtendedResponse) {
+export function shouldWriteCachedValue(res: ResponseWithData) {
   return cacheableResponseFn(res);
 }
