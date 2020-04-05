@@ -2,7 +2,7 @@ import CacheMissError from './cache-miss-error';
 import {
   responseCache,
   checkStaleness,
-  shouldWriteCachedValue,
+  shouldWriteCachedValue as isSuccessResponse,
 } from './response-cache';
 import generateResponse, { BestFetchResponse } from './generate-response';
 import { ResponseWithData } from './interfaces';
@@ -30,6 +30,7 @@ type responseTypeFn<FetchData> = (
 
 interface ResolveRequestOptions<FetchData> {
   requestKey: string;
+  reject: boolean;
   res?: ResponseWithData<FetchData>;
   err?: any;
 }
@@ -164,20 +165,30 @@ export function bestfetch<FetchData>(
     }
   }
 
-  function onSuccess(res: ResponseWithData<FetchData>) {
-    if (!ignoreCacheOnResponse) {
-      if (shouldWriteCachedValue(res)) {
-        responseCache.set(
-          requestKeyToUse,
-          (res as unknown) as BestFetchResponse<FetchData>
-        );
-      }
+  function onResponseReceived(res: ResponseWithData<FetchData>) {
+    const isErrorRes = !isSuccessResponse(res);
+
+    if (!ignoreCacheOnResponse && !isErrorRes) {
+      responseCache.set(
+        requestKeyToUse,
+        (res as unknown) as BestFetchResponse<FetchData>
+      );
     }
 
     if (dedupe) {
-      resolveRequest<FetchData>({ requestKey: requestKeyToUse, res });
+      resolveRequest<FetchData>({
+        requestKey: requestKeyToUse,
+        reject: isErrorRes,
+        res,
+      });
     } else {
-      return generateResponse<FetchData>(res);
+      const result = generateResponse<FetchData>(res);
+
+      if (isErrorRes) {
+        return Promise.reject(result);
+      } else {
+        return Promise.resolve(result);
+      }
     }
   }
 
@@ -203,24 +214,25 @@ export function bestfetch<FetchData>(
         // This handles when the body is parsed successfully.
         (data: any) => {
           res.data = data;
-          return onSuccess(res);
+          return onResponseReceived(res);
         },
         // This handles when there is an error parsing the body. We set the
         // `data` to be `null`, but otherwise treat it as a success.
         () => {
           res.data = null;
-          return onSuccess(res);
+          return onResponseReceived(res);
         }
       );
     },
     // This handles when there are network errors. i.e.; the user's device disconnects
     // from the network.
     // Note: this does *not* handle responses from the server, even if that response is an error!
-    err => {
+    (err) => {
       if (dedupe) {
         resolveRequest({
           requestKey: requestKeyToUse,
           err,
+          reject: true,
         });
       } else {
         return Promise.reject(err);
