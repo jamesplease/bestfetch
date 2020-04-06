@@ -19,7 +19,7 @@ let responseCacheStore: ResponseCacheStore = {};
 export const defaultStalenessDefinition = (_cacheObject: CacheObject) => false;
 // By default server errors are not cached, but every other successful response is.
 export const defaultCacheableResponse = (res: ResponseWithData<any>) => {
-  if (res.status >= 500) {
+  if (res.status >= 300) {
     return false;
   } else {
     return true;
