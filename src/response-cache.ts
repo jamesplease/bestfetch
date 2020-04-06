@@ -1,12 +1,25 @@
-import generateResponse from './generate-response';
+import generateResponse, { BestFetchResponse } from './generate-response';
+import { ResponseWithData } from './interfaces';
 
-let responseCacheStore = {};
+interface CacheObject {
+  accessCount: number;
+  createdAt: number;
+  lastAccessedAt: null | number;
+  res: BestFetchResponse<any>;
+}
+
+interface ResponseCacheStore {
+  [Key: string]: CacheObject;
+  [Key: number]: CacheObject;
+}
+
+let responseCacheStore: ResponseCacheStore = {};
 
 // By default we always read from the cache when a value exists.
-export const defaultStalenessDefinition = () => false;
+export const defaultStalenessDefinition = (_cacheObject: CacheObject) => false;
 // By default server errors are not cached, but every other successful response is.
-export const defaultCacheableResponse = res => {
-  if (res.status >= 500) {
+export const defaultCacheableResponse = (res: ResponseWithData<any>) => {
+  if (res.status >= 300) {
     return false;
   } else {
     return true;
@@ -17,7 +30,7 @@ let stalenessDefinitionFn = defaultStalenessDefinition;
 let cacheableResponseFn = defaultCacheableResponse;
 
 const responseCache = {
-  get(requestKey, { includeStale = false } = {}) {
+  get(requestKey: string, { includeStale = false } = {}) {
     let shouldPull;
     if (includeStale) {
       shouldPull = responseCache.has(requestKey, { includeStale: true });
@@ -30,13 +43,13 @@ const responseCache = {
       cacheObject.accessCount += 1;
       cacheObject.lastAccessedAt = Date.now();
 
-      return generateResponse(cacheObject.res);
+      return generateResponse<any>(cacheObject.res);
     } else {
       return undefined;
     }
   },
 
-  set(requestKey, res) {
+  set(requestKey: string, res: BestFetchResponse<any>) {
     responseCacheStore[requestKey] = {
       res,
       createdAt: Date.now(),
@@ -47,7 +60,7 @@ const responseCache = {
     return responseCache;
   },
 
-  has(requestKey, { includeStale = false } = {}) {
+  has(requestKey: string, { includeStale = false } = {}): boolean {
     if (includeStale) {
       // `undefined` is not a valid JSON key, so we can reliably use
       // it to determine if the value exists or not.
@@ -57,7 +70,7 @@ const responseCache = {
     }
   },
 
-  delete(requestKey) {
+  delete(requestKey: string): boolean {
     if (!responseCache.has(requestKey, { includeStale: true })) {
       return false;
     } else {
@@ -66,11 +79,11 @@ const responseCache = {
     }
   },
 
-  clear() {
+  clear(): void {
     responseCacheStore = {};
   },
 
-  isFresh(requestKey) {
+  isFresh(requestKey: string): boolean {
     return !checkStaleness(requestKey);
   },
 
@@ -82,7 +95,7 @@ const responseCache = {
     }
   },
 
-  defineStaleness(fn) {
+  defineStaleness(fn: (cacheObject: CacheObject) => boolean) {
     if (typeof fn === 'function') {
       stalenessDefinitionFn = fn;
     } else {
@@ -92,7 +105,7 @@ const responseCache = {
     }
   },
 
-  defineCacheableResponse(fn) {
+  defineCacheableResponse(fn: (res: ResponseWithData<any>) => boolean) {
     if (typeof fn === 'function') {
       cacheableResponseFn = fn;
     } else {
@@ -105,7 +118,10 @@ const responseCache = {
 
 export { responseCache };
 
-export function checkStaleness(requestKey, evictStaleResponses = false) {
+export function checkStaleness(
+  requestKey: string,
+  evictStaleResponses = false
+) {
   if (responseCache.has(requestKey, { includeStale: true })) {
     let cacheObject = responseCacheStore[requestKey];
     const isStale = stalenessDefinitionFn(cacheObject);
@@ -120,6 +136,6 @@ export function checkStaleness(requestKey, evictStaleResponses = false) {
   }
 }
 
-export function shouldWriteCachedValue(res) {
+export function shouldWriteCachedValue(res: ResponseWithData<any>) {
   return cacheableResponseFn(res);
 }

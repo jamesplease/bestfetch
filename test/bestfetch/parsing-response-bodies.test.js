@@ -2,8 +2,8 @@ import fetchMock from 'fetch-mock';
 import { bestfetch, responseCache } from '../../src';
 
 describe('bestfetch: parsing response bodies', () => {
-  test('requests that succeeds with JSON, with no response type specified, to behave as expected', done => {
-    bestfetch('/test/succeeds/json').then(res => {
+  test('requests that succeeds with JSON, with no response type specified, to behave as expected', (done) => {
+    bestfetch('/test/succeeds/json').then((res) => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -18,11 +18,11 @@ describe('bestfetch: parsing response bodies', () => {
     });
   });
 
-  test('requests that succeeds with JSON, with function as response type, to behave as expected', done => {
-    const responseType = res => {
+  test('requests that succeeds with JSON, with function as response type, to behave as expected', (done) => {
+    const responseType = (res) => {
       return res.ok ? 'json' : 'text';
     };
-    bestfetch('/test/succeeds/json', { responseType }).then(res => {
+    bestfetch('/test/succeeds/json', { responseType }).then((res) => {
       expect(res).toEqual(
         expect.objectContaining({
           data: {
@@ -37,7 +37,7 @@ describe('bestfetch: parsing response bodies', () => {
     });
   });
 
-  test('requests that fails with text responses, with function as response type, to behave as expected', done => {
+  test('requests that fails with text responses, with function as response type, to behave as expected', (done) => {
     fetchMock.get(
       '/test/fails/text',
       new Promise((resolve, reject) => {
@@ -45,20 +45,20 @@ describe('bestfetch: parsing response bodies', () => {
       })
     );
 
-    const responseType = res => {
+    const responseType = (res) => {
       return res.ok ? 'json' : 'text';
     };
     bestfetch('/test/fails/text', { responseType }).then(
       () => done.fail(),
-      err => {
+      (err) => {
         expect(err).toEqual('Failed');
         done();
       }
     );
   });
 
-  test('requests that succeeds with empty responses, with no response type specified, to behave as expected', done => {
-    bestfetch('/test/succeeds/empty').then(res => {
+  test('requests that succeeds with empty responses, with no response type specified, to behave as expected', (done) => {
+    bestfetch('/test/succeeds/empty').then((res) => {
       expect(res).toEqual(
         expect.objectContaining({
           data: '',
@@ -71,8 +71,8 @@ describe('bestfetch: parsing response bodies', () => {
     });
   });
 
-  test('requests that fails with text responses, with no response type specified, to behave as expected', done => {
-    bestfetch('/test/fails/internal-server-error').then(res => {
+  test('requests that fails with text responses, with no response type specified, to behave as expected', (done) => {
+    bestfetch('/test/fails/internal-server-error').catch((res) => {
       expect(res).toEqual(
         expect.objectContaining({
           data: null,
@@ -86,10 +86,10 @@ describe('bestfetch: parsing response bodies', () => {
   });
 
   describe('tests that fail to parse (gh-65)', () => {
-    test('are still added to the cache (gh-65)', done => {
+    test('are still added to the cache (gh-65)', (done) => {
       bestfetch('/test/succeeds', {
         requestKey: 'pasta',
-      }).then(res => {
+      }).then((res) => {
         expect(res).toEqual(
           expect.objectContaining({
             data: null,
@@ -103,11 +103,11 @@ describe('bestfetch: parsing response bodies', () => {
       });
     });
 
-    test('respect options that ignore the cache (gh-65)', done => {
+    test('respect options that ignore the cache (gh-65)', (done) => {
       bestfetch('/test/succeeds', {
         requestKey: 'pasta',
         cachePolicy: 'no-cache',
-      }).then(res => {
+      }).then((res) => {
         expect(res).toEqual(
           expect.objectContaining({
             data: null,
