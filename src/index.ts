@@ -77,12 +77,14 @@ function resolveRequest<FetchData>({
   requestKey,
   res,
   err,
+  reject,
 }: ResolveRequestOptions<FetchData>) {
   const handlers = duplicateRequestsStore[requestKey] || [];
 
   handlers.forEach((handler: PromiseProxy) => {
     if (res) {
-      handler.resolve(generateResponse<FetchData>(res));
+      const method = reject ? 'reject' : 'resolve';
+      handler[method](generateResponse<FetchData>(res));
     } else {
       handler.reject(err);
     }

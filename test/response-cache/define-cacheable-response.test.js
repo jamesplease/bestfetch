@@ -8,11 +8,11 @@ describe('responseCache.defineCacheableResponse', () => {
     }).toThrow();
   });
 
-  test('default does not cache 500 server errors', done => {
+  test('default does not cache 500 server errors', (done) => {
     bestfetch('/test/fails/internal-server-error', {
       requestKey: 'will-error',
       responseType: 'text',
-    }).then(res => {
+    }).catch((res) => {
       expect(res).toEqual(
         expect.objectContaining({
           data: 'Server error message',
@@ -27,7 +27,7 @@ describe('responseCache.defineCacheableResponse', () => {
       bestfetch('/test/fails/internal-server-error', {
         requestKey: 'will-error',
         responseType: 'text',
-      }).then(resTwo => {
+      }).catch((resTwo) => {
         expect(resTwo).toEqual(
           expect.objectContaining({
             data: 'Server error message',
