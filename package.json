@@ -52,7 +52,7 @@
     "dist",
     "lib",
     "es",
-    "types/index.d.ts"
+    "types"
   ],
   "devDependencies": {
     "@babel/core": "^7.2.2",
