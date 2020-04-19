@@ -4,7 +4,7 @@
 [![Test Coverage](https://coveralls.io/repos/github/jamesplease/bestfetch/badge.svg?branch=master)](https://coveralls.io/github/jamesplease/bestfetch?branch=master)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/bestfetch/lib/index.js?compression=gzip)](https://unpkg.com/bestfetch/lib/index.js)
 
-> 🚨This project is a WIP! It's not yet ready for use. 🚨  
+> 🚨This project, `bestfetch` is a WIP improvement upon `fetch-dedupe`! `bestfetch` is not yet ready for use. 🚨  
 > *(as of April 2020)*
 
 A [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)-like HTTP library that
